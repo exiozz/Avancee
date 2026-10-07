@@ -118,7 +118,7 @@ root.addEventListener('click',function(ev){
   if(act==='ov-bg'){if(ev.target===b){closeOverlays();render();}return;}
   if(act==='bg'){closeTask();render();return;}
   var inOverlay=!!b.closest('#overlay');
-  if(inOverlay&&act!=='qa-ok'&&act!=='ctx-prio')closeOverlays();
+  if(inOverlay&&act!=='qa-ok'&&act!=='ctx-prio'&&act!=='photo-nav')closeOverlays();
   if(['del-project','coldel','spdel','del-client','demo-del'].indexOf(act)<0)S.confirm=null;
   if(['colmenu','colmove','coldone','coldel'].indexOf(act)<0)S.menu=null;
   if(['spmenu','spdel','spren'].indexOf(act)<0)S.smenu=null;
@@ -148,6 +148,8 @@ root.addEventListener('click',function(ev){
   if(act==='cancel'){render();return;}
   if(act==='open'&&t){openTask(t.id);render();return;}
   if(act==='close'){closeTask();render();return;}
+  if(act==='photo-open'&&S.task){closeOverlays();S.photo={id:S.task,i:parseInt(b.dataset.item,10)||0};render();return;}
+  if(act==='photo-nav'&&S.photo){var pn=(taskById(S.photo.id)||{}).photos||[];if(pn.length)S.photo.i=(S.photo.i+parseInt(id,10)+pn.length)%pn.length;render();return;}
   if(act==='nlc'){S.nlc=parseInt(id,10)||0;render();return;}
   if(act==='label-mgr'){S.lblMgr=!S.lblMgr;render();return;}
   if(act==='det'){S.det=!S.det;LS.set('det',S.det);render();return;}
@@ -197,7 +199,7 @@ root.addEventListener('click',function(ev){
   }
   if(act==='del-task'&&t){if(S.task===t.id)closeTask();deleteTask(t);render();return;}
   if(act==='dup'&&t){
-    var d=clean(t);d.title=(d.title||'')+T(' (copie)');d.pos=Date.now();d.createdAt=Date.now();d.log=[];d.act=[{t:'Carte dupliquée',at:Date.now()}];
+    var d=clean(t);d.title=(d.title||'')+T(' (copie)');d.pos=Date.now();d.createdAt=Date.now();d.log=[];delete d.photos;d.act=[{t:'Carte dupliquée',at:Date.now()}];
     run(function(){return S.db.collection(realm(t.projectId)+'tasks').doc().set(d);});toast('Carte dupliquée.');render();return;
   }
   if(act==='ctx-prio'&&t){
@@ -250,6 +252,8 @@ root.addEventListener('click',function(ev){
   var mt=S.task?taskById(S.task):null, me=mt?index()[mt.projectId]:null;
   if(!mt){render();return;}
   var item=b.dataset.item;
+  if(act==='photo-add'){if(!canW(me))return;var pin=document.getElementById('photo-in');if(pin){pin.dataset.task=mt.id;pin.value='';pin.click();}return;}
+  if(act==='photo-del'){if(canW(me))removePhoto(mt,item);return;}
   if(act==='ck-toggle'){
     var arr=(mt.check||[]).map(function(i){return i.id===item?{id:i.id,t:i.t,d:!i.d}:i;}), patch={check:arr};
     if(arr.length&&arr.every(function(i){return i.d;}))patch.act=actOf(mt,'Checklist terminée');
@@ -349,10 +353,14 @@ root.addEventListener('keydown',function(ev){
   if(mod&&key&&key.toLowerCase()==='k'){ev.preventDefault();if(S.db){if(S.pal){closeOverlays();}else openPal();render();}return;}
   if(mod&&key&&key.toLowerCase()==='b'){ev.preventDefault();cycleSb('toggle');render();return;}
   if(key==='Escape'){
-    if(S.pal||S.qa||S.sheet||S.ctx){closeOverlays();render();return;}
+    if(S.photo||S.pal||S.qa||S.sheet||S.ctx){closeOverlays();render();return;}
     if(S.comp||S.addSpace||S.addIn||S.ren||S.smenu||S.menu||S.iconPick){S.comp=null;S.addSpace=false;S.addIn=null;S.ren=null;S.smenu=null;S.menu=null;S.iconPick=false;render();return;}
     if(S.task){closeTask();render();return;}
     if(S.dashEdit){S.dashEdit=false;render();return;}
+    return;
+  }
+  if(S.photo){
+    if(key==='ArrowLeft'||key==='ArrowRight'){ev.preventDefault();var ps=(taskById(S.photo.id)||{}).photos||[];if(ps.length){S.photo.i=(S.photo.i+(key==='ArrowRight'?1:-1)+ps.length)%ps.length;render();}}
     return;
   }
   if(S.pal){
@@ -464,6 +472,16 @@ root.addEventListener('drop',function(ev){
   moveTask(e,id,cid,pos);
 });
 root.addEventListener('dragend',function(){clearDrag();drag.id=null;});
+
+/* le sélecteur de photos vit hors des zones redessinées : il survit à un rafraîchissement pendant que la galerie du téléphone est ouverte */
+(function(){
+  var pin=document.getElementById('photo-in'); if(!pin)return;
+  pin.addEventListener('change',function(){
+    var id=pin.dataset.task, files=[].slice.call(pin.files||[]);
+    pin.value='';
+    if(id&&files.length&&S.canEdit&&S.db)addPhotos(id,files);
+  });
+})();
 
 /* ---------- démarrage ---------- */
 function snapList(snap,priv){

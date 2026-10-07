@@ -47,6 +47,17 @@ function renderPanel(by){
   h+='</div>';
   /* description */
   h+='<section class="tp-s"><h4>Description</h4>'+(ed?'<label class="sr" for="mn-'+id+'">Description</label><textarea class="area" id="mn-'+id+'" data-draft data-change="tdesc" data-id="'+id+'" placeholder="Détails, liens, idées…">'+esc(t.notes||'')+'</textarea>':(t.notes?'<p class="rd">'+esc(t.notes)+'</p>':'<span class="mut">Pas de description.</span>'))+'</section>';
+  /* photos */
+  var phs=t.photos||[], upl=S.upl[t.id]||0;
+  if(ed||phs.length){
+    h+='<section class="tp-s"><h4>Photos'+(phs.length?'<span class="cnt">'+phs.length+'/'+PHOTO_MAX+'</span>':'')+'</h4><div class="phgrid">';
+    phs.forEach(function(ph,i){
+      h+='<div class="ph"><button class="ph-b" data-act="photo-open" data-item="'+i+'" aria-label="Agrandir la photo '+(i+1)+'">'+photoImg(ph,'Photo '+(i+1))+'</button>'+(ed?'<button class="ph-x" data-act="photo-del" data-item="'+esc(ph.id)+'" aria-label="Supprimer la photo '+(i+1)+'">'+ic('x')+'</button>':'')+'</div>';
+    });
+    for(var u=0;u<upl;u++)h+='<div class="ph up" role="status" aria-label="Envoi de la photo…"><i class="spin"></i></div>';
+    if(ed&&phs.length+upl<PHOTO_MAX)h+='<button class="ph add" data-act="photo-add" data-id="'+id+'">'+ic('image')+'<span>Ajouter des photos</span></button>';
+    h+='</div></section>';
+  }
   /* checklist */
   var ck=t.check||[], nd=ck.filter(function(i){return i.d;}).length, pc=ck.length?Math.round(nd/ck.length*100):0;
   if(ed||ck.length){
@@ -161,7 +172,14 @@ function qaChips(){
 
 function renderOverlay(by){
   var el=document.getElementById('overlay'), h='';
-  if(S.pal){
+  var pt=S.photo?taskById(S.photo.id):null, pl=pt?(pt.photos||[]):[];
+  if(S.photo&&!pl.length)S.photo=null;
+  if(S.photo){
+    var pi=Math.max(0,Math.min(pl.length-1,S.photo.i));S.photo.i=pi;
+    h='<div class="ov lb" data-act="ov-bg"><div class="lbx" role="dialog" aria-label="Photo">'+photoImg(pl[pi],'Photo '+(pi+1))+'</div>'
+      +'<button class="lb-btn lb-x" data-act="ov-close" aria-label="Fermer">'+ic('x')+'</button>'
+      +(pl.length>1?'<button class="lb-btn lb-p" data-act="photo-nav" data-id="-1" aria-label="Photo précédente">'+ic('left')+'</button><button class="lb-btn lb-n" data-act="photo-nav" data-id="1" aria-label="Photo suivante">'+ic('chev')+'</button><span class="lb-c">'+(pi+1)+' / '+pl.length+'</span>':'')+'</div>';
+  }else if(S.pal){
     h='<div class="ov top" data-act="ov-bg"><div class="pal" role="dialog" aria-label="Palette de commandes"><div class="pal-in">'+ic('search')+'<label class="sr" for="pq">Rechercher ou lancer une commande</label><input id="pq" value="'+esc(S.pq)+'" placeholder="Rechercher un projet, une tâche, une commande…" autocomplete="off" role="combobox" aria-expanded="true" aria-controls="pal-res"><button class="ib sm only-s" data-act="ov-close" aria-label="Fermer">'+ic('x')+'</button></div>'
       +'<div class="pal-res" id="pal-res" role="listbox">'+palList(by)+'</div><footer class="pal-f hide-s"><span>'+kbd('↑')+kbd('↓')+' naviguer</span><span>'+kbd('↵')+' ouvrir</span><span>'+kbd('Échap')+' fermer</span></footer></div></div>';
   }else if(S.qa){
@@ -198,6 +216,6 @@ function renderOverlay(by){
     }
   }
 }
-function closeOverlays(){S.pal=false;S.pq='';S.pi=0;S.qa=null;S.sheet=null;S.ctx=null;}
+function closeOverlays(){S.photo=null;S.pal=false;S.pq='';S.pi=0;S.qa=null;S.sheet=null;S.ctx=null;}
 function openPal(){closeOverlays();S.pal=true;S.focus='pq';}
 function openQa(o){closeOverlays();var cur=index()[S.view];S.qa=Object.assign({text:'',due:'',pid:(cur&&cur.rw?S.view:'')},o||{});S.focus='qat';}

@@ -179,6 +179,15 @@ I18N.add('en',{
 'Tutoriel':'Tutorial','Une visite guidée de l’appli en une minute : le menu, les projets, le partage, les tâches.':'A one-minute guided tour of the app: the menu, projects, sharing, tasks.',
 'Revoir le tutoriel':'Replay the tutorial','Aide':'Help','Tu peux revoir le tutoriel dans Réglages.':'You can replay the tutorial in Settings.',
 
+/* --- photos --- */
+'Photos':'Photos','Photo':'Photo','Photo {n}':'Photo {n}','Agrandir la photo {n}':'Enlarge photo {n}','Supprimer la photo {n}':'Delete photo {n}','Envoi de la photo…':'Uploading the photo…',
+'Ajouter des photos':'Add photos','Photo précédente':'Previous photo','Photo suivante':'Next photo',
+'Choisis une image : photo, capture d’écran…':'Pick an image: a photo, a screenshot…','Maximum {0} photos par tâche.':'Maximum {0} photos per task.',
+'Maximum {0} photos par tâche : les suivantes n’ont pas été ajoutées.':'Maximum {0} photos per task: the rest weren’t added.',
+'Les photos ne sont pas encore activées : relance le fichier supabase/schema.sql dans Supabase.':'Photos aren’t enabled yet: run the file supabase/schema.sql again in Supabase.',
+'Envoi de la photo impossible. Réessaie dans un instant.':'Couldn’t upload the photo. Try again in a moment.','Cette image ne peut pas être lue.':'This image can’t be read.',
+'Photo supprimée.':'Photo deleted.','Photo ajoutée':'Photo added','Photos ajoutées':'Photos added',
+
 /* --- messages --- */
 'Modification refusée : tu n’as pas les droits sur cet élément.':'Change refused: you don’t have permission for this item.',
 'Enregistrement impossible. Réessaie dans un instant.':'Couldn’t save. Try again in a moment.',

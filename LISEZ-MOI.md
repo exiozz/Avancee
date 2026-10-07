@@ -107,6 +107,14 @@ Le site a besoin d'une connexion Internet : il n'y a pas de mode hors ligne.
 | `supabase/schema.sql` | tables et règles d'accès, à exécuter une fois |
 | `manifest.webmanifest`, `icons/` | installation comme appli |
 
+## Photos
+
+Dans une tâche, le bloc **Photos** permet d'ajouter jusqu'à 8 images (photo du téléphone, capture d'écran…). Elles sont réduites avant l'envoi (1600 px de côté au plus) et la première sert de couverture à la carte.
+
+Les photos sont rangées dans le stockage de Supabase, dans un espace privé nommé `photos`, créé par `supabase/schema.sql`. Seules les personnes qui ont le droit de voir la tâche peuvent voir ses photos. **Si tu avais déjà lancé `schema.sql` avant l'arrivée des photos, relance-le une fois** (sans risque pour tes données).
+
+L'offre gratuite de Supabase donne 1 Go de stockage, soit plusieurs milliers de photos réduites.
+
 ## Langues
 
 Le site existe en **français** et en **anglais**. Il démarre dans la langue du navigateur (français si le navigateur est en français, anglais sinon). On change de langue sur la page de connexion (boutons FR / EN) ou dans **Réglages > Apparence et langue**. Le choix est mémorisé sur l'appareil.

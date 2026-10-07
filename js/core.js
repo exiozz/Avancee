@@ -49,7 +49,7 @@ var S={db:null,dl:null,owner:false,unsure:false,preview:false,canEdit:false,me:n
   q:'',fl:null,sort:{k:'pos',d:1},cal:null,calProj:'',calMode:'month',
   task:null,taskFresh:false,menu:null,lblMgr:false,nlc:0,dirty:{},
   coll:LS.get('coll',{}),addSpace:false,addIn:null,ren:null,smenu:null,iconPick:false,comp:null,
-  pal:false,pq:'',pi:0,qa:null,tour:null,sheet:null,ctx:null,focus:null,
+  pal:false,pq:'',pi:0,qa:null,tour:null,photo:null,upl:{},sheet:null,ctx:null,focus:null,
   tf:'all',tv:LS.get('tv','list'),pf:'active',dashEdit:false,det:false,
   saving:0,savedAt:0,online:true,sb:LS.get('sb',null),gAt:0};
 if(S.view==='overview')S.view='home';
@@ -371,8 +371,9 @@ function toggleTask(t,e){
   moveTask(e,t.id,target.id,Date.now());
 }
 function deleteTask(t){
-  var path=(t._priv?PRIV:'')+'tasks/'+t.id, data=clean(t);
+  var path=(t._priv?PRIV:'')+'tasks/'+t.id, data=clean(t), files=photoPaths([t]);
   run(function(){return S.db.doc(path).delete();});
+  if(files.length)setTimeout(function(){if(!taskById(t.id))Cloud.photoRemove(files);},9000);   /* après le délai d'annulation */
   toast('Carte supprimée.',{undo:function(){run(function(){return S.db.doc(path).set(data);});}});
 }
 function saveCols(pid,arr){return run(function(){return pdoc(pid).update({columns:arr});});}
@@ -393,7 +394,7 @@ function deleteColumn(e,cid){
   });
 }
 function delProjectDocs(p,ts){
-  var base=p._priv?PRIV:'', chain=Promise.resolve();
+  var base=p._priv?PRIV:'', chain=Cloud.photoRemove(photoPaths(ts));
   ts.forEach(function(t){chain=chain.then(function(){return S.db.doc(base+'tasks/'+t.id).delete();});});
   return chain.then(function(){return S.db.doc(base+'projects/'+p.id).delete();}).then(function(){if(S.raw.m.some(function(m){return m.id===p.id;}))return S.db.doc(PRIV+'meta/'+p.id).delete();});
 }
@@ -437,6 +438,80 @@ function exportData(){
     toast('Export téléchargé.');
   }catch(_){toast('Export impossible pour le moment.',{bad:true});}
 }
+/* ---------- photos d'une tâche ---------- */
+var PHOTO_MAX=8, PHOTO_SIDE=1600;
+var PH={url:{},want:{},timer:0};
+function photoPaths(ts){var out=[];ts.forEach(function(t){(t.photos||[]).forEach(function(p){if(p.path)out.push(p.path);});});return out;}
+/* adresse d'affichage d'une photo : le serveur donne un lien valable une heure, gardé en mémoire */
+function photoUrl(path){
+  var c=PH.url[path], now=Date.now();
+  if(c&&c.exp>now)return c.u;
+  PH.want[path]=1;
+  if(!PH.timer)PH.timer=setTimeout(photoFlush,40);
+  return c?c.u:'';
+}
+function photoFlush(){
+  PH.timer=0;
+  var paths=Object.keys(PH.want); PH.want={};
+  if(!paths.length)return;
+  Cloud.photoUrls(paths).then(function(m){
+    paths.forEach(function(p){PH.url[p]=m[p]?{u:m[p],exp:Date.now()+50*60000}:{u:'',exp:Date.now()+60000};});
+  },function(){
+    paths.forEach(function(p){PH.url[p]={u:'',exp:Date.now()+60000};});
+  }).then(queueRender);
+}
+/* réduit une image avant l'envoi : 1600 px de côté au plus, en JPEG */
+function shrinkImage(file){
+  return new Promise(function(res,rej){
+    var url=URL.createObjectURL(file), im=new Image();
+    im.onload=function(){
+      try{
+        var k=Math.min(1,PHOTO_SIDE/Math.max(im.naturalWidth,im.naturalHeight,1)), w=Math.max(1,Math.round(im.naturalWidth*k)), h=Math.max(1,Math.round(im.naturalHeight*k));
+        var c=document.createElement('canvas');c.width=w;c.height=h;
+        var g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,w,h);g.drawImage(im,0,0,w,h);
+        URL.revokeObjectURL(url);
+        c.toBlob(function(b){if(b)res({blob:b,w:w,h:h});else rej(new Error('image'));},'image/jpeg',0.82);
+      }catch(e){URL.revokeObjectURL(url);rej(e);}
+    };
+    im.onerror=function(){URL.revokeObjectURL(url);rej(new Error('image'));};
+    im.src=url;
+  });
+}
+function addPhotos(id,files){
+  var t=taskById(id); if(!t)return Promise.resolve();
+  var list=[].slice.call(files||[]).filter(function(f){return /^image\//.test(f.type||'');});
+  var room=PHOTO_MAX-(t.photos||[]).length-(S.upl[id]||0);
+  if(!list.length){toast('Choisis une image : photo, capture d’écran…',{bad:true});return Promise.resolve();}
+  if(room<=0){toast(tf('Maximum {0} photos par tâche.',PHOTO_MAX),{bad:true});return Promise.resolve();}
+  if(list.length>room){list=list.slice(0,room);toast(tf('Maximum {0} photos par tâche : les suivantes n’ont pas été ajoutées.',PHOTO_MAX));}
+  S.upl[id]=(S.upl[id]||0)+list.length;render();
+  var added=[], unread=0, failed=0, nobucket=false, chain=Promise.resolve();
+  list.forEach(function(f){
+    chain=chain.then(function(){
+      return shrinkImage(f).then(function(r){
+        return Cloud.photoUpload(id,r.blob).then(function(path){added.push({id:rnd(),path:path,w:r.w,h:r.h});},function(e){failed++;if(e&&e.code==='no_bucket')nobucket=true;});
+      },function(){unread++;}).then(function(){S.upl[id]=Math.max(0,(S.upl[id]||1)-1);});
+    });
+  });
+  return chain.then(function(){
+    if(!S.upl[id])delete S.upl[id];
+    if(nobucket)toast('Les photos ne sont pas encore activées : relance le fichier supabase/schema.sql dans Supabase.',{bad:true});
+    else if(failed)toast('Envoi de la photo impossible. Réessaie dans un instant.',{bad:true});
+    if(unread)toast('Cette image ne peut pas être lue.',{bad:true});
+    var cur=taskById(id);
+    if(!added.length||!cur){if(added.length)Cloud.photoRemove(added.map(function(p){return p.path;}));render();return;}
+    return run(function(){return tdoc(id).update({photos:(cur.photos||[]).concat(added),act:actOf(cur,added.length>1?'Photos ajoutées':'Photo ajoutée')});});
+  });
+}
+function removePhoto(t,pid){
+  var ph=(t.photos||[]).find(function(p){return p.id===pid;}); if(!ph)return;
+  var rest=t.photos.filter(function(p){return p.id!==pid;}), old=t.photos.slice();
+  run(function(){return tdoc(t.id).update({photos:rest});});
+  var gone=false;
+  setTimeout(function(){var c=taskById(t.id);if(!gone&&(!c||!(c.photos||[]).some(function(p){return p.id===pid;})))Cloud.photoRemove([ph.path]);},9000);
+  toast('Photo supprimée.',{undo:function(){gone=true;var c=taskById(t.id);if(c)run(function(){return tdoc(t.id).update({photos:old});});}});
+}
+
 /* ---------- partage d'un projet ---------- */
 function validEmail(s){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);}
 function addMember(pid,email,role){

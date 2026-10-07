@@ -46,6 +46,7 @@ var ICONS={
   download:'<path d="M10 3.500v9M6 9l4 4 4-4M4 16.500h12"/>',
   activity:'<path d="M2.500 10.500h3.500l2-5.500 4 10 2-4.500h3.500"/>',
   folder:'<path d="M3 6a1 1 0 0 1 1-1h3.600l1.600 1.800H16a1 1 0 0 1 1 1V15a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/>',
+  image:'<rect x="3" y="4" width="14" height="12" rx="2"/><circle cx="7.300" cy="8.200" r="1.400"/><path d="M3.500 14l3.800-3.600 2.900 2.600 2.300-2 4 3.500"/>',
   user:'<circle cx="10" cy="7" r="3.200"/><path d="M4 17c0-3.300 2.700-5.200 6-5.200s6 1.900 6 5.200"/>'
 };
 function ic(n,cls){return '<svg class="ic'+(cls?' '+cls:'')+'" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICONS[n]||'')+'</svg>';}
@@ -82,6 +83,7 @@ function badges(t,e){
   var ck=t.check||[];
   if(ck.length){var d=ck.filter(function(i){return i.d;}).length;h+='<span class="bd'+(d===ck.length?' ok':'')+'" title="Checklist">'+ic('checklist')+d+'/'+ck.length+'</span>';}
   if(t.notes)h+='<span class="bd" title="Description">'+ic('lines')+'</span>';
+  if((t.photos||[]).length)h+='<span class="bd" title="Photos">'+ic('image')+t.photos.length+'</span>';
   if((t.log||[]).length)h+='<span class="bd" title="Commentaires">'+ic('msg')+t.log.length+'</span>';
   if(t.who)h+='<span class="bd who" title="Assigné à '+esc(t.who)+'">'+esc(t.who)+'</span>';
   return h?'<div class="bds">'+h+'</div>':'';
@@ -98,11 +100,16 @@ function nextBtn(t,e){
   if(!n)return '';
   return '<button class="mv" data-act="next" data-id="'+esc(t.id)+'" aria-label="'+tf('Passer dans « {0} »',esc(n.name))+'" title="'+tf('Passer dans « {0} »',esc(n.name))+'">'+ic('chev')+'</button>';
 }
+function photoImg(ph,alt){
+  var u=photoUrl(ph.path);
+  return u?'<img src="'+esc(u)+'" alt="'+(alt||'')+'" loading="lazy" decoding="async">':'<span class="ph-wait sk"></span>';
+}
 function cardEl(t,e){
   var done=isDone(t,e), ed=canW(e);
   var lb=(t.labels||[]).map(function(id){return findLabel(e.p,id);}).filter(Boolean);
   var ck=t.check||[], cd=ck.filter(function(i){return i.d;}).length;
   return '<article class="card'+(done?' isdone':'')+(S.task===t.id?' sel':'')+'" tabindex="0" data-act="open" data-id="'+esc(t.id)+'" data-card data-drag="task" '+(ed?'draggable="true"':'')+'>'
+    +((t.photos||[]).length?'<div class="cover">'+photoImg(t.photos[0])+'</div>':'')
     +(lb.length?'<div class="lrow sm">'+lb.map(function(l){return lchip(l);}).join('')+'</div>':'')
     +'<div class="ct">'+chkBtn(t,e)+'<span class="ctt'+(done?' struck':'')+'">'+esc(t.title)+'</span>'+nextBtn(t,e)+'</div>'+badges(t,e)
     +(ck.length&&cd<ck.length?'<div class="cprog"><i style="width:'+Math.round(cd/ck.length*100)+'%"></i></div>':'')+'</article>';

@@ -170,6 +170,45 @@ drop policy if exists members_delete on public.members;
 create policy members_delete on public.members for delete to authenticated
   using (public.project_role(project_id) = 'owner');
 
+-- ---------- photos des tâches ----------
+-- rôle de la personne connectée sur une tâche : 'owner', 'editor', 'viewer' ou rien
+create or replace function public.task_role(tid uuid) returns text
+language sql stable security definer set search_path = public as $$
+  select case
+    when t.project_id is null then case when t.owner = auth.uid() then 'owner' end
+    else public.project_role(t.project_id)
+  end
+  from public.tasks t where t.id = tid
+$$;
+-- une photo est rangée dans « <identifiant de la tâche>/<nom du fichier> »
+create or replace function public.photo_task(name text) returns uuid
+language plpgsql immutable as $$
+begin
+  return split_part(name, '/', 1)::uuid;
+exception when others then
+  return null;
+end $$;
+grant execute on function public.task_role(uuid), public.photo_task(text) to authenticated;
+
+-- espace de stockage privé : 5 Mo par image au plus
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('photos', 'photos', false, 5242880, array['image/jpeg','image/png','image/webp'])
+on conflict (id) do update set public = false, file_size_limit = excluded.file_size_limit, allowed_mime_types = excluded.allowed_mime_types;
+
+-- on voit les photos des tâches qu'on a le droit de voir (et celles qu'on a envoyées soi-même) ;
+-- on en ajoute là où on a le droit de modifier
+drop policy if exists avancee_photos_read on storage.objects;
+create policy avancee_photos_read on storage.objects for select to authenticated
+  using (bucket_id = 'photos'
+     and (owner_id = auth.uid()::text or public.task_role(public.photo_task(name)) is not null));
+drop policy if exists avancee_photos_insert on storage.objects;
+create policy avancee_photos_insert on storage.objects for insert to authenticated
+  with check (bucket_id = 'photos' and public.task_role(public.photo_task(name)) in ('owner','editor'));
+drop policy if exists avancee_photos_delete on storage.objects;
+create policy avancee_photos_delete on storage.objects for delete to authenticated
+  using (bucket_id = 'photos'
+     and (owner_id = auth.uid()::text or public.task_role(public.photo_task(name)) in ('owner','editor')));
+
 -- mises à jour en direct (ignoré si déjà activé)
 do $$
 declare t text;

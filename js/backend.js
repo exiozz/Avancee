@@ -152,6 +152,24 @@ var Cloud=(function(){
     onAuth:function(f){authCb=f;},
     signIn:function(provider){return sb.auth.signInWithOAuth({provider:provider,options:{redirectTo:here()}});},
     signInEmail:function(email){return sb.auth.signInWithOtp({email:email,options:{emailRedirectTo:here()}});},
-    signOut:function(){cache={};return sb.auth.signOut();}
+    signOut:function(){cache={};return sb.auth.signOut();},
+    /* photos : rangées dans le dossier de leur tâche (stockage Supabase, espace « photos ») */
+    photoUpload:function(taskId,blob){
+      var path=taskId+'/'+uuid()+'.jpg';
+      return sb.storage.from('photos').upload(path,blob,{contentType:'image/jpeg',cacheControl:'31536000',upsert:false}).then(function(r){
+        if(r.error)throw {code:/bucket/i.test(r.error.message||'')?'no_bucket':'unavailable',message:r.error.message};
+        return path;
+      });
+    },
+    photoUrls:function(paths){
+      return sb.storage.from('photos').createSignedUrls(paths,3600).then(function(r){
+        if(r.error)throw r.error;
+        var m={};(r.data||[]).forEach(function(x,i){m[paths[i]]=x&&!x.error?x.signedUrl:'';});return m;
+      });
+    },
+    photoRemove:function(paths){
+      if(!paths||!paths.length)return Promise.resolve();
+      return sb.storage.from('photos').remove(paths).then(function(){},function(){});
+    }
   };
 })();
