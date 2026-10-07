@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Avancée</title>
+<meta name="description" content="Avancée — l’espace de travail simple pour organiser tes projets, tes clients et ton travail.">
+<meta name="theme-color" content="#ECEEF2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B0D11" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Avancée">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<style>
+:root{color-scheme:light;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+html{-webkit-text-size-adjust:100%}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none !important}
+/* Mise en page : un fond « canevas » teinté porte le menu latéral ; le contenu vit sur une feuille claire arrondie ; le détail d'une tâche s'ouvre dans un troisième volet à droite. Sur téléphone : feuille plein écran et barre d'onglets en bas. */
+:root{
+  --canvas:#ECEEF2; --bg:#FFFFFF; --well:#F4F5F8; --hover:#E8EAEF; --line:#E1E4EA; --line-2:#CDD2DB;
+  --ink:#14171F; --ink-2:#3A4150; --muted:#667085;
+  --accent:#2F5BEA; --on-accent:#FFFFFF;
+  --done:#12805C; --done-soft:#DDF5EA; --on-done:#FFFFFF;
+  --danger:#C7302B; --danger-soft:#FDEBE9;
+  --warn:#9A5B00; --warn-soft:#FFF1D6;
+  --h0:#2F5BEA; --h1:#C8327A; --h2:#12805C; --h3:#D9620F; --h4:#6E56CF; --h5:#0E8FA3;
+  --shadow-1:0 1px 2px rgba(16,20,31,.06),0 1px 1px rgba(16,20,31,.04);
+  --shadow-2:0 12px 36px rgba(16,20,31,.16),0 2px 6px rgba(16,20,31,.06);
+  --scrim:rgba(12,14,20,.42);
+  --f-display:'Bricolage Grotesque','Geist',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-body:'Geist',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --f-mono:'Geist Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --fs:15px; --u:1;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --canvas:#0B0D11; --bg:#14171C; --well:#1A1E25; --hover:#232832; --line:#262B35; --line-2:#363C49;
+    --ink:#ECEEF3; --ink-2:#C5CAD6; --muted:#939BAD;
+    --accent:#7C9BFF; --on-accent:#0B1020;
+    --done:#45CF9B; --done-soft:#143327; --on-done:#0B1020;
+    --danger:#FF8177; --danger-soft:#3B1D1B;
+    --warn:#F5B24B; --warn-soft:#3A2C12;
+    --h0:#7C9BFF; --h1:#FF7EB6; --h2:#45CF9B; --h3:#FFA05C; --h4:#A996FF; --h5:#5CCFE0;
+    --shadow-1:0 1px 2px rgba(0,0,0,.4);
+    --shadow-2:0 16px 44px rgba(0,0,0,.6),0 2px 6px rgba(0,0,0,.4);
+    --scrim:rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --canvas:#0B0D11; --bg:#14171C; --well:#1A1E25; --hover:#232832; --line:#262B35; --line-2:#363C49;
+  --ink:#ECEEF3; --ink-2:#C5CAD6; --muted:#939BAD;
+  --accent:#7C9BFF; --on-accent:#0B1020;
+  --done:#45CF9B; --done-soft:#143327; --on-done:#0B1020;
+  --danger:#FF8177; --danger-soft:#3B1D1B;
+  --warn:#F5B24B; --warn-soft:#3A2C12;
+  --h0:#7C9BFF; --h1:#FF7EB6; --h2:#45CF9B; --h3:#FFA05C; --h4:#A996FF; --h5:#5CCFE0;
+  --shadow-1:0 1px 2px rgba(0,0,0,.4);
+  --shadow-2:0 16px 44px rgba(0,0,0,.6),0 2px 6px rgba(0,0,0,.4);
+  --scrim:rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+:root[data-density="compact"]{--u:.84}
+:root[data-density="comfy"]{--u:1.16}
+:root[data-size="s"]{--fs:14px}
+:root[data-size="l"]{--fs:16.5px}
+body{background:var(--canvas);color:var(--ink);font:var(--fs)/1.5 var(--f-body);padding:0}
+</style>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div id="gate"></div>
+<div class="app" id="app" data-sb="open">
+  <aside class="side" id="side" aria-label="Menu"></aside>
+  <div class="stage">
+    <header class="top" id="top"></header>
+    <main class="main" id="main"></main>
+  </div>
+</div>
+<nav class="tabbar" id="tabbar" aria-label="Navigation principale"></nav>
+<div id="panel"></div>
+<div id="overlay"></div>
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+<noscript><p style="padding:24px;font-family:sans-serif">Avancée a besoin de JavaScript pour fonctionner.</p></noscript>
+
+<script src="vendor/supabase.js"></script>
+<script src="config.js"></script>
+<script src="js/backend.js"></script>
+<script src="js/core.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/views.js"></script>
+<script src="js/overlays.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

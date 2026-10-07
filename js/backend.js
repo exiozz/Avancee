@@ -1,0 +1,157 @@
+/* Avancée — serveur : connexion (Supabase Auth) et données (tables Supabase).
+   Expose à l'appli une petite API « documents » : db.collection(nom).onSnapshot / .doc(id).set / update / delete.
+   Les écritures sont appliquées tout de suite à l'écran, puis envoyées ; si le serveur refuse, on recharge. */
+'use strict';
+var Cloud=(function(){
+  var cfg=window.AVANCEE_CONFIG||{}, sb=null, me=null, cache={}, subs={}, timers={}, authCb=null, lastLoad=0;
+  /* table -> forme. key : colonne servant d'identifiant ; single : une ligne par personne ; plain : colonnes simples */
+  var T={spaces:{},projects:{},clients:{},tasks:{},meta:{key:'project_id'},settings:{key:'owner',single:true},members:{plain:true}};
+  var NAMES=Object.keys(T);
+
+  function configured(){return !!(cfg.supabaseUrl&&cfg.supabaseKey&&window.supabase&&window.supabase.createClient);}
+  function uuid(){
+    try{if(window.crypto&&crypto.randomUUID)return crypto.randomUUID();}catch(_){}
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0;return (c==='x'?r:(r&3|8)).toString(16);});
+  }
+  function strip(d){var o={};Object.keys(d||{}).forEach(function(k){if(k!=='id'&&k.charAt(0)!=='_')o[k]=d[k];});return o;}
+  function keyCol(t){return T[t].key||'id';}
+  function rowId(t,id){return T[t].single?me.id:id;}
+  function toDoc(t,row){
+    if(T[t].plain)return {id:row.id,data:{projectId:row.project_id,email:row.email,role:row.role}};
+    return {id:T[t].single?'main':row[keyCol(t)],data:Object.assign({},row.data||{},{_owner:row.owner})};
+  }
+  function fail(err){
+    var c=err&&err.code, denied=c==='42501'||c==='PGRST301'||c==='23503'||c==='23505'||c==='23514';
+    var missing=c==='42P01'||c==='PGRST205'||c==='PGRST204';
+    return {code:denied?'invalid_argument':missing?'no_schema':'unavailable',message:(err&&err.message)||'erreur'};
+  }
+  function emit(t){
+    var m=cache[t]||{}, docs=Object.keys(m).map(function(id){var d=m[id];return {id:id,data:function(){return JSON.parse(JSON.stringify(d));}};});
+    (subs[t]||[]).forEach(function(s){s.next({docs:docs});});
+  }
+  function fetchTable(t){
+    return sb.from(t).select('*').then(function(r){
+      if(r.error)throw fail(r.error);
+      var m={};(r.data||[]).forEach(function(row){var d=toDoc(t,row);m[d.id]=d.data;});
+      cache[t]=m;emit(t);
+    });
+  }
+  function later(t){clearTimeout(timers[t]);timers[t]=setTimeout(function(){fetchTable(t).catch(function(){});},350);}
+  function load(){
+    lastLoad=Date.now();
+    return Promise.all(NAMES.map(function(t){
+      return fetchTable(t).catch(function(e){(subs[t]||[]).forEach(function(s){if(s.error)s.error(e);});throw e;});
+    }));
+  }
+  function live(){
+    try{
+      var ch=sb.channel('avancee');
+      NAMES.forEach(function(t){
+        ch.on('postgres_changes',{event:'*',schema:'public',table:t},function(){
+          later(t);
+          if(t==='members'){later('projects');later('tasks');}   /* un partage change ce qu'on a le droit de voir */
+          if(t==='projects')later('tasks');
+        });
+      });
+      ch.subscribe();
+    }catch(_){}
+    document.addEventListener('visibilitychange',function(){
+      if(document.visibilityState==='visible'&&me&&Date.now()-lastLoad>15000)load().catch(function(){});
+    });
+  }
+
+  /* ---------- écritures ---------- */
+  function insQ(t,id,d){
+    var row;
+    if(T[t].plain)row={id:id,project_id:d.projectId,email:String(d.email||'').trim().toLowerCase(),role:d.role};
+    else{row={data:d};row[keyCol(t)]=rowId(t,id);if(t==='tasks')row.project_id=d.projectId||null;}
+    return sb.from(t).insert(row).select(keyCol(t));
+  }
+  function updQ(t,id,d){
+    var row=T[t].plain?{role:d.role}:{data:d};
+    if(t==='tasks')row.project_id=d.projectId||null;
+    return sb.from(t).update(row).eq(keyCol(t),rowId(t,id)).select(keyCol(t));
+  }
+  function send(t,q){
+    return q.then(function(r){
+      if(r.error)return fetchTable(t).catch(function(){}).then(function(){throw fail(r.error);});
+      /* une modification refusée par les règles d'accès ne renvoie aucune ligne */
+      if(!r.data||!r.data.length)return fetchTable(t).catch(function(){}).then(function(){throw {code:'invalid_argument',message:'refusé'};});
+    });
+  }
+  function ref(t,id){
+    return {id:id,path:t+'/'+id,
+      set:function(data){
+        var d=strip(data), old=cache[t]&&cache[t][id];
+        cache[t]=cache[t]||{};
+        cache[t][id]=T[t].plain?d:Object.assign({},d,{_owner:old?old._owner:me.id});
+        emit(t);
+        return send(t,old?updQ(t,id,d):insQ(t,id,d));
+      },
+      update:function(patch){
+        var old=cache[t]&&cache[t][id];
+        if(!old)return Promise.reject({code:'invalid_argument',message:'introuvable'});
+        var d=Object.assign(strip(old),strip(patch));
+        cache[t][id]=T[t].plain?d:Object.assign({},d,{_owner:old._owner});
+        emit(t);
+        return send(t,updQ(t,id,d));
+      },
+      delete:function(){
+        if(cache[t])delete cache[t][id];
+        emit(t);
+        return sb.from(t).delete().eq(keyCol(t),rowId(t,id)).select(keyCol(t)).then(function(r){
+          if(r.error)return fetchTable(t).catch(function(){}).then(function(){throw fail(r.error);});
+          if(r.data&&r.data.length)return;
+          /* rien supprimé : déjà parti (suppression en cascade) ou refusé. On recharge pour trancher. */
+          return fetchTable(t).then(function(){if(cache[t]&&cache[t][id])throw {code:'invalid_argument',message:'refusé'};});
+        });
+      }
+    };
+  }
+  var db={
+    doc:function(path){var i=path.indexOf('/');return ref(path.slice(0,i),path.slice(i+1));},
+    collection:function(t){
+      if(!T[t])throw new TypeError('collection inconnue : '+t);
+      return {
+        doc:function(id){return ref(t,id||uuid());},
+        onSnapshot:function(next,error){
+          var s={next:next,error:error};(subs[t]=subs[t]||[]).push(s);
+          if(cache[t])setTimeout(function(){emit(t);},0);
+          return function(){subs[t]=(subs[t]||[]).filter(function(x){return x!==s;});};
+        }
+      };
+    }
+  };
+
+  /* ---------- connexion ---------- */
+  function setUser(session){
+    var u=session&&session.user;
+    if(!u){me=null;return;}
+    var m=u.user_metadata||{};
+    me={id:u.id,email:String(u.email||'').toLowerCase(),name:m.full_name||m.name||m.user_name||'',avatar:m.avatar_url||m.picture||''};
+  }
+  function here(){return location.origin+location.pathname;}
+  function init(){
+    if(!configured())return Promise.resolve({state:'setup'});
+    sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseKey);
+    return sb.auth.getSession().then(function(r){
+      setUser(r&&r.data&&r.data.session);
+      sb.auth.onAuthStateChange(function(_ev,session){
+        var was=me&&me.id; setUser(session); var now=me&&me.id;
+        if(was!==now&&authCb)authCb(me);
+      });
+      if(me)live();
+      return {state:me?'in':'out'};
+    },function(){return {state:'out'};});
+  }
+  return {
+    init:init, db:db, load:load,
+    me:function(){return me;},
+    providers:function(){return (cfg.providers||[]).slice();},
+    emailLogin:function(){return cfg.email!==false;},
+    onAuth:function(f){authCb=f;},
+    signIn:function(provider){return sb.auth.signInWithOAuth({provider:provider,options:{redirectTo:here()}});},
+    signInEmail:function(email){return sb.auth.signInWithOtp({email:email,options:{emailRedirectTo:here()}});},
+    signOut:function(){cache={};return sb.auth.signOut();}
+  };
+})();

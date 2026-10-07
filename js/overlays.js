@@ -1,0 +1,199 @@
+/* Avancée — surcouches : panneau de tâche, palette de commandes, ajout rapide, feuilles mobiles, menu contextuel. */
+'use strict';
+
+/* ---------- panneau de tâche ---------- */
+function renderPanel(by){
+  var el=document.getElementById('panel');
+  var t=S.task?taskById(S.task):null;
+  if(!t){el.innerHTML='';document.body.classList.remove('has-panel');return;}
+  document.body.classList.add('has-panel');
+  var e=by[t.projectId]||null, ed=canW(e), id=esc(t.id), p=e?e.p:null, sel=t.labels||[], ls=p?(p.labels||[]):[], pr=prioOf(t), done=isDone(t,e);
+  var h='<div class="scrim" data-act="bg"></div><aside class="tpanel" id="dlg" role="dialog" aria-labelledby="mt-'+id+'" tabindex="-1"'+(p?' style="--c:'+hue(p)+'"':'')+'>';
+  h+='<header class="tp-h"><span class="crumb2">'+(p?'<span class="picon">'+picon(p)+'</span><span class="nm">'+esc(p.name)+'</span><span class="cnt">/ '+esc(colName(e,t._col))+'</span>':ic('inbox')+'<span class="nm">Inbox</span>')+'</span><span class="grow"></span>';
+  if(ed)h+='<button class="ib" data-act="dup" data-id="'+id+'" aria-label="Dupliquer" title="Dupliquer">'+ic('copy')+'</button><button class="ib dng" data-act="del-task" data-id="'+id+'" aria-label="Supprimer" title="Supprimer">'+ic('trash')+'</button>';
+  h+='<button class="ib" data-act="close" aria-label="Fermer" title="Fermer (Échap)">'+ic('x')+'</button></header><div class="tp-b">';
+  h+='<div class="tp-title">'+chkBtn(t,e)+(ed?'<label class="sr" for="mt-'+id+'">Titre</label><textarea class="mtitle'+(done?' struck':'')+'" id="mt-'+id+'" rows="1" data-draft data-change="ttitle" data-id="'+id+'">'+esc(t.title)+'</textarea>':'<h2 class="mtitle" id="mt-'+id+'">'+esc(t.title)+'</h2>')+'</div>';
+  /* propriétés */
+  h+='<div class="tp-props">';
+  if(ed){
+    if(e){var copt={}; e.cols.forEach(function(c){copt[c.id]=c.name;});h+=prop(ic('board')+'Colonne',selH('mc-'+id,'mcol',id,copt,t._col),'mc-'+id);}
+    else{var popts={'':'Inbox (pas encore rangée)'}; rwProjects(by).forEach(function(x){popts[x.id]=x.name;});h+=prop(ic('folder')+'Projet',selH('mf-'+id,'file',id,popts,''),'mf-'+id);}
+    h+=prop(ic('flag')+'Priorité',selH('mp-'+id,'tprio',id,PRIO,pr),'mp-'+id);
+    h+=prop(ic('user')+'Assigné à','<input class="pv" id="mw-'+id+'" value="'+esc(t.who||'')+'" data-draft data-change="twho" data-id="'+id+'" placeholder="Personne" autocomplete="off">','mw-'+id);
+    h+=prop(ic('clock')+'Échéance','<input class="pv" type="date" id="md-'+id+'" value="'+esc(t.due||'')+'" data-change="tdue" data-id="'+id+'">','md-'+id);
+  }else{
+    if(e)h+=prop(ic('board')+'Colonne','<span class="val"><span class="pill'+(done?' ok':'')+'">'+esc(colName(e,t._col))+'</span></span>');
+    if(pr)h+=prop(ic('flag')+'Priorité','<span class="val"><span class="bd p'+pr+'">'+PRIO[pr]+'</span></span>');
+    if(t.who)h+=prop(ic('user')+'Assigné à','<span class="val"><span class="bd who">'+esc(t.who)+'</span></span>');
+    if(t.due)h+=prop(ic('clock')+'Échéance','<span class="val">'+fmtDate(t.due)+'</span>');
+  }
+  if(p){
+    var lab='<div class="lrow">';
+    if(ed){
+      ls.forEach(function(l){lab+=lchip(l,{act:'label-toggle',on:sel.indexOf(l.id)>=0})+(S.lblMgr?'<button class="ib xs dng" data-act="label-del" data-id="'+esc(l.id)+'" aria-label="Supprimer le label">'+ic('x')+'</button>':'');});
+      lab+='<button class="linkbtn" data-act="label-mgr">'+(S.lblMgr?'Terminer':(ls.length?'Gérer':'+ Créer un label'))+'</button>';
+    }else{
+      var shown=sel.map(function(x){return findLabel(p,x);}).filter(Boolean);
+      lab+=shown.length?shown.map(function(l){return lchip(l);}).join(''):'<span class="mut">Aucun</span>';
+    }
+    lab+='</div>';
+    if(ed&&S.lblMgr){
+      lab+='<div class="lmgr"><label class="sr" for="nl">Nom du label</label><input class="in sm" id="nl" data-draft placeholder="Nom du label" autocomplete="off"><span class="swatches" role="group" aria-label="Couleur du label">';
+      for(var i=0;i<6;i++)lab+='<button class="sw" style="--sc:var(--h'+i+')" data-act="nlc" data-id="'+i+'" aria-pressed="'+(S.nlc===i?'true':'false')+'" aria-label="'+COLORS[i]+'"></button>';
+      lab+='</span><button class="btn sm" data-act="label-add">Créer</button></div>';
+    }
+    if(ed||sel.length)h+=prop(ic('star')+'Labels',lab);
+  }
+  h+='</div>';
+  /* description */
+  h+='<section class="tp-s"><h4>Description</h4>'+(ed?'<label class="sr" for="mn-'+id+'">Description</label><textarea class="area" id="mn-'+id+'" data-draft data-change="tdesc" data-id="'+id+'" placeholder="Détails, liens, idées…">'+esc(t.notes||'')+'</textarea>':(t.notes?'<p class="rd">'+esc(t.notes)+'</p>':'<span class="mut">Pas de description.</span>'))+'</section>';
+  /* checklist */
+  var ck=t.check||[], nd=ck.filter(function(i){return i.d;}).length, pc=ck.length?Math.round(nd/ck.length*100):0;
+  if(ed||ck.length){
+    h+='<section class="tp-s"><h4>Checklist'+(ck.length?'<span class="cnt">'+nd+'/'+ck.length+'</span>':'')+'</h4>';
+    if(ck.length)h+=bar(pc,'var(--done)');
+    h+='<ul class="ck">'+ck.map(function(i){
+      var iid=esc(i.id);
+      if(!ed)return '<li class="cki"><span class="chk sm'+(i.d?' on':'')+'">'+CHECK+'</span><span class="'+(i.d?'struck':'')+'">'+esc(i.t)+'</span></li>';
+      return '<li class="cki"><button class="chk sm'+(i.d?' on':'')+'" data-act="ck-toggle" data-item="'+iid+'" aria-pressed="'+(i.d?'true':'false')+'" aria-label="'+(i.d?'Décocher':'Cocher')+'">'+CHECK+'</button>'
+        +'<input class="ckt'+(i.d?' struck':'')+'" id="ck-'+iid+'" data-draft data-change="ckt" data-item="'+iid+'" value="'+esc(i.t)+'" aria-label="Élément de checklist" autocomplete="off">'
+        +'<button class="ib xs dng" data-act="ck-del" data-item="'+iid+'" aria-label="Supprimer l’élément">'+ic('x')+'</button></li>';
+    }).join('')+'</ul>';
+    if(ed)h+='<label class="sr" for="cka">Nouvel élément</label><input class="in sm" id="cka" data-draft data-add="check" placeholder="Ajouter un élément, puis Entrée" autocomplete="off">';
+    h+='</section>';
+  }
+  /* commentaires */
+  var log=t.log||[];
+  if(ed||log.length){
+    h+='<section class="tp-s"><h4>Commentaires'+(log.length?'<span class="cnt">'+log.length+'</span>':'')+'</h4>';
+    if(log.length)h+='<ul class="cms">'+log.map(function(c){return '<li class="cm"><p>'+esc(c.t)+'</p><span class="cnt">'+ago(c.at)+'</span>'+(ed?'<button class="ib xs dng" data-act="cmt-del" data-item="'+esc(c.id)+'" aria-label="Supprimer le commentaire">'+ic('x')+'</button>':'')+'</li>';}).join('')+'</ul>';
+    if(ed)h+='<label class="sr" for="cma">Nouveau commentaire</label><input class="in sm" id="cma" data-draft data-add="cmt" placeholder="Écrire un commentaire, puis Entrée" autocomplete="off">';
+    h+='</section>';
+  }
+  /* activité */
+  var act=(t.act||[]).slice().reverse();
+  if(!act.length&&t.createdAt)act=[{t:'Carte créée',at:t.createdAt}];
+  if(act.length)h+='<section class="tp-s"><h4>Activité</h4><ul class="tl">'+act.slice(0,12).map(function(a){return '<li><span class="a-dot"></span><span class="grow">'+esc(a.t)+'</span><span class="cnt">'+ago(a.at)+'</span></li>';}).join('')+'</ul></section>';
+  el.innerHTML=h+'</div></aside>';
+}
+
+/* ---------- palette de commandes ---------- */
+function palItems(by){
+  var q=norm(S.pq.trim()), out=[], ed=S.canEdit;
+  function add(g,icon,label,act,id,o){
+    o=o||{};
+    if(q&&norm(label+' '+(o.kw||'')).indexOf(q)<0)return;
+    out.push({g:g,icon:icon,label:label,act:act,id:id,sub:o.sub,k:o.k,attrs:o.attrs,html:o.html});
+  }
+  if(q){
+    S.projects.filter(function(p){return norm(p.name+' '+(p.desc||'')).indexOf(q)>=0;}).slice(0,6).forEach(function(p){
+      out.push({g:'Projets',html:'<span class="picon">'+picon(p)+'</span>',label:p.name,act:'view',id:p.id,sub:spaceName(p)});
+    });
+    S.tasks.filter(function(t){
+      if(t.projectId&&!by[t.projectId])return false;
+      return norm((t.title||'')+' '+(t.notes||'')+' '+(t.who||'')+' '+(t.log||[]).map(function(c){return c.t;}).join(' ')).indexOf(q)>=0;
+    }).slice(0,8).forEach(function(t){
+      var e=by[t.projectId];
+      out.push({g:'Tâches',icon:'tasks',label:t.title,act:'open',id:t.id,sub:e?e.p.name:'Inbox'});
+    });
+    if(ed)S.clients.filter(function(c){return norm(c.name+' '+(c.company||'')+' '+(c.email||'')).indexOf(q)>=0;}).slice(0,5).forEach(function(c){
+      out.push({g:'Clients',icon:'user',label:c.name,act:'view',id:'c:'+c.id,sub:c.company||''});
+    });
+    S.projects.filter(function(p){return p.doc&&norm(p.doc).indexOf(q)>=0;}).slice(0,3).forEach(function(p){
+      out.push({g:'Notes',icon:'note',label:'Notes de « '+p.name+' »',act:'open-doc',id:p.id});
+    });
+  }else{
+    LS.get('recent',[]).map(projById).filter(Boolean).slice(0,4).forEach(function(p){
+      out.push({g:'Récents',html:'<span class="picon">'+picon(p)+'</span>',label:p.name,act:'view',id:p.id,sub:spaceName(p)});
+    });
+  }
+  if(ed){
+    add('Actions','plus','Nouvelle tâche','qa','',{k:'N',kw:'creer ajouter tache carte'});
+    add('Actions','folder','Nouveau projet','new-project','',{k:'Maj P',kw:'creer'});
+    add('Actions','users','Nouveau client','new-client','',{kw:'creer'});
+  }
+  var keys={home:'G H',inbox:'G I',tasks:'G T',calendar:'G C',projects:'G P'};
+  navDefs().forEach(function(n){add('Aller à',n[1],n[2],'view',n[0],{k:keys[n[0]],kw:'ouvrir aller'});});
+  add('Aller à','settings','Réglages','view','settings',{kw:'parametres preferences'});
+  if(by[S.view])MODES.forEach(function(m){add('Vue du projet',m[2],'Vue '+m[1],'mode',m[0],{kw:'changer vue'});});
+  add('Apparence','sun','Thème clair','pref','light',{attrs:' data-k="theme"',kw:'theme mode'});
+  add('Apparence','moon','Thème sombre','pref','dark',{attrs:' data-k="theme"',kw:'theme mode nuit'});
+  add('Apparence','monitor','Thème du système','pref','system',{attrs:' data-k="theme"',kw:'theme automatique'});
+  add('Apparence','sidebar','Afficher ou masquer le menu','sb','toggle',{k:'Ctrl B',kw:'sidebar barre laterale'});
+  if(S.me)add('Compte','user','Se déconnecter','logout','',{kw:'deconnexion quitter compte'});
+  if(q&&ed)out.push({g:'Créer',icon:'plus',label:'Créer la tâche « '+S.pq.trim()+' »',act:'qa-create',id:''});
+  return out;
+}
+function palList(by){
+  var items=palItems(by), h='', g=null;
+  if(S.pi>=items.length)S.pi=Math.max(0,items.length-1);
+  items.forEach(function(it,i){
+    if(it.g!==g){g=it.g;h+='<div class="pgrp">'+g+'</div>';}
+    h+='<button class="pi'+(i===S.pi?' on':'')+'" role="option" aria-selected="'+(i===S.pi)+'" data-act="'+it.act+'" data-id="'+esc(it.id)+'"'+(it.attrs||'')+' data-pi="'+i+'">'+(it.html||ic(it.icon))+'<span class="nm">'+esc(it.label)+'</span>'+(it.sub?'<span class="sub">'+esc(it.sub)+'</span>':'')+(it.k?'<span class="pk">'+it.k.split(' ').map(kbd).join('')+'</span>':'')+'</button>';
+  });
+  if(!items.length)h=empty('search','Aucun résultat','Essaie un autre mot.');
+  return h;
+}
+function paintPal(){
+  var el=document.getElementById('pal-res'); if(!el)return;
+  el.innerHTML=palList(index());
+  var on=el.querySelector('.pi.on'); if(on&&on.scrollIntoView)on.scrollIntoView({block:'nearest'});
+}
+
+/* ---------- ajout rapide ---------- */
+function qaParsed(){
+  var q=parseQuick(S.qa.text,rwProjects());
+  if(!q.projectId)q.projectId=S.qa.pid||'';
+  if(!q.due)q.due=S.qa.due||'';
+  return q;
+}
+function qaChips(){
+  var q=qaParsed(), p=q.projectId?projById(q.projectId):null, h='';
+  h+='<span class="qchip">'+(p?'<span class="picon">'+picon(p)+'</span>'+esc(p.name):ic('inbox')+'Inbox')+'</span>';
+  if(q.due)h+='<span class="qchip on">'+ic('clock')+fmtDate(q.due)+'</span>';
+  if(q.prio)h+='<span class="qchip on p'+q.prio+'">'+ic('flag')+'Priorité '+PRIO[q.prio].toLowerCase()+'</span>';
+  return h;
+}
+
+function renderOverlay(by){
+  var el=document.getElementById('overlay'), h='';
+  if(S.pal){
+    h='<div class="ov top" data-act="ov-bg"><div class="pal" role="dialog" aria-label="Palette de commandes"><div class="pal-in">'+ic('search')+'<label class="sr" for="pq">Rechercher ou lancer une commande</label><input id="pq" value="'+esc(S.pq)+'" placeholder="Rechercher un projet, une tâche, une commande…" autocomplete="off" role="combobox" aria-expanded="true" aria-controls="pal-res"><button class="ib sm only-s" data-act="ov-close" aria-label="Fermer">'+ic('x')+'</button></div>'
+      +'<div class="pal-res" id="pal-res" role="listbox">'+palList(by)+'</div><footer class="pal-f hide-s"><span>'+kbd('↑')+kbd('↓')+' naviguer</span><span>'+kbd('↵')+' ouvrir</span><span>'+kbd('Échap')+' fermer</span></footer></div></div>';
+  }else if(S.qa){
+    var popts={'':'Inbox'}; rwProjects(by).forEach(function(p){popts[p.id]=p.name;});
+    h='<div class="ov top" data-act="ov-bg"><div class="qa" role="dialog" aria-label="Nouvelle tâche"><label class="sr" for="qat">Titre de la tâche</label><input id="qat" value="'+esc(S.qa.text)+'" placeholder="Corriger le responsive demain priorité haute" autocomplete="off">'
+      +'<div class="qa-chips" id="qa-chips">'+qaChips()+'</div><p class="hint">Écris naturellement : « demain », « vendredi », « 12/11 », « dans 3 jours », « priorité haute », « #nomduprojet ».</p>'
+      +'<footer><label class="sr" for="qap">Projet</label>'+selH('qap','qapid','',popts,S.qa.pid||'','in sm')+'<span class="grow"></span><button class="btn" data-act="ov-close">Annuler</button><button class="btn primary" data-act="qa-ok">Créer '+kbd('↵')+'</button></footer></div></div>';
+  }else if(S.sheet){
+    var items=[];
+    if(S.sheet==='plus')items=[['qa','','tasks','Nouvelle tâche'],['new-project','','folder','Nouveau projet'],['new-client','','users','Nouveau client']];
+    else{
+      items=[['pal','','search','Rechercher']];
+      if(S.canEdit)items.push(['view','calendar','calendar','Calendrier'],['view','clients','users','Clients']);
+      items.push(['view','settings','settings','Réglages']);
+    }
+    h='<div class="ov bottom" data-act="ov-bg"><div class="sheet" role="dialog" aria-label="'+(S.sheet==='plus'?'Créer':'Menu')+'"><span class="sheet-grab" aria-hidden="true"></span>'+items.map(function(i){return '<button class="sheet-i" data-act="'+i[0]+'" data-id="'+i[1]+'">'+ic(i[2])+'<span>'+i[3]+'</span></button>';}).join('')+'</div></div>';
+  }else if(S.ctx){
+    var t=taskById(S.ctx.id), e=t?by[t.projectId]:null;
+    if(t){
+      var id=esc(t.id);
+      h='<div class="ov clear" data-act="ov-bg"><div class="ctx" id="ctx" role="menu" style="left:'+S.ctx.x+'px;top:'+S.ctx.y+'px"><button data-act="open" data-id="'+id+'">'+ic('arrow')+'Ouvrir</button><button data-act="dup" data-id="'+id+'">'+ic('copy')+'Dupliquer</button>'
+        +'<div class="ctx-g"><span>Priorité</span><span class="seg sm">'+[0,1,2,3].map(function(n){return '<button data-act="ctx-prio" data-id="'+id+'" data-v="'+n+'" aria-pressed="'+(prioOf(t)===n)+'">'+(n?PRIO[n]:'—')+'</button>';}).join('')+'</span></div>';
+      if(e)h+='<div class="ctx-g"><span>Déplacer vers</span></div>'+e.cols.filter(function(c){return c.id!==t._col;}).map(function(c){return '<button data-act="ctx-col" data-id="'+id+'" data-col="'+esc(c.id)+'">'+ic('chev')+esc(c.name)+'</button>';}).join('');
+      h+='<button class="dng" data-act="del-task" data-id="'+id+'">'+ic('trash')+'Supprimer</button></div></div>';
+    }
+  }
+  el.innerHTML=h;
+  if(S.ctx){
+    var c=document.getElementById('ctx');
+    if(c&&c.getBoundingClientRect){
+      var r=c.getBoundingClientRect(), W=window.innerWidth||1200, H=window.innerHeight||800;
+      if(r.right>W-8)c.style.left=Math.max(8,W-r.width-8)+'px';
+      if(r.bottom>H-8)c.style.top=Math.max(8,H-r.height-8)+'px';
+    }
+  }
+}
+function closeOverlays(){S.pal=false;S.pq='';S.pi=0;S.qa=null;S.sheet=null;S.ctx=null;}
+function openPal(){closeOverlays();S.pal=true;S.focus='pq';}
+function openQa(o){closeOverlays();var cur=index()[S.view];S.qa=Object.assign({text:'',due:'',pid:(cur&&cur.rw?S.view:'')},o||{});S.focus='qat';}
