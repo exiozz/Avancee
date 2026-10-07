@@ -3,8 +3,8 @@
    La clé « publishable » (sb_publishable_...) est faite pour être publique : aucun risque à la laisser ici.
    Ne mets JAMAIS ici une clé « secret » (sb_secret_...) ni « service_role ». */
 window.AVANCEE_CONFIG = {
-  supabaseUrl: '',            // ex. 'https://abcdefghijkl.supabase.co'
-  supabaseKey: '',            // ex. 'sb_publishable_xxxxxxxxxxxxxxxxxxxx'
-  providers: ['google', 'discord'],   // boutons de connexion affichés ; retire ceux que tu n'as pas activés dans Supabase
+  supabaseUrl: 'https://bmvxtwfucuskqojmmjuy.supabase.co',
+  supabaseKey: 'sb_publishable_0K_VKJ4Uw5kcJKeFqvmNPw_I3Cmz8V8',
+  providers: [],              // à remplir quand ils sont activés dans Supabase : ['google', 'discord']
   email: true                 // connexion par lien magique envoyé par e-mail
 };
