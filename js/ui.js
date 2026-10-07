@@ -63,10 +63,10 @@ function picon(p){
 }
 function chip(label,c){
   var col=c<0?'var(--muted)':'var(--h'+(c%6)+')';
-  return '<span class="lchip" style="--lc:'+col+'"><i></i>'+esc(label)+'</span>';
+  return '<span class="lchip" style="--lc:'+col+'"><i></i>'+esc(T(label))+'</span>';
 }
 function lchip(l,o){
-  var st='style="--lc:var(--h'+(l.c%6)+')"', inner='<i></i>'+esc(l.name||COLORS[l.c%6]);
+  var st='style="--lc:var(--h'+(l.c%6)+')"', inner='<i></i>'+esc(l.name||T(COLORS[l.c%6]));
   if(o&&o.act)return '<button class="lchip'+(o.on?'':' off')+'" '+st+' data-act="'+o.act+'" data-id="'+esc(l.id)+'" aria-pressed="'+(o.on?'true':'false')+'">'+inner+'</button>';
   return '<span class="lchip" '+st+'>'+inner+'</span>';
 }
@@ -96,7 +96,7 @@ function nextBtn(t,e){
   if(!canW(e))return '';
   var i=e.cols.findIndex(function(c){return c.id===t._col;}), n=e.cols[i+1];
   if(!n)return '';
-  return '<button class="mv" data-act="next" data-id="'+esc(t.id)+'" aria-label="Passer dans « '+esc(n.name)+' »" title="Passer dans « '+esc(n.name)+' »">'+ic('chev')+'</button>';
+  return '<button class="mv" data-act="next" data-id="'+esc(t.id)+'" aria-label="'+tf('Passer dans « {0} »',esc(n.name))+'" title="'+tf('Passer dans « {0} »',esc(n.name))+'">'+ic('chev')+'</button>';
 }
 function cardEl(t,e){
   var done=isDone(t,e), ed=canW(e);
@@ -109,7 +109,7 @@ function cardEl(t,e){
 }
 function addForm(pid,colId,ph){
   var id='add-'+pid+'-'+colId;
-  return '<div class="addrow"><label class="sr" for="'+esc(id)+'">Nouvelle carte</label><input class="in" id="'+esc(id)+'" data-draft data-add="task" data-pid="'+esc(pid)+'" data-col="'+esc(colId)+'" placeholder="'+esc(ph)+'" autocomplete="off"></div>';
+  return '<div class="addrow"><label class="sr" for="'+esc(id)+'">Nouvelle carte</label><input class="in" id="'+esc(id)+'" data-draft data-add="task" data-pid="'+esc(pid)+'" data-col="'+esc(colId)+'" placeholder="'+esc(T(ph))+'" autocomplete="off"></div>';
 }
 function prop(label,html,forId){
   return '<div class="prop">'+(forId?'<label class="k" for="'+forId+'">'+label+'</label>':'<span class="k">'+label+'</span>')+'<div>'+html+'</div></div>';
@@ -148,4 +148,4 @@ function skeleton(){
   var c='<div class="sk sk-card"><div class="sk sk-l w40"></div><div class="sk sk-l w80"></div><div class="sk sk-l w60"></div></div>';
   return '<div class="sk-wrap" aria-busy="true" aria-label="Chargement"><div class="sk sk-h"></div><div class="sk sk-l w40"></div><div class="sk-grid">'+c+c+c+c+'</div></div>';
 }
-function kbd(k){return '<kbd>'+k+'</kbd>';}
+function kbd(k){var D=I18N.dict[LANG]||{};return '<kbd>'+nt(String(k).split(' ').map(function(x){return D[x]||x;}).join(' '))+'</kbd>';}

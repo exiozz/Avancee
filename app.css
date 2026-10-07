@@ -656,3 +656,8 @@ code{font:500 .9em var(--f-mono);background:var(--well);padding:1px 5px;border-r
   .mrow{flex-wrap:wrap}
   .mrow .nm{flex:1 1 60%}
 }
+
+/* langue */
+.gate-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.gate-top .gate-lang{width:auto;flex:none}
+.gate-top .gate-lang button{flex:none}

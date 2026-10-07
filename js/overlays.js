@@ -17,8 +17,8 @@ function renderPanel(by){
   h+='<div class="tp-props">';
   if(ed){
     if(e){var copt={}; e.cols.forEach(function(c){copt[c.id]=c.name;});h+=prop(ic('board')+'Colonne',selH('mc-'+id,'mcol',id,copt,t._col),'mc-'+id);}
-    else{var popts={'':'Inbox (pas encore rangée)'}; rwProjects(by).forEach(function(x){popts[x.id]=x.name;});h+=prop(ic('folder')+'Projet',selH('mf-'+id,'file',id,popts,''),'mf-'+id);}
-    h+=prop(ic('flag')+'Priorité',selH('mp-'+id,'tprio',id,PRIO,pr),'mp-'+id);
+    else{var popts={'':T('Inbox (pas encore rangée)')}; rwProjects(by).forEach(function(x){popts[x.id]=x.name;});h+=prop(ic('folder')+'Projet',selH('mf-'+id,'file',id,popts,''),'mf-'+id);}
+    h+=prop(ic('flag')+'Priorité',selH('mp-'+id,'tprio',id,L(PRIO),pr),'mp-'+id);
     h+=prop(ic('user')+'Assigné à','<input class="pv" id="mw-'+id+'" value="'+esc(t.who||'')+'" data-draft data-change="twho" data-id="'+id+'" placeholder="Personne" autocomplete="off">','mw-'+id);
     h+=prop(ic('clock')+'Échéance','<input class="pv" type="date" id="md-'+id+'" value="'+esc(t.due||'')+'" data-change="tdue" data-id="'+id+'">','md-'+id);
   }else{
@@ -73,8 +73,8 @@ function renderPanel(by){
   /* activité */
   var act=(t.act||[]).slice().reverse();
   if(!act.length&&t.createdAt)act=[{t:'Carte créée',at:t.createdAt}];
-  if(act.length)h+='<section class="tp-s"><h4>Activité</h4><ul class="tl">'+act.slice(0,12).map(function(a){return '<li><span class="a-dot"></span><span class="grow">'+esc(a.t)+'</span><span class="cnt">'+ago(a.at)+'</span></li>';}).join('')+'</ul></section>';
-  el.innerHTML=h+'</div></aside>';
+  if(act.length)h+='<section class="tp-s"><h4>Activité</h4><ul class="tl">'+act.slice(0,12).map(function(a){return '<li><span class="a-dot"></span><span class="grow">'+esc(trText(a.t))+'</span><span class="cnt">'+ago(a.at)+'</span></li>';}).join('')+'</ul></section>';
+  el.innerHTML=tr(h+'</div></aside>');
 }
 
 /* ---------- palette de commandes ---------- */
@@ -82,8 +82,9 @@ function palItems(by){
   var q=norm(S.pq.trim()), out=[], ed=S.canEdit;
   function add(g,icon,label,act,id,o){
     o=o||{};
-    if(q&&norm(label+' '+(o.kw||'')).indexOf(q)<0)return;
-    out.push({g:g,icon:icon,label:label,act:act,id:id,sub:o.sub,k:o.k,attrs:o.attrs,html:o.html});
+    var lab=T(label);
+    if(q&&norm(lab+' '+label+' '+(o.kw||'')).indexOf(q)<0)return;
+    out.push({g:g,icon:icon,label:lab,act:act,id:id,sub:o.sub,k:o.k,attrs:o.attrs,html:o.html});
   }
   if(q){
     S.projects.filter(function(p){return norm(p.name+' '+(p.desc||'')).indexOf(q)>=0;}).slice(0,6).forEach(function(p){
@@ -100,7 +101,7 @@ function palItems(by){
       out.push({g:'Clients',icon:'user',label:c.name,act:'view',id:'c:'+c.id,sub:c.company||''});
     });
     S.projects.filter(function(p){return p.doc&&norm(p.doc).indexOf(q)>=0;}).slice(0,3).forEach(function(p){
-      out.push({g:'Notes',icon:'note',label:'Notes de « '+p.name+' »',act:'open-doc',id:p.id});
+      out.push({g:'Notes',icon:'note',label:T('Notes de « '+p.name+' »'),act:'open-doc',id:p.id});
     });
   }else{
     LS.get('recent',[]).map(projById).filter(Boolean).slice(0,4).forEach(function(p){
@@ -115,13 +116,15 @@ function palItems(by){
   var keys={home:'G H',inbox:'G I',tasks:'G T',calendar:'G C',projects:'G P'};
   navDefs().forEach(function(n){add('Aller à',n[1],n[2],'view',n[0],{k:keys[n[0]],kw:'ouvrir aller'});});
   add('Aller à','settings','Réglages','view','settings',{kw:'parametres preferences'});
-  if(by[S.view])MODES.forEach(function(m){add('Vue du projet',m[2],'Vue '+m[1],'mode',m[0],{kw:'changer vue'});});
+  if(by[S.view])MODES.forEach(function(m){add('Vue du projet',m[2],'Vue '+m[1],'mode',m[0],{kw:'changer vue view'});});
   add('Apparence','sun','Thème clair','pref','light',{attrs:' data-k="theme"',kw:'theme mode'});
   add('Apparence','moon','Thème sombre','pref','dark',{attrs:' data-k="theme"',kw:'theme mode nuit'});
   add('Apparence','monitor','Thème du système','pref','system',{attrs:' data-k="theme"',kw:'theme automatique'});
   add('Apparence','sidebar','Afficher ou masquer le menu','sb','toggle',{k:'Ctrl B',kw:'sidebar barre laterale'});
+  add('Langue','settings','Français','lang','fr',{kw:'langue language french'});
+  add('Langue','settings','English','lang','en',{kw:'langue language anglais'});
   if(S.me)add('Compte','user','Se déconnecter','logout','',{kw:'deconnexion quitter compte'});
-  if(q&&ed)out.push({g:'Créer',icon:'plus',label:'Créer la tâche « '+S.pq.trim()+' »',act:'qa-create',id:''});
+  if(q&&ed)out.push({g:'Créer',icon:'plus',label:T('Créer la tâche « '+S.pq.trim()+' »'),act:'qa-create',id:''});
   return out;
 }
 function palList(by){
@@ -136,7 +139,7 @@ function palList(by){
 }
 function paintPal(){
   var el=document.getElementById('pal-res'); if(!el)return;
-  el.innerHTML=palList(index());
+  el.innerHTML=tr(palList(index()));
   var on=el.querySelector('.pi.on'); if(on&&on.scrollIntoView)on.scrollIntoView({block:'nearest'});
 }
 
@@ -184,7 +187,7 @@ function renderOverlay(by){
       h+='<button class="dng" data-act="del-task" data-id="'+id+'">'+ic('trash')+'Supprimer</button></div></div>';
     }
   }
-  el.innerHTML=h;
+  el.innerHTML=tr(h);
   if(S.ctx){
     var c=document.getElementById('ctx');
     if(c&&c.getBoundingClientRect){

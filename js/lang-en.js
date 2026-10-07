@@ -1,0 +1,196 @@
+/* Avancée — anglais. Clé = texte français tel qu'il est écrit dans le code ; valeur = traduction.
+   {n} remplace un nombre, {q} un nom entre « », {0} {1} des valeurs passées par le code.
+   Pour ajouter une langue : copier ce fichier, traduire les valeurs, l'ajouter dans index.html et dans I18N.langs (js/i18n.js). */
+'use strict';
+I18N.add('en',{
+/* --- mots identiques dans les deux langues --- */
+'Avancée':'Avancée','Inbox':'Inbox','Kanban':'Kanban','Table':'Table','Notes':'Notes','Clients':'Clients','Client':'Client',
+'Brief':'Brief','Prospect':'Lead','Cyan':'Cyan','Orange':'Orange','Total':'Total','Description':'Description','Checklist':'Checklist',
+'Labels':'Labels','Menu':'Menu','Navigation':'Navigation','Agenda':'Agenda','Actions':'Actions','Cobalt':'Cobalt',
+'Google':'Google','Discord':'Discord','GitHub':'GitHub','Apple':'Apple','Microsoft':'Microsoft','GitLab':'GitLab','Twitch':'Twitch',
+'Français':'Français','English':'English','config.js':'config.js','LISEZ-MOI.md':'LISEZ-MOI.md',
+'@undo':'Undo','Maj':'Shift','Échap':'Esc','puis':'then',
+
+/* --- colonnes, modèles, statuts --- */
+'À faire':'To do','En cours':'In progress','Terminé':'Done','Projet client':'Client project','Validation client':'Client review','Livré':'Delivered',
+'Suivi de prospects':'Sales pipeline','Contacté':'Contacted','Devis envoyé':'Quote sent','Négociation':'Negotiation','Gagné':'Won',
+'Contenu':'Content','Idées':'Ideas','Rédaction':'Writing','Relecture':'Review','Publié':'Published','Perso':'Personal',
+'En attente':'On hold','Archivé':'Archived','Actif':'Active','En pause':'Paused',
+'Aucune':'None','Basse':'Low','Moyenne':'Medium','Haute':'High',
+'Bleu':'Blue','Rose':'Pink','Vert':'Green','Violet':'Purple','Émeraude':'Emerald','Corail':'Coral','Ardoise':'Slate',
+'Liste':'List','Calendrier':'Calendar',
+'lun.':'Mon','mar.':'Tue','mer.':'Wed','jeu.':'Thu','ven.':'Fri','sam.':'Sat','dim.':'Sun',
+
+/* --- navigation --- */
+'Accueil':'Home','Mes tâches':'My tasks','Projets':'Projects','Réglages':'Settings','Tâches':'Tasks','Tâche':'Task',
+'Réduire le menu':'Collapse the menu','Réduire le menu (Ctrl B)':'Collapse the menu (Ctrl B)','Agrandir le menu':'Expand the menu',
+'Afficher ou masquer le menu':'Show or hide the menu','Menu (Ctrl B)':'Menu (Ctrl B)','Navigation principale':'Main navigation',
+'Rechercher':'Search','Rechercher (Ctrl K)':'Search (Ctrl K)','Favoris':'Favourites','Espaces':'Spaces',
+'Nouvel espace':'New space','Nom de l’espace':'Space name','Nom de l’espace, puis Entrée':'Space name, then Enter',
+'Déplier ou replier':'Expand or collapse','Nouveau projet dans':'New project in','Nouveau projet':'New project',
+'Options de l’espace':'Space options','Renommer':'Rename','Confirmer la suppression':'Confirm deletion','Supprimer l’espace':'Delete the space',
+'Nom du projet':'Project name','Nom du projet, puis Entrée':'Project name, then Enter',
+'Aucun projet. Ajoute-en avec le +':'No projects. Add one with the +','Aucun projet':'No projects',
+'Mes projets':'My projects','Partagés avec moi':'Shared with me','Retour':'Back','Fil d’Ariane':'Breadcrumb',
+'Éditeur':'Editor','Lecteur':'Viewer','Lecture seule':'Read only','Nouvelle tâche (N)':'New task (N)','Créer':'Create',
+'Hors ligne':'Offline','Enregistrement…':'Saving…','Enregistré':'Saved','Chargement':'Loading','Annuler':'Cancel',
+
+/* --- accueil --- */
+'Aujourd’hui':'Today','Cette semaine':'This week','Projets récents':'Recent projects','Progression':'Progress',
+'Activité récente':'Recent activity','Notes rapides':'Quick notes',
+'à l’instant':'just now','il y a {n} min':'{n} min ago','il y a {n} h':'{n} h ago','il y a {n} j':'{n} d ago',
+'Rien pour aujourd’hui':'Nothing for today','Aucune échéance aujourd’hui ni en retard.':'Nothing due today and nothing overdue.',
+'Semaine dégagée':'A clear week','Aucune échéance dans les 7 prochains jours.':'Nothing due in the next 7 days.',
+'Aucun projet pour le moment':'No projects yet','Crée ton premier projet pour commencer à organiser ton travail.':'Create your first project to start organising your work.',
+'Créer un projet':'Create a project','cartes terminées sur {n}':'cards done out of {n}','carte terminée sur {n}':'card done out of {n}',
+'Pas encore d’activité':'No activity yet','Les déplacements et changements de tes cartes apparaîtront ici.':'Moves and changes to your cards will show up here.',
+'Aucun client actif':'No active clients','Ajoute un client pour suivre ses projets et ce qu’il te doit.':'Add a client to track their projects and what they owe you.',
+'Ouvrir les clients':'Open clients','Reste à encaisser :':'Still to collect:','Reste à encaisser':'Still to collect',
+'Une idée, un numéro, un pense-bête… Visible par toi seul.':'An idea, a number, a reminder… Only you can see this.',
+'{n} projets':'{n} projects','{n} projet':'{n} project',
+'Bonjour':'Good morning','Bonsoir':'Good evening','Bonjour,':'Good morning,','Bonsoir,':'Good evening,',
+'{0} tâches pour aujourd’hui':'{0} tasks for today','{0} tâche pour aujourd’hui':'{0} task for today','{0} en retard':'{0} overdue','{0} cette semaine':'{0} this week',
+'Rien d’urgent : aucune échéance proche.':'Nothing urgent: no deadlines coming up.','Ton espace est prêt.':'Your workspace is ready.',
+'Nouvelle tâche':'New task','Terminer':'Done','Personnaliser':'Customise',
+'Ce sont des exemples.':'These are examples.','Ils montrent ce que l’appli sait faire. Supprime-les quand tu veux.':'They show what the app can do. Delete them whenever you like.',
+'Confirmer':'Confirm','Supprimer les exemples':'Delete the examples',
+'Bienvenue dans Avancée':'Welcome to Avancée','Trois étapes pour être chez toi.':'Three steps to make it yours.',
+'Dis-moi ton prénom':'Tell me your first name','Ton prénom':'Your first name','Crée ton premier projet':'Create your first project',
+'Ajoute une première tâche':'Add a first task','Ajouter':'Add','Masquer':'Hide',
+'Projets actifs':'Active projects','En retard':'Overdue','Terminées':'Done','Clients actifs':'Active clients',
+'Rien à afficher pour l’instant':'Nothing to show yet','Les projets partagés apparaîtront ici.':'Shared projects will show up here.',
+'Monter':'Move up','Descendre':'Move down','Masquer ce bloc':'Hide this block','Blocs masqués :':'Hidden blocks:',
+'Glisse les blocs ou utilise les flèches pour les réorganiser. La disposition est mémorisée.':'Drag the blocks or use the arrows to rearrange them. The layout is remembered.',
+
+/* --- inbox, mes tâches --- */
+'Ranger dans…':'File into…','Note tout de suite, range plus tard. Visible par toi seul.':'Jot it down now, file it later. Only you can see this.',
+'Ajouter rapidement':'Quick add','Ajouter rapidement… ex. « Envoyer le devis demain priorité haute »':'Quick add… e.g. “Send the quote tomorrow high priority”',
+'Ranger dans un projet':'File into a project','Supprimer':'Delete','Inbox à zéro':'Inbox zero',
+'Écris une tâche ci-dessus sans choisir de projet. Tu la rangeras plus tard.':'Type a task above without picking a project. You can file it later.',
+'Rappels':'Reminders','Traitées':'Processed','Vider':'Clear',
+'Priorité haute':'High priority','Priorité moyenne':'Medium priority','Priorité basse':'Low priority','Sans échéance':'No due date','Plus tard':'Later',
+'Les tâches qui te sont assignées ou sans responsable.':'Tasks assigned to you or to no one.','Toutes tes tâches, tous projets confondus.':'All your tasks, across every project.',
+'Affichage':'View','Filtres':'Filters','Filtre':'Filter','Aucune tâche terminée':'No completed tasks','Les tâches que tu termines apparaîtront ici.':'Tasks you complete will show up here.',
+'Rien dans ce filtre':'Nothing in this filter','Change de filtre, ou ajoute une tâche.':'Switch filter, or add a task.',
+
+/* --- calendrier --- */
+'Mois précédent':'Previous month','Mois suivant':'Next month','Aucune échéance ce mois-ci':'Nothing due this month',
+'Donne une échéance à une tâche pour la voir ici.':'Give a task a due date to see it here.','Ajouter une tâche':'Add a task','Ajouter une tâche le {n}':'Add a task on the {n}',
+'{n} tâche sans échéance n’apparaît pas ici.':'{n} task without a due date isn’t shown here.','{n} tâches sans échéance n’apparaissent pas ici.':'{n} tasks without a due date aren’t shown here.',
+'Tous les projets':'All projects','Toutes les échéances.':'Every due date.','Toutes les échéances. Glisse une tâche sur un autre jour pour la déplacer.':'Every due date. Drag a task onto another day to move it.',
+'Filtrer par projet':'Filter by project','Mois':'Month',
+
+/* --- projets --- */
+'Actifs':'Active','Archivés':'Archived','{n} projets, rangés par espace.':'{n} projects, grouped by space.','{n} projet, rangés par espace.':'{n} project, grouped by space.',
+'Nouveau projet (nom, puis Entrée)':'New project (name, then Enter)','Aucun favori':'No favourites',
+'Ouvre un projet et clique sur l’étoile pour le retrouver ici et dans le menu.':'Open a project and click the star to find it here and in the menu.',
+'Aucun projet archivé':'No archived projects','Passe le statut d’un projet sur « Archivé » pour le ranger ici.':'Set a project’s status to “Archived” to put it away here.',
+
+/* --- clients --- */
+'Ton carnet de clients. Visible par toi seul, même quand tu partages un projet.':'Your client book. Only you can see it, even when you share a project.',
+'Nom du client':'Client name','Nouveau client (nom, puis Entrée)':'New client (name, then Enter)','Aucun client pour l’instant':'No clients yet',
+'Ajoute un client pour suivre ses projets, ses coordonnées et ce qu’il te doit.':'Add a client to track their projects, contact details and what they owe you.',
+'Statut':'Status','Avancement':'Progress','Montant':'Amount','Encaissé':'Received','Reste':'Outstanding','Vide':'Empty',
+'Société':'Company','E-mail':'Email','Téléphone':'Phone','Montant total':'Total amount',
+'Besoins, tarifs convenus, interlocuteurs, historique…':'Needs, agreed rates, contacts, history…','Projets de ce client':'This client’s projects',
+'Nouveau projet pour ce client':'New project for this client',
+'Aucun projet relié. Crée-en un ci-dessus, ou choisis ce client dans les détails d’un projet.':'No linked projects. Create one above, or pick this client in a project’s details.',
+'Supprimer ce client ? Ses projets sont conservés.':'Delete this client? Their projects are kept.','Supprimer le client':'Delete the client',
+
+/* --- page de projet --- */
+'Partir d’un modèle de colonnes ?':'Start from a column template?','Sinon, garde les trois colonnes ci-dessous et renomme-les.':'Otherwise, keep the three columns below and rename them.',
+'Nom de la colonne':'Column name','Options de la colonne':'Column options','Déplacer à gauche':'Move left','Déplacer à droite':'Move right',
+'Ne plus compter comme terminée':'Stop counting as done','Compter comme terminée':'Count as done','Supprimer la colonne':'Delete the column',
+'Titre de la carte':'Card title','Titre de la carte…':'Card title…','Fermer':'Close','Fermer (Échap)':'Close (Esc)','Ajouter une carte':'Add a card',
+'+ Ajouter une colonne':'+ Add a column','Nouvelle colonne':'New column','Nouvelle carte':'New card','Ajouter une carte, puis Entrée':'Add a card, then Enter',
+'Aucune carte ne correspond':'No matching cards','Change le filtre pour les voir.':'Change the filter to see them.','Aucune carte pour l’instant':'No cards yet',
+'Écris la première dans le champ ci-dessus.':'Type the first one in the field above.','Les cartes de ce projet apparaîtront ici.':'This project’s cards will show up here.',
+'Carte':'Card','Colonne':'Column','Priorité':'Priority','Assigné':'Assignee','Échéance':'Due date','Aucune carte à afficher.':'No cards to show.',
+'Notes du projet':'Project notes','Notes du projet : brief, comptes rendus, liens utiles, décisions…':'Project notes: brief, meeting notes, useful links, decisions…',
+'Ces notes sont visibles par les personnes avec qui tu partages ce projet. Pour des notes confidentielles, utilise le bloc « Privé » dans les détails.':'These notes are visible to the people you share this project with. For confidential notes, use the “Private” block in the details.',
+'Pas de notes':'No notes','Ce projet n’a pas encore de notes.':'This project has no notes yet.','Filtrer les cartes':'Filter cards',
+'Lecteur · voit tout, ne modifie rien':'Viewer · sees everything, changes nothing','Éditeur · peut modifier les cartes':'Editor · can edit cards',
+'Partage du projet':'Project sharing','Toi':'You','(toi)':'(you)','Propriétaire':'Owner','Rôle de':'Role of','Rôle':'Role',
+'Retirer l’accès de':'Remove access for','Retirer l’accès':'Remove access','Partager avec ton client':'Share with your client',
+'En lecteur':'As viewer','En éditeur':'As editor','adresse@exemple.com':'name@example.com','Adresse e-mail à inviter':'Email address to invite','Inviter':'Invite',
+'La personne se connecte au site avec cette adresse (Google, Discord ou lien par e-mail) et retrouve le projet dans « Partagés avec moi ». Aucun e-mail n’est envoyé automatiquement : envoie-lui le lien. Tes clients, tes montants et tes notes privées ne lui sont jamais montrés.':'The person signs in to the site with this address (Google, Discord or email link) and finds the project under “Shared with me”. No email is sent automatically: send them the link. Your clients, amounts and private notes are never shown to them.',
+'Copier le lien du projet':'Copy the project link','Changer l’icône':'Change the icon','Utiliser la pastille de couleur':'Use the colour dot',
+'Retirer des favoris':'Remove from favourites','Ajouter aux favoris':'Add to favourites','Favori':'Favourite',
+'Ajoute une description (objectif, contexte…)':'Add a description (goal, context…)','Partagé · {n}':'Shared · {n}','Privé':'Private',
+'Tu es éditeur':'You’re an editor','Tu es lecteur':'You’re a viewer','Partager':'Share','Détails':'Details','Début':'Start','Vue par défaut':'Default view',
+'Couleur':'Colour','Couleur du projet':'Project colour','Aucun':'None','Privé · visible par toi seul':'Private · only you can see this',
+'Montant (€)':'Amount (€)','Encaissé (€)':'Received (€)','Notes privées':'Private notes',
+'Notes privées : tarif, conditions, contacts, tout ce qui ne se partage pas.':'Private notes: rate, terms, contacts, anything you don’t share.',
+'Supprimer ce projet et ses {n} cartes ?':'Delete this project and its {n} cards?','Supprimer ce projet et ses {n} carte ?':'Delete this project and its {n} card?','Supprimer le projet':'Delete the project',
+'Terminée':'Done','Pas terminée':'Not done','Remettre à faire':'Mark as not done','Marquer comme terminée':'Mark as done',
+'Passer dans « {0} »':'Move to “{0}”','{n} % terminé':'{n}% done','Commentaires':'Comments',
+
+/* --- réglages --- */
+'L’apparence est mémorisée sur cet appareil.':'Appearance and language are remembered on this device.','Compte':'Account','Mon compte':'My account','Se déconnecter':'Sign out',
+'Profil':'Profile','Pour le message d’accueil et « Mes tâches ».':'For the greeting and “My tasks”.',
+'Apparence et langue':'Appearance and language','Apparence':'Appearance','Langue':'Language','Thème':'Theme','Système':'System','Clair':'Light','Sombre':'Dark',
+'Couleur d’accent':'Accent colour','Densité':'Density','Compacte':'Compact','Normale':'Normal','Confortable':'Comfortable',
+'Taille du texte':'Text size','Petite':'Small','Grande':'Large','Tableau de bord':'Dashboard',
+'Choisis les blocs affichés sur l’accueil. Pour les réorganiser, utilise « Personnaliser » sur l’accueil.':'Choose which blocks appear on the home page. To rearrange them, use “Customise” on the home page.',
+'Partage':'Sharing','Chaque projet se partage séparément : ouvre un projet, puis « Partager ». Tu choisis pour chaque personne « Lecteur » ou « Éditeur ». Ton Inbox, tes clients, tes montants et tes notes privées restent visibles par toi seul.':'Each project is shared separately: open a project, then “Share”. For each person you choose “Viewer” or “Editor”. Your Inbox, clients, amounts and private notes stay visible to you only.',
+'Données':'Data','Télécharge une copie de tout ton espace (projets, tâches, clients) dans un fichier.':'Download a copy of your whole workspace (projects, tasks, clients) as a file.',
+'Exporter en JSON':'Export as JSON','Rechercher et lancer une commande':'Search and run a command','Raccourcis clavier':'Keyboard shortcuts',
+
+/* --- connexion --- */
+'L’espace de travail simple pour organiser tes projets, tes clients et ton travail.':'The simple workspace for organising your projects, your clients and your work.',
+'Le site n’est pas encore relié à sa base de données.':'The site isn’t connected to its database yet.','Ouvre le fichier':'Open the file',
+'et colle l’adresse de ton projet Supabase et sa clé « publishable », puis remets le site en ligne. Le guide':'and paste your Supabase project URL and its “publishable” key, then publish the site again. The guide',
+'détaille chaque étape.':'covers every step.','Regarde ta boîte mail':'Check your inbox',
+'Un lien de connexion vient d’être envoyé à':'A sign-in link has just been sent to','. Ouvre-le sur cet appareil.':'. Open it on this device.',
+'Utiliser une autre adresse':'Use another address','Continuer avec':'Continue with','ou':'or','toi@exemple.com':'you@example.com','Adresse e-mail':'Email address',
+'Envoi…':'Sending…','Recevoir un lien de connexion':'Email me a sign-in link','Pas de mot de passe : tu reçois un lien par e-mail.':'No password: you get a link by email.',
+'Un projet partagé avec toi ? Connecte-toi avec l’adresse e-mail qui a été invitée.':'Has a project been shared with you? Sign in with the email address that was invited.',
+'Connexion impossible pour le moment.':'Can’t sign in right now.','Entre une adresse e-mail valide.':'Enter a valid email address.','Envoi impossible pour le moment.':'Can’t send right now.',
+
+/* --- panneau de tâche --- */
+'Dupliquer':'Duplicate','Titre':'Title','Inbox (pas encore rangée)':'Inbox (not filed yet)','Projet':'Project','Assigné à':'Assigned to','Personne':'Person',
+'Supprimer le label':'Delete the label','Gérer':'Manage','+ Créer un label':'+ Create a label','Nom du label':'Label name','Couleur du label':'Label colour',
+'Détails, liens, idées…':'Details, links, ideas…','Pas de description.':'No description.','Décocher':'Uncheck','Cocher':'Check',
+'Élément de checklist':'Checklist item','Supprimer l’élément':'Delete the item','Ajouter un élément, puis Entrée':'Add an item, then Enter','Nouvel élément':'New item',
+'Supprimer le commentaire':'Delete the comment','Écrire un commentaire, puis Entrée':'Write a comment, then Enter','Nouveau commentaire':'New comment','Activité':'Activity',
+
+/* --- palette, ajout rapide, menus --- */
+'Notes de « {q} »':'Notes of “{q}”','Récents':'Recent','Nouveau client':'New client','Aller à':'Go to','Vue du projet':'Project view',
+'Vue Kanban':'Kanban view','Vue Liste':'List view','Vue Table':'Table view','Vue Calendrier':'Calendar view','Vue Notes':'Notes view',
+'Thème clair':'Light theme','Thème sombre':'Dark theme','Thème du système':'System theme','Créer la tâche « {q} »':'Create the task “{q}”',
+'Aucun résultat':'No results','Essaie un autre mot.':'Try another word.','Palette de commandes':'Command palette',
+'Rechercher ou lancer une commande':'Search or run a command','Rechercher un projet, une tâche, une commande…':'Search for a project, a task, a command…',
+'naviguer':'navigate','ouvrir':'open','fermer':'close',
+'Titre de la tâche':'Task title','Corriger le responsive demain priorité haute':'Fix the mobile layout tomorrow high priority',
+'Écris naturellement : « demain », « vendredi », « 12/11 », « dans 3 jours », « priorité haute », « #nomduprojet ».':'Write naturally: “tomorrow”, “friday”, “12/11” (day/month), “in 3 days”, “high priority”, “#projectname”.',
+'Ouvrir':'Open','Déplacer vers':'Move to',
+
+/* --- messages --- */
+'Modification refusée : tu n’as pas les droits sur cet élément.':'Change refused: you don’t have permission for this item.',
+'Enregistrement impossible. Réessaie dans un instant.':'Couldn’t save. Try again in a moment.',
+'Tâche ajoutée à « {q} ».':'Task added to “{q}”.','Tâche ajoutée à l’Inbox.':'Task added to the Inbox.','Rangée dans « {q} ».':'Filed into “{q}”.','Déplacée dans « {q} ».':'Moved to “{q}”.',
+'Carte supprimée.':'Card deleted.','Carte dupliquée.':'Card duplicated.','Lien copié.':'Link copied.',
+'Projet privé : tes invités ne le voient plus.':'Private project: your guests can no longer see it.','Projet partagé : tes invités peuvent le voir.':'Shared project: your guests can see it.',
+'Export téléchargé.':'Export downloaded.','Export impossible pour le moment.':'Can’t export right now.','Adresse e-mail invalide.':'Invalid email address.',
+'C’est ton adresse : tu es déjà propriétaire.':'That’s your address: you’re already the owner.','Cette personne a déjà accès.':'This person already has access.',
+'{0} peut maintenant modifier ce projet.':'{0} can now edit this project.','{0} peut maintenant voir ce projet.':'{0} can now view this project.','{0} n’a plus accès.':'{0} no longer has access.',
+'Ce projet n’existe pas, ou il n’est pas partagé avec ton adresse ({0}).':'This project doesn’t exist, or it isn’t shared with your address ({0}).',
+'Connecte-toi à Claude':'Sign in','Il faut être connecté pour voir l’avancée de ces projets.':'You need to be signed in to see these projects.',
+'La base de données n’est pas encore initialisée : exécute le fichier supabase/schema.sql dans Supabase (SQL Editor), puis recharge la page.':'The database isn’t set up yet: run the file supabase/schema.sql in Supabase (SQL Editor), then reload the page.',
+'Les données ne se chargent pas correctement (':'The data isn’t loading properly (','). Recharge la page.':'). Reload the page.',
+'(copie)':'(copy)',
+
+/* --- historique des cartes (enregistré en français, traduit à l'affichage) --- */
+'Carte créée':'Card created','Rangée dans « {q} »':'Filed into “{q}”','Déplacée vers « {q} »':'Moved to “{q}”','Marquée comme terminée':'Marked as done','Rouverte':'Reopened',
+'Carte dupliquée':'Card duplicated','Checklist terminée':'Checklist completed','Échéance retirée':'Due date removed','Plus assignée':'Unassigned','Commentaire ajouté':'Comment added',
+'Priorité : aucune':'Priority: none','Priorité : basse':'Priority: low','Priorité : moyenne':'Priority: medium','Priorité : haute':'Priority: high'
+},[
+  [/^Total : (.+) · encaissé (.+) · reste (.+)$/,'Total: $1 · received $2 · outstanding $3'],
+  [/^reste (.+)$/,'$1 outstanding'],
+  [/^encaissé (.+)$/,'received $1'],
+  [/^Début : (.+)$/,'Start: $1'],
+  [/^Échéance : (.+)$/,'Due date: $1'],
+  [/^Assignée à (.+)$/,'Assigned to $1'],
+  [/^Icône (.+)$/,'Icon $1'],
+  [/^(\d{1,2} [A-Za-zéû]{3,9}\.?)$/,'$1']
+]);

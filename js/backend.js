@@ -13,7 +13,7 @@ var Cloud=(function(){
     try{if(window.crypto&&crypto.randomUUID)return crypto.randomUUID();}catch(_){}
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0;return (c==='x'?r:(r&3|8)).toString(16);});
   }
-  function strip(d){var o={};Object.keys(d||{}).forEach(function(k){if(k!=='id'&&k.charAt(0)!=='_')o[k]=d[k];});return o;}
+  function strip(d){var o={};Object.keys(d||{}).forEach(function(k){if(k!=='id'&&k.charAt(0)!=='_')o[k]=d[k];});return JSON.parse(JSON.stringify(o).split('\u2063').join(''));}
   function keyCol(t){return T[t].key||'id';}
   function rowId(t,id){return T[t].single?me.id:id;}
   function toDoc(t,row){

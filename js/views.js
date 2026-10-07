@@ -14,8 +14,8 @@ function navCount(v,by){
 function navOn(v){return S.view===v||(v==='clients'&&S.view.indexOf('c:')===0);}
 function groups(){
   var gs=S.spaces.slice().sort(function(a,b){return (a.createdAt||0)-(b.createdAt||0);}).map(function(s){return {id:s.id,name:s.name,real:true,ps:[]};});
-  var def={id:'_',name:'Mes projets',real:false,ps:[]};
-  var sh={id:'_shared',name:'Partagés avec moi',real:false,ro:true,ps:[]};
+  var def={id:'_',name:T('Mes projets'),real:false,ps:[]};
+  var sh={id:'_shared',name:T('Partagés avec moi'),real:false,ro:true,ps:[]};
   S.projects.forEach(function(p){if(pstat(p)==='archived')return;if(S.me&&p._owner&&p._owner!==S.me.id){sh.ps.push(p);return;}var g=gs.find(function(x){return x.id===p.spaceId;})||def;g.ps.push(p);});
   var out=(def.ps.length||!gs.length)?[def].concat(gs):gs;
   return sh.ps.length?out.concat([sh]):out;
@@ -27,7 +27,7 @@ function projRow(p,by){
 function renderSide(by,ready){
   var ed=S.canEdit, h='<div class="side-in"><div class="ws">'+LOGO+'<span class="ws-name lbl grow">Avancée</span><button class="ib lbl" data-act="sb" data-id="rail" aria-label="Réduire le menu" title="Réduire le menu (Ctrl B)">'+ic('sidebar')+'</button></div>';
   h+='<button class="nav srch" data-act="pal" title="Rechercher">'+ic('search')+'<span class="lbl grow">Rechercher</span><span class="lbl">'+kbd('Ctrl K')+'</span></button>';
-  if(!ready){document.getElementById('side').innerHTML=h+'<div class="sk sk-l w80"></div><div class="sk sk-l w60"></div><div class="sk sk-l w80"></div></div>';return;}
+  if(!ready){document.getElementById('side').innerHTML=tr(h+'<div class="sk sk-l w80"></div><div class="sk sk-l w60"></div><div class="sk sk-l w80"></div></div>');return;}
   h+='<nav class="navs" aria-label="Navigation">';
   navDefs().forEach(function(n){
     var c=navCount(n[0],by);
@@ -66,7 +66,7 @@ function renderSide(by,ready){
   h+='<div class="sfoot"><button class="nav'+(S.view==='settings'?' on':'')+'" data-act="view" data-id="settings" title="Réglages">'+ic('settings')+'<span class="lbl grow">Réglages</span></button>';
   if(S.me)h+='<button class="nav me" data-act="view" data-id="settings" title="'+esc(S.me.email)+'">'+avatar(S.me)+'<span class="lbl grow nm">'+esc(S.me.name||S.me.email)+'</span></button>';
   h+='<button class="nav railonly" data-act="sb" data-id="open" title="Agrandir le menu">'+ic('sidebar')+'</button></div>';
-  document.getElementById('side').innerHTML=h+'</div>';
+  document.getElementById('side').innerHTML=tr(h+'</div>');
 }
 function renderTop(by){
   var v=S.view, sub=false, crumb='';
@@ -86,7 +86,7 @@ function renderTop(by){
   h+='<button class="ib" data-act="pal" aria-label="Rechercher" title="Rechercher (Ctrl K)">'+ic('search')+'</button>';
   if(S.canEdit)h+='<button class="btn primary sm hide-s" data-act="qa" title="Nouvelle tâche (N)">'+ic('plus')+'Tâche</button>';
   h+='<button class="ib only-s" data-act="sheet" data-id="menu" aria-label="Menu">'+ic('menu')+'</button>';
-  document.getElementById('top').innerHTML=h;
+  document.getElementById('top').innerHTML=tr(h);
 }
 function renderTabbar(by){
   var defs=S.canEdit?[['home','home','Accueil'],['inbox','inbox','Inbox'],null,['tasks','tasks','Tâches'],['projects','grid','Projets']]
@@ -97,7 +97,7 @@ function renderTabbar(by){
     var on=navOn(n[0])||(n[0]==='projects'&&!!by[S.view]), c=navCount(n[0],by);
     h+='<button class="tab'+(on?' on':'')+'" data-act="view" data-id="'+n[0]+'"'+(on?' aria-current="page"':'')+'>'+ic(n[1])+(c?'<i class="tdot"></i>':'')+'<span>'+n[2]+'</span></button>';
   });
-  document.getElementById('tabbar').innerHTML=h;
+  document.getElementById('tabbar').innerHTML=tr(h);
 }
 
 /* ---------- accueil : tableau de bord ---------- */
@@ -139,7 +139,7 @@ function widgetBody(k,d,by){
   }
   if(k==='activity'){
     var a=recentActivity(by,7);
-    return a.length?'<ul class="acts-l">'+a.map(function(x){return '<li><button data-act="open" data-id="'+esc(x.task.id)+'"><span class="a-dot"></span><span class="a-t"><b>'+esc(x.task.title)+'</b> · '+esc(x.t)+'</span><span class="cnt">'+ago(x.at)+'</span></button></li>';}).join('')+'</ul>':empty('activity','Pas encore d’activité','Les déplacements et changements de tes cartes apparaîtront ici.');
+    return a.length?'<ul class="acts-l">'+a.map(function(x){return '<li><button data-act="open" data-id="'+esc(x.task.id)+'"><span class="a-dot"></span><span class="a-t"><b>'+esc(x.task.title)+'</b> · '+esc(trText(x.t))+'</span><span class="cnt">'+ago(x.at)+'</span></button></li>';}).join('')+'</ul>':empty('activity','Pas encore d’activité','Les déplacements et changements de tes cartes apparaîtront ici.');
   }
   if(k==='clients'){
     var cs=S.clients.filter(function(c){return (c.status||'active')==='active'||c.status==='lead';});
@@ -159,11 +159,11 @@ function vHome(by){
   var ed=S.canEdit, d=dashData(by), now=new Date(), hr=now.getHours();
   var greet=(hr>=5&&hr<18)?'Bonjour':'Bonsoir', name=myName();
   var parts=[];
-  if(d.tod.length)parts.push(pl(d.tod.length,'tâche pour aujourd’hui','tâches pour aujourd’hui'));
-  if(d.late.length)parts.push(d.late.length+' en retard');
-  if(d.week.length)parts.push(d.week.length+' cette semaine');
-  var lead=parts.length?parts.join(', ')+'.':(d.all.length?'Rien d’urgent : aucune échéance proche.':'Ton espace est prêt.');
-  var h='<header class="hero"><div><p class="eyebrow">'+esc(now.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}))+'</p><h1>'+greet+(name?', '+esc(name):'')+'</h1><p class="lead">'+lead+'</p></div>';
+  if(d.tod.length)parts.push(unmark(tf(d.tod.length>1?'{0} tâches pour aujourd’hui':'{0} tâche pour aujourd’hui',d.tod.length)));
+  if(d.late.length)parts.push(unmark(tf('{0} en retard',d.late.length)));
+  if(d.week.length)parts.push(unmark(tf('{0} cette semaine',d.week.length)));
+  var lead=parts.length?nt(parts.join(', ')+'.'):(d.all.length?'Rien d’urgent : aucune échéance proche.':'Ton espace est prêt.');
+  var h='<header class="hero"><div><p class="eyebrow">'+esc(now.toLocaleDateString(LOCALE(),{weekday:'long',day:'numeric',month:'long'}))+'</p><h1>'+greet+(name?', '+esc(name):'')+'</h1><p class="lead">'+lead+'</p></div>';
   if(ed)h+='<div class="hero-acts"><button class="btn primary" data-act="qa">'+ic('plus')+'Nouvelle tâche</button><button class="btn" data-act="dash-edit" aria-pressed="'+(S.dashEdit?'true':'false')+'">'+ic('settings')+(S.dashEdit?'Terminer':'Personnaliser')+'</button></div>';
   h+='</header>';
   var demo=ed&&(S.projects.some(function(p){return p.demo;})||S.clients.some(function(c){return c.demo;}));
@@ -208,7 +208,7 @@ function vHome(by){
 /* ---------- inbox ---------- */
 function vInbox(by){
   var all=inboxTasks(), open=all.filter(function(t){return !t.done;}), done=all.filter(function(t){return t.done;});
-  var d=dashData(by), popts={'':'Ranger dans…'};
+  var d=dashData(by), popts={'':T('Ranger dans…')};
   rwProjects(by).forEach(function(p){popts[p.id]=p.name;});
   var h='<header class="phd"><h1>Inbox</h1><p class="lead">Note tout de suite, range plus tard. Visible par toi seul.</p></header>';
   h+='<div class="qadd"><label class="sr" for="ibx">Ajouter rapidement</label>'+ic('plus')+'<input id="ibx" data-draft data-add="inbox" placeholder="Ajouter rapidement… ex. « Envoyer le devis demain priorité haute »" autocomplete="off"></div>';
@@ -276,7 +276,7 @@ function calBlock(tasks,by,pid){
   var cells=Math.ceil((off+dim)/7)*7, byDate={}, nod=0, today=todayStr(), ed=pid?canW(by[pid]):S.canEdit, agendaOnly=S.calMode==='agenda';
   tasks.forEach(function(t){if(t.due){(byDate[t.due]=byDate[t.due]||[]).push(t);}else nod++;});
   function evt(t){var e=by[t.projectId]||null;return '<button class="evt'+(isDone(t,e)?' struck':'')+'" style="--c:'+(e?hue(e.p):'var(--muted)')+'" data-act="open" data-id="'+esc(t.id)+'" title="'+esc(t.title)+'"'+(canW(e)?' draggable="true" data-drag="cal"':'')+'>'+esc(t.title)+'</button>';}
-  var h='<div class="panel calp"><div class="calhead"><h2>'+esc(first.toLocaleDateString('fr-FR',{month:'long',year:'numeric'}))+'</h2>'
+  var h='<div class="panel calp"><div class="calhead"><h2>'+esc(first.toLocaleDateString(LOCALE(),{month:'long',year:'numeric'}))+'</h2>'
     +'<span class="calnav"><button class="ib" data-act="calnav" data-id="-1" aria-label="Mois précédent">'+ic('left')+'</button><button class="btn sm" data-act="calnav" data-id="0">Aujourd’hui</button><button class="ib" data-act="calnav" data-id="1" aria-label="Mois suivant">'+ic('chev')+'</button></span></div>';
   if(!agendaOnly){
     h+='<div class="calwrap hide-s"><div class="cal">'+DAYS.map(function(d){return '<div class="cal-h">'+d+'</div>';}).join('');
@@ -292,7 +292,7 @@ function calBlock(tasks,by,pid){
   h+='<div class="agenda'+(agendaOnly?'':' only-s')+'">';
   keys.forEach(function(k){
     var dd=new Date(k+'T12:00:00');
-    h+='<div class="ag-d'+(k===today?' today':'')+'"><span class="ag-date">'+esc(dd.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric'}))+'</span><div class="ag-l">'+byDate[k].sort(cmpPos).map(evt).join('')+'</div></div>';
+    h+='<div class="ag-d'+(k===today?' today':'')+'"><span class="ag-date">'+esc(dd.toLocaleDateString(LOCALE(),{weekday:'short',day:'numeric'}))+'</span><div class="ag-l">'+byDate[k].sort(cmpPos).map(evt).join('')+'</div></div>';
   });
   if(!keys.length)h+=empty('calendar','Aucune échéance ce mois-ci','Donne une échéance à une tâche pour la voir ici.',ed?'<button class="btn" data-act="qa-date" data-id="'+today+'"'+(pid?' data-pid="'+esc(pid)+'"':'')+'>'+ic('plus')+'Ajouter une tâche</button>':'');
   h+='</div></div>';
@@ -302,7 +302,7 @@ function calBlock(tasks,by,pid){
 function vCalendar(by){
   var tasks=liveTasks(by).concat(inboxTasks());
   if(S.calProj&&by[S.calProj])tasks=tasks.filter(function(t){return t.projectId===S.calProj;});
-  var popts={'':'Tous les projets'}; S.projects.forEach(function(p){if(pstat(p)!=='archived')popts[p.id]=p.name;});
+  var popts={'':T('Tous les projets')}; S.projects.forEach(function(p){if(pstat(p)!=='archived')popts[p.id]=p.name;});
   var h='<header class="phd row"><div><h1>Calendrier</h1><p class="lead">Toutes les échéances'+(S.canEdit?'. Glisse une tâche sur un autre jour pour la déplacer.':'.')+'</p></div>'
     +'<div class="row-btns"><label class="sr" for="calp">Filtrer par projet</label>'+selH('calp','calproj','',popts,S.calProj,'in sm')
     +'<div class="seg hide-s" role="group" aria-label="Affichage"><button data-act="calmode" data-id="month" aria-pressed="'+(S.calMode==='month')+'">Mois</button><button data-act="calmode" data-id="agenda" aria-pressed="'+(S.calMode==='agenda')+'">Agenda</button></div></div></header>';
@@ -361,7 +361,7 @@ function vClient(c,by){
   var id=esc(c.id), s=clientStats(c,by), st=CST[c.status]?c.status:'active';
   function f(key,label,type){var fid='cf-'+key+'-'+id;return prop(label,'<input class="pv" id="'+fid+'" type="'+(type||'text')+'" value="'+esc(c[key]||'')+'" data-draft data-change="cf" data-f="'+key+'" data-id="'+id+'" placeholder="Vide" autocomplete="off">',fid);}
   var h='<div class="phead"><label class="sr" for="cf-name-'+id+'">Nom du client</label><input class="h1in" id="cf-name-'+id+'" value="'+esc(c.name)+'" data-draft data-change="cf" data-f="name" data-id="'+id+'" autocomplete="off">';
-  h+='<div class="props">'+f('company','Société')+f('email','E-mail','email')+f('phone','Téléphone','tel')+prop('Statut',selH('cf-status-'+id,'cf',id,CST,st,'pv',' data-f="status"'),'cf-status-'+id)+'</div></div>';
+  h+='<div class="props">'+f('company','Société')+f('email','E-mail','email')+f('phone','Téléphone','tel')+prop('Statut',selH('cf-status-'+id,'cf',id,L(CST),st,'pv',' data-f="status"'),'cf-status-'+id)+'</div></div>';
   h+='<div class="stats"><div class="stat"><span>Projets</span><b>'+s.ps.length+'</b></div><div class="stat"><span>Montant total</span><b>'+eur(s.amount)+'</b></div><div class="stat"><span>Encaissé</span><b>'+eur(s.paid)+'</b></div><div class="stat'+(s.rest>0?' bad':'')+'"><span>Reste à encaisser</span><b>'+eur(s.rest)+'</b></div></div>';
   h+='<section class="sect"><h2><label for="cf-notes-'+id+'">Notes</label></h2><textarea class="area" id="cf-notes-'+id+'" data-draft data-change="cf" data-f="notes" data-id="'+id+'" placeholder="Besoins, tarifs convenus, interlocuteurs, historique…">'+esc(c.notes||'')+'</textarea></section>';
   h+='<section class="sect"><h2>Projets de ce client</h2>';
@@ -375,7 +375,7 @@ function vClient(c,by){
 function vBoard(e){
   var ed=canW(e), h='';
   if(ed&&!e.total&&!(e.p.columns&&e.p.columns.length)){
-    h+='<div class="note"><p><strong>Partir d’un modèle de colonnes ?</strong> Sinon, garde les trois colonnes ci-dessous et renomme-les.</p>'+Object.keys(TPL).map(function(k){return '<button class="btn sm" data-act="tpl" data-id="'+k+'" title="'+esc(TPL[k].cols.join(' → '))+'">'+esc(TPL[k].name)+'</button>';}).join('')+'</div>';
+    h+='<div class="note"><p><strong>Partir d’un modèle de colonnes ?</strong> Sinon, garde les trois colonnes ci-dessous et renomme-les.</p>'+Object.keys(TPL).map(function(k){return '<button class="btn sm" data-act="tpl" data-id="'+k+'" title="'+esc(TPL[k].cols.map(T).join(' → '))+'">'+esc(T(TPL[k].name))+'</button>';}).join('')+'</div>';
   }
   h+='<div class="boardwrap"><div class="board" style="--c:'+hue(e.p)+'">';
   e.cols.forEach(function(c,i){
@@ -429,7 +429,7 @@ function vTable(e){
     else r=ci[a._col]-ci[b._col]||cmpPos(a,b);
     return r*d;
   });
-  function th(key,label){return '<th scope="col" aria-sort="'+(k===key?(d>0?'ascending':'descending'):'none')+'"><button data-act="sort" data-id="'+key+'">'+label+(k===key?(d>0?' ↑':' ↓'):'')+'</button></th>';}
+  function th(key,label){return '<th scope="col" aria-sort="'+(k===key?(d>0?'ascending':'descending'):'none')+'"><button data-act="sort" data-id="'+key+'">'+nt(T(label)+(k===key?(d>0?' ↑':' ↓'):''))+'</button></th>';}
   var h='';
   if(canW(e))h+=addForm(e.p.id,e.cols[0].id,'Ajouter une carte, puis Entrée');
   h+='<div class="panel tblwrap"><table><thead><tr>'+th('title','Carte')+th('col','Colonne')+th('prio','Priorité')+th('who','Assigné')+'<th scope="col">Labels</th>'+th('due','Échéance')+th('check','Checklist')+'</tr></thead><tbody>';
@@ -460,10 +460,10 @@ function filterBar(e){
 function shareBox(e,mbs,cl){
   var p=e.p, id=esc(p.id), roles={viewer:'Lecteur · voit tout, ne modifie rien',editor:'Éditeur · peut modifier les cartes'};
   var h='<section class="sharebox" id="share"><h4>'+ic('users')+'Partage du projet</h4><ul class="mlist">';
-  h+='<li class="mrow">'+avatar(S.me)+'<span class="grow nm">'+esc(S.me?(S.me.name||S.me.email):'Toi')+' <span class="mut">(toi)</span></span><span class="pill">Propriétaire</span></li>';
+  h+='<li class="mrow">'+avatar(S.me)+'<span class="grow nm">'+esc(S.me?(S.me.name||S.me.email):T('Toi'))+' <span class="mut">(toi)</span></span><span class="pill">Propriétaire</span></li>';
   mbs.forEach(function(m){
     var mid=esc(m.id);
-    h+='<li class="mrow">'+avatar({email:m.email})+'<span class="grow nm">'+esc(m.email)+'</span><label class="sr" for="mr-'+mid+'">Rôle de '+esc(m.email)+'</label>'+selH('mr-'+mid,'mrole',mid,{viewer:'Lecteur',editor:'Éditeur'},m.role,'in sm')+'<button class="ib sm dng" data-act="m-del" data-id="'+mid+'" aria-label="Retirer l’accès de '+esc(m.email)+'" title="Retirer l’accès">'+ic('x')+'</button></li>';
+    h+='<li class="mrow">'+avatar({email:m.email})+'<span class="grow nm">'+esc(m.email)+'</span><label class="sr" for="mr-'+mid+'">Rôle de '+esc(m.email)+'</label>'+selH('mr-'+mid,'mrole',mid,L({viewer:'Lecteur',editor:'Éditeur'}),m.role,'in sm')+'<button class="ib sm dng" data-act="m-del" data-id="'+mid+'" aria-label="Retirer l’accès de '+esc(m.email)+'" title="Retirer l’accès">'+ic('x')+'</button></li>';
   });
   h+='</ul>';
   if(cl&&cl.email&&validEmail(String(cl.email).trim())&&!mbs.some(function(m){return m.email===String(cl.email).trim().toLowerCase();})){
@@ -493,14 +493,14 @@ function vProject(e,by){
   if(own&&open){
     var dv={}; MODES.forEach(function(x){dv[x[0]]=x[1];});
     h+='<div class="details"><div class="props">'
-      +prop('Statut',selH('ps-'+id,'pstatus',id,PST,st),'ps-'+id)
+      +prop('Statut',selH('ps-'+id,'pstatus',id,L(PST),st),'ps-'+id)
       +prop('Début','<input class="pv" type="date" id="pb-'+id+'" value="'+esc(p.start||'')+'" data-change="pstart" data-id="'+id+'">','pb-'+id)
       +prop('Échéance','<input class="pv" type="date" id="pe-'+id+'" value="'+esc(p.deadline||'')+'" data-change="pdead" data-id="'+id+'">','pe-'+id)
-      +prop('Vue par défaut',selH('pv-'+id,'pdefview',id,dv,p.defView||'board'),'pv-'+id)
+      +prop('Vue par défaut',selH('pv-'+id,'pdefview',id,L(dv),p.defView||'board'),'pv-'+id)
       +prop('Couleur','<span class="swatches" role="group" aria-label="Couleur du projet">'+[0,1,2,3,4,5].map(function(i){return '<button class="sw" style="--sc:var(--h'+i+')" data-act="color" data-id="'+i+'" aria-pressed="'+(((p.hue||0)%6)===i?'true':'false')+'" aria-label="'+COLORS[i]+'"></button>';}).join('')+'</span>')
       +'</div>';
     h+=shareBox(e,mbs,cl);
-    var copts={'':'Aucun'}; S.clients.forEach(function(c){copts[c.id]=c.name;});
+    var copts={'':T('Aucun')}; S.clients.forEach(function(c){copts[c.id]=c.name;});
     var amount=Number(m.amount)||0, paid=Number(m.paid)||0;
     h+='<section class="privbox"><h4>'+ic('lock')+'Privé · visible par toi seul</h4><div class="props">'
       +prop('Client',selH('pc-'+id,'pclient',id,copts,m.clientId||''),'pc-'+id)
@@ -523,9 +523,10 @@ function segPref(k,opts){
 }
 function vSettings(by){
   var ed=S.canEdit, h='<header class="phd"><h1>Réglages</h1><p class="lead">L’apparence est mémorisée sur cet appareil.</p></header><div class="sgrid">';
-  if(S.me)h+='<section class="panel scard"><h2>'+ic('user')+'Compte</h2><div class="acct">'+avatar(S.me,'lg')+'<div class="grow"><strong>'+esc(S.me.name||'Mon compte')+'</strong><span class="mut">'+esc(S.me.email)+'</span></div><button class="btn" data-act="logout">Se déconnecter</button></div></section>';
+  if(S.me)h+='<section class="panel scard"><h2>'+ic('user')+'Compte</h2><div class="acct">'+avatar(S.me,'lg')+'<div class="grow"><strong>'+esc(S.me.name||T('Mon compte'))+'</strong><span class="mut">'+esc(S.me.email)+'</span></div><button class="btn" data-act="logout">Se déconnecter</button></div></section>';
   if(ed)h+='<section class="panel scard"><h2>'+ic('user')+'Profil</h2><div class="srow"><label for="st-name">Ton prénom<small>Pour le message d’accueil et « Mes tâches ».</small></label><input class="in" id="st-name" value="'+esc(myName())+'" data-draft data-change="cfgname" placeholder="Ton prénom" autocomplete="off"></div></section>';
-  h+='<section class="panel scard"><h2>'+ic('sun')+'Apparence</h2>'
+  h+='<section class="panel scard"><h2>'+ic('sun')+'Apparence et langue</h2>'
+    +'<div class="srow"><span>Langue</span><span class="seg" role="group" aria-label="Langue">'+Object.keys(I18N.langs).map(function(k){return '<button data-act="lang" data-id="'+k+'" aria-pressed="'+(LANG===k)+'">'+nt(I18N.langs[k])+'</button>';}).join('')+'</span></div>'
     +'<div class="srow"><span>Thème</span>'+segPref('theme',[['system','Système','monitor'],['light','Clair','sun'],['dark','Sombre','moon']])+'</div>'
     +'<div class="srow"><span>Couleur d’accent</span><span class="swatches" role="group" aria-label="Couleur d’accent">'+Object.keys(ACCENTS).map(function(k){var a=ACCENTS[k];return '<button class="sw lg" style="--sc:'+(isDark()?a.d:a.l)+'" data-act="pref" data-k="accent" data-id="'+k+'" aria-pressed="'+(P.accent===k)+'" aria-label="'+a.n+'" title="'+a.n+'"></button>';}).join('')+'</span></div>'
     +'<div class="srow"><span>Densité</span>'+segPref('density',[['compact','Compacte'],['normal','Normale'],['comfy','Confortable']])+'</div>'
@@ -546,7 +547,8 @@ function renderGate(){
   var g=document.getElementById('gate'), old=document.getElementById('lg-email'), val=old?old.value:'';
   document.body.classList.add('gated');
   if(S.auth==='boot'){g.innerHTML='<div class="gate"><div class="gate-card boot">'+LOGO+'<div class="sk sk-l w60"></div><div class="sk sk-l w40"></div></div></div>';return;}
-  var h='<div class="gate"><div class="gate-card">'+LOGO+'<h1>Avancée</h1><p class="lead">L’espace de travail simple pour organiser tes projets, tes clients et ton travail.</p>';
+  var langs='<span class="seg sm gate-lang" role="group" aria-label="Langue">'+Object.keys(I18N.langs).map(function(k){return '<button data-act="lang" data-id="'+k+'" aria-pressed="'+(LANG===k)+'" title="'+nt(I18N.langs[k])+'">'+nt(k.toUpperCase())+'</button>';}).join('')+'</span>';
+  var h='<div class="gate"><div class="gate-card"><div class="gate-top">'+LOGO+langs+'</div><h1>Avancée</h1><p class="lead">L’espace de travail simple pour organiser tes projets, tes clients et ton travail.</p>';
   if(S.auth==='setup'){
     h+='<div class="note warn"><p><strong>Le site n’est pas encore relié à sa base de données.</strong> Ouvre le fichier <code>config.js</code> et colle l’adresse de ton projet Supabase et sa clé « publishable », puis remets le site en ligne. Le guide <code>LISEZ-MOI.md</code> détaille chaque étape.</p></div>';
   }else if(S.gate.sent){
@@ -560,6 +562,6 @@ function renderGate(){
       h+='<div class="gate-mail"><label for="lg-email">Adresse e-mail</label><input class="in" id="lg-email" type="email" inputmode="email" autocomplete="email" placeholder="toi@exemple.com" value="'+esc(val)+'"><button class="btn primary lg" data-act="login-email"'+(S.gate.sending?' disabled':'')+'>'+(S.gate.sending?'<i class="spin"></i>Envoi…':'Recevoir un lien de connexion')+'</button><p class="hint">Pas de mot de passe : tu reçois un lien par e-mail.</p></div>';
     }
   }
-  if(S.gate.err)h+='<p class="gate-err" role="alert">'+esc(S.gate.err)+'</p>';
-  g.innerHTML=h+'</div><p class="gate-foot">Un projet partagé avec toi ? Connecte-toi avec l’adresse e-mail qui a été invitée.</p></div>';
+  if(S.gate.err)h+='<p class="gate-err" role="alert">'+esc(T(S.gate.err))+'</p>';
+  g.innerHTML=tr(h+'</div><p class="gate-foot">Un projet partagé avec toi ? Connecte-toi avec l’adresse e-mail qui a été invitée.</p></div>');
 }

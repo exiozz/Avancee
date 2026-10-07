@@ -79,13 +79,13 @@ body{background:var(--canvas);color:var(--ink);font:var(--fs)/1.5 var(--f-body);
 <body>
 <div id="gate"></div>
 <div class="app" id="app" data-sb="open">
-  <aside class="side" id="side" aria-label="Menu"></aside>
+  <aside class="side" id="side" aria-label="Menu" data-l="Menu"></aside>
   <div class="stage">
     <header class="top" id="top"></header>
     <main class="main" id="main"></main>
   </div>
 </div>
-<nav class="tabbar" id="tabbar" aria-label="Navigation principale"></nav>
+<nav class="tabbar" id="tabbar" aria-label="Navigation principale" data-l="Navigation principale"></nav>
 <div id="panel"></div>
 <div id="overlay"></div>
 <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
@@ -93,6 +93,8 @@ body{background:var(--canvas);color:var(--ink);font:var(--fs)/1.5 var(--f-body);
 
 <script src="vendor/supabase.js"></script>
 <script src="config.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/lang-en.js"></script>
 <script src="js/backend.js"></script>
 <script src="js/core.js"></script>
 <script src="js/ui.js"></script>

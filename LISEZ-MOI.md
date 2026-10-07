@@ -101,7 +101,16 @@ Le site a besoin d'une connexion Internet : il n'y a pas de mode hors ligne.
 | `index.html`, `app.css` | la page et ses styles |
 | `config.js` | **le seul fichier à modifier** |
 | `js/backend.js` | connexion et échanges avec Supabase |
+| `js/i18n.js`, `js/lang-en.js` | les langues (français et anglais) |
 | `js/core.js`, `ui.js`, `views.js`, `overlays.js`, `main.js` | l'application |
 | `vendor/supabase.js` | bibliothèque Supabase (version figée) |
 | `supabase/schema.sql` | tables et règles d'accès, à exécuter une fois |
 | `manifest.webmanifest`, `icons/` | installation comme appli |
+
+## Langues
+
+Le site existe en **français** et en **anglais**. Il démarre dans la langue du navigateur (français si le navigateur est en français, anglais sinon). On change de langue sur la page de connexion (boutons FR / EN) ou dans **Réglages > Apparence et langue**. Le choix est mémorisé sur l'appareil.
+
+Seule l'interface est traduite : les noms de projets, les tâches et les notes restent tels qu'ils ont été écrits.
+
+Pour ajouter une langue : copie `js/lang-en.js`, traduis les textes de droite, ajoute le fichier dans `index.html` et la langue dans `I18N.langs` (`js/i18n.js`).

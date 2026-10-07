@@ -50,7 +50,7 @@ function render(){
     else if(v.indexOf('c:')===0)h+=vClient(S.clients.find(function(c){return 'c:'+c.id===v;}),by);
     else h+=vProject(by[v],by);
   }
-  if(!keep)mainEl.innerHTML=h;
+  if(!keep)mainEl.innerHTML=tr(h);
   if(S.lastView!==S.view){
     S.lastView=S.view;
     mainEl.classList.remove('enter');void mainEl.offsetWidth;mainEl.classList.add('enter');
@@ -107,6 +107,7 @@ root.addEventListener('click',function(ev){
     Cloud.signInEmail(em).then(function(r){S.gate.sending=false;if(r&&r.error)S.gate.err=r.error.message;else S.gate.sent=em;render();},function(){S.gate.sending=false;S.gate.err='Envoi impossible pour le moment.';render();});
     return;
   }
+  if(act==='lang'){I18N.set(id);if(S.auth==='in')closeOverlays();render();return;}
   if(act==='login-back'){S.gate.sent='';S.gate.err='';render();return;}
   if(act==='logout'){var bye=function(){location.reload();};Cloud.signOut().then(bye,bye);return;}
   if(S.auth!=='in')return;
@@ -192,7 +193,7 @@ root.addEventListener('click',function(ev){
   }
   if(act==='del-task'&&t){if(S.task===t.id)closeTask();deleteTask(t);render();return;}
   if(act==='dup'&&t){
-    var d=clean(t);d.title=(d.title||'')+' (copie)';d.pos=Date.now();d.createdAt=Date.now();d.log=[];d.act=[{t:'Carte dupliquée',at:Date.now()}];
+    var d=clean(t);d.title=(d.title||'')+T(' (copie)');d.pos=Date.now();d.createdAt=Date.now();d.log=[];d.act=[{t:'Carte dupliquée',at:Date.now()}];
     run(function(){return S.db.collection(realm(t.projectId)+'tasks').doc().set(d);});toast('Carte dupliquée.');render();return;
   }
   if(act==='ctx-prio'&&t){
@@ -280,7 +281,7 @@ root.addEventListener('input',function(ev){
   var el=ev.target; if(!el||!el.id)return;
   if(el.id==='q'){S.q=el.value;render();return;}
   if(el.id==='pq'){S.pq=el.value;S.pi=0;paintPal();return;}
-  if(el.id==='qat'&&S.qa){S.qa.text=el.value;var qc=document.getElementById('qa-chips');if(qc)qc.innerHTML=qaChips();return;}
+  if(el.id==='qat'&&S.qa){S.qa.text=el.value;var qc=document.getElementById('qa-chips');if(qc)qc.innerHTML=tr(qaChips());return;}
   if(el.hasAttribute&&el.hasAttribute('data-draft'))S.dirty[el.id]=true;
   if(el.tagName==='TEXTAREA'&&(el.classList.contains('mtitle')||el.classList.contains('desc')))autosize();
 });
@@ -289,7 +290,7 @@ root.addEventListener('change',function(ev){
   if(el.id)delete S.dirty[el.id];
   var id=el.dataset.id, v=el.value;
   if(k==='calproj'){S.calProj=v;render();return;}
-  if(k==='qapid'){if(S.qa){S.qa.pid=v;var qc=document.getElementById('qa-chips');if(qc)qc.innerHTML=qaChips();}return;}
+  if(k==='qapid'){if(S.qa){S.qa.pid=v;var qc=document.getElementById('qa-chips');if(qc)qc.innerHTML=tr(qaChips());}return;}
   if(!S.canEdit||!S.db)return;
   var e=curE(), t=id?taskById(id):null;
   function num(x){var n=parseFloat(String(x).replace(',','.'));return isNaN(n)||n<0?0:n;}
@@ -488,7 +489,7 @@ function startApp(){
   Cloud.load().then(function(){
     if(next&&S.pending===next&&!validView(index())){
       S.pending=null;S.view='home';
-      toast('Ce projet n’existe pas, ou il n’est pas partagé avec ton adresse ('+S.me.email+').',{bad:true});
+      toast(tf('Ce projet n’existe pas, ou il n’est pas partagé avec ton adresse ({0}).',S.me.email),{bad:true});
       render();
     }
   },function(e){S.error=(e&&e.code==='no_schema')?'no_schema':((e&&e.message)||'erreur');allLoaded();render();});
