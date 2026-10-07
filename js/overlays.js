@@ -123,6 +123,7 @@ function palItems(by){
   add('Apparence','sidebar','Afficher ou masquer le menu','sb','toggle',{k:'Ctrl B',kw:'sidebar barre laterale'});
   add('Langue','settings','Français','lang','fr',{kw:'langue language french'});
   add('Langue','settings','English','lang','en',{kw:'langue language anglais'});
+  add('Aide','bolt','Revoir le tutoriel','tour-start','',{kw:'aide tuto tutorial help guide visite'});
   if(S.me)add('Compte','user','Se déconnecter','logout','',{kw:'deconnexion quitter compte'});
   if(q&&ed)out.push({g:'Créer',icon:'plus',label:T('Créer la tâche « '+S.pq.trim()+' »'),act:'qa-create',id:''});
   return out;

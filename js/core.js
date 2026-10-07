@@ -49,7 +49,7 @@ var S={db:null,dl:null,owner:false,unsure:false,preview:false,canEdit:false,me:n
   q:'',fl:null,sort:{k:'pos',d:1},cal:null,calProj:'',calMode:'month',
   task:null,taskFresh:false,menu:null,lblMgr:false,nlc:0,dirty:{},
   coll:LS.get('coll',{}),addSpace:false,addIn:null,ren:null,smenu:null,iconPick:false,comp:null,
-  pal:false,pq:'',pi:0,qa:null,sheet:null,ctx:null,focus:null,
+  pal:false,pq:'',pi:0,qa:null,tour:null,sheet:null,ctx:null,focus:null,
   tf:'all',tv:LS.get('tv','list'),pf:'active',dashEdit:false,det:false,
   saving:0,savedAt:0,online:true,sb:LS.get('sb',null),gAt:0};
 if(S.view==='overview')S.view='home';

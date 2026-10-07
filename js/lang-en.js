@@ -165,6 +165,20 @@ I18N.add('en',{
 'Écris naturellement : « demain », « vendredi », « 12/11 », « dans 3 jours », « priorité haute », « #nomduprojet ».':'Write naturally: “tomorrow”, “friday”, “12/11” (day/month), “in 3 days”, “high priority”, “#projectname”.',
 'Ouvrir':'Open','Déplacer vers':'Move to',
 
+/* --- tutoriel --- */
+'Bienvenue dans Avancée':'Welcome to Avancée',
+'Avancée sert à ranger ton travail en projets, à suivre tes tâches et à montrer où tu en es à tes clients ou à tes potes. Je te montre l’essentiel en une minute.':'Avancée helps you organise your work into projects, keep track of your tasks and show your clients or friends where you’re at. Here’s the essentials in one minute.',
+'Le menu':'The menu','Tout part d’ici. Accueil : la vue d’ensemble. Mes tâches : ce que tu as à faire. Projets : ton travail, bien rangé.':'Everything starts here. Home: the big picture. My tasks: what you have to do. Projects: your work, neatly organised.',
+'Tes projets':'Your projects','Un projet, c’est un client, un site, une idée… Écris son nom ici puis appuie sur Entrée pour le créer. Dedans, chaque tâche est une carte que tu fais avancer : À faire, En cours, Terminé.':'A project is a client, a website, an idea… Type its name here and press Enter to create it. Inside, each task is a card you move forward: To do, In progress, Done.',
+'Partager un projet':'Share a project','Dans un projet, le bouton « Partager » invite quelqu’un avec son adresse e-mail. En lecteur, il regarde ton avancée. En éditeur, il peut aussi modifier les cartes.':'In a project, the “Share” button invites someone by email address. As a viewer, they follow your progress. As an editor, they can also change the cards.',
+'Ce bouton note une tâche en deux secondes, depuis n’importe quelle page. Tu peux écrire « demain » ou « priorité haute » : l’appli comprend toute seule.':'This button captures a task in two seconds, from any page. You can type “tomorrow” or “high priority”: the app works it out.',
+'L’Inbox':'The Inbox','Une tâche sans projet arrive dans l’Inbox. Tu notes vite sur le moment, tu ranges dans un projet plus tard.':'A task with no project lands in the Inbox. Jot it down now, file it into a project later.',
+'Ton accueil':'Your home page','L’accueil résume tout : ce qui est prévu aujourd’hui, ce qui est en retard et où en sont tes projets. Touche un chiffre pour voir le détail.':'The home page sums it all up: what’s due today, what’s overdue and how your projects are going. Tap a number to see the details.',
+'C’est parti !':'Off you go!','Le mieux pour commencer : créer ton premier projet. Tu peux revoir ce tutoriel quand tu veux dans Réglages.':'The best way to start: create your first project. You can replay this tutorial any time in Settings.',
+'Passer le tutoriel':'Skip the tutorial','Précédent':'Back','Suivant':'Next','Commencer':'Start','Créer mon premier projet':'Create my first project',
+'Tutoriel':'Tutorial','Une visite guidée de l’appli en une minute : le menu, les projets, le partage, les tâches.':'A one-minute guided tour of the app: the menu, projects, sharing, tasks.',
+'Revoir le tutoriel':'Replay the tutorial','Aide':'Help','Tu peux revoir le tutoriel dans Réglages.':'You can replay the tutorial in Settings.',
+
 /* --- messages --- */
 'Modification refusée : tu n’as pas les droits sur cet élément.':'Change refused: you don’t have permission for this item.',
 'Enregistrement impossible. Réessaie dans un instant.':'Couldn’t save. Try again in a moment.',

@@ -661,3 +661,23 @@ code{font:500 .9em var(--f-mono);background:var(--well);padding:1px 5px;border-r
 .gate-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .gate-top .gate-lang{width:auto;flex:none}
 .gate-top .gate-lang button{flex:none}
+
+/* tutoriel guidé */
+.tour{position:fixed;inset:0;z-index:90}
+.tour-block{position:absolute;inset:0}
+.tour-spot{position:fixed;border-radius:14px;border:2px solid var(--accent);box-shadow:0 0 0 200vmax var(--scrim);pointer-events:none;transition:left .22s ease,top .22s ease,width .22s ease,height .22s ease}
+.tour-card{position:fixed;max-width:calc(100vw - 24px);background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:18px;padding:18px 20px 16px;box-shadow:var(--shadow-2);display:flex;flex-direction:column;gap:10px;transition:left .22s ease,top .22s ease;animation:rise .2s ease both}
+.tour-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.tour-n{font:500 .8em var(--f-mono);color:var(--muted)}
+.tour-card h2{font:600 1.3em/1.2 var(--f-display);margin:0}
+.tour-card p{margin:0;color:var(--ink-2);line-height:1.55}
+.tour-dots{display:flex;gap:5px;margin-top:2px}
+.tour-dots i{width:6px;height:6px;border-radius:50%;background:var(--line-2)}
+.tour-dots i.on{width:18px;border-radius:3px;background:var(--accent)}
+.tour-btns{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:4px;flex-wrap:wrap}
+.tour-end{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.tour-card .linkbtn{padding:6px 2px;color:var(--muted)}
+.tour-card .linkbtn:hover{color:var(--ink)}
+body.touring .toasts{z-index:91}
+@media (prefers-reduced-motion:reduce){.tour-spot,.tour-card{transition:none;animation:none}}
+@media (max-width:420px){.tour-card{padding:14px 16px 12px;gap:8px;border-radius:16px}.tour-card h2{font-size:1.15em}.tour-card p{font-size:.94em;line-height:1.45}}

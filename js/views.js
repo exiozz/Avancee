@@ -537,6 +537,7 @@ function vSettings(by){
     h+='<section class="panel scard"><h2>'+ic('users')+'Partage</h2><p class="hint">Chaque projet se partage séparément : ouvre un projet, puis « Partager ». Tu choisis pour chaque personne « Lecteur » ou « Éditeur ». Ton Inbox, tes clients, tes montants et tes notes privées restent visibles par toi seul.</p></section>';
     h+='<section class="panel scard"><h2>'+ic('download')+'Données</h2><p class="hint">Télécharge une copie de tout ton espace (projets, tâches, clients) dans un fichier.</p><div class="row-btns"><button class="btn" data-act="export">'+ic('download')+'Exporter en JSON</button></div></section>';
   }
+  h+='<section class="panel scard"><h2>'+ic('bolt')+'Tutoriel</h2><p class="hint">Une visite guidée de l’appli en une minute : le menu, les projets, le partage, les tâches.</p><div class="row-btns"><button class="btn" data-act="tour-start">'+ic('arrow')+'Revoir le tutoriel</button></div></section>';
   var ks=[['Ctrl K','Rechercher et lancer une commande'],['N','Nouvelle tâche'],['Maj P','Nouveau projet'],['G puis H','Accueil'],['G puis I','Inbox'],['G puis T','Mes tâches'],['G puis C','Calendrier'],['G puis P','Projets'],['Ctrl B','Afficher ou masquer le menu'],['Échap','Fermer']];
   h+='<section class="panel scard hide-s"><h2>'+ic('bolt')+'Raccourcis clavier</h2><ul class="klist">'+ks.map(function(k){return '<li><span>'+k[1]+'</span><span>'+k[0].split(' puis ').map(kbd).join(' puis ')+'</span></li>';}).join('')+'</ul></section>';
   return h+'</div>';
