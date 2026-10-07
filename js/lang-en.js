@@ -143,7 +143,7 @@ I18N.add('en',{
 'détaille chaque étape.':'covers every step.','Regarde ta boîte mail':'Check your inbox',
 'Un lien de connexion vient d’être envoyé à':'A sign-in link has just been sent to','. Ouvre-le sur cet appareil.':'. Open it on this device.',
 'Utiliser une autre adresse':'Use another address','Continuer avec':'Continue with','ou':'or','toi@exemple.com':'you@example.com','Adresse e-mail':'Email address',
-'Envoi…':'Sending…','Recevoir un lien de connexion':'Email me a sign-in link','Pas de mot de passe : tu reçois un lien par e-mail.':'No password: you get a link by email.',
+'Envoi…':'Sending…','Recevoir un lien de connexion':'Email me a sign-in link',
 'Un projet partagé avec toi ? Connecte-toi avec l’adresse e-mail qui a été invitée.':'Has a project been shared with you? Sign in with the email address that was invited.',
 'Connexion impossible pour le moment.':'Can’t sign in right now.','Entre une adresse e-mail valide.':'Enter a valid email address.','Envoi impossible pour le moment.':'Can’t send right now.',
 
@@ -187,6 +187,24 @@ I18N.add('en',{
 'Les photos ne sont pas encore activées : relance le fichier supabase/schema.sql dans Supabase.':'Photos aren’t enabled yet: run the file supabase/schema.sql again in Supabase.',
 'Envoi de la photo impossible. Réessaie dans un instant.':'Couldn’t upload the photo. Try again in a moment.','Cette image ne peut pas être lue.':'This image can’t be read.',
 'Photo supprimée.':'Photo deleted.','Photo ajoutée':'Photo added','Photos ajoutées':'Photos added',
+
+/* --- mot de passe --- */
+'Façon de se connecter':'How to sign in','Lien par e-mail':'Email link','Mot de passe':'Password','Ton mot de passe':'Your password','8 caractères ou plus':'8 characters or more',
+'Connexion…':'Signing in…','Créer mon compte':'Create my account','Se connecter':'Sign in',
+'Tu reçois un seul e-mail pour confirmer ton adresse. Ensuite, ton mot de passe suffit.':'You get a single email to confirm your address. After that, your password is enough.',
+'Déjà un compte ?':'Already have an account?','Première fois ici ?':'First time here?',
+'Jamais choisi de mot de passe, ou oublié ? Passe par « Lien par e-mail », puis choisis-en un dans Réglages.':'Never set a password, or forgot it? Use “Email link”, then set one in Settings.',
+'Tu reçois un lien par e-mail. Une fois connecté, tu peux choisir un mot de passe dans Réglages pour ne plus attendre d’e-mail.':'You get a link by email. Once signed in, you can set a password in Settings so you never wait for an email again.',
+'Un e-mail de confirmation vient d’être envoyé à':'A confirmation email has just been sent to','. Clique sur le lien dedans : c’est la seule fois, ensuite ton mot de passe suffit.':'. Click the link inside: it’s the only time, after that your password is enough.',
+'Trop d’e-mails envoyés pour le moment. Attends un peu (jusqu’à une heure), ou connecte-toi avec ton mot de passe.':'Too many emails sent for now. Wait a while (up to an hour), or sign in with your password.',
+'Adresse ou mot de passe incorrect. Si tu n’as jamais choisi de mot de passe, utilise « Lien par e-mail ».':'Wrong address or password. If you never set a password, use “Email link”.',
+'Ton adresse n’est pas encore confirmée : clique sur le lien reçu par e-mail.':'Your address isn’t confirmed yet: click the link you received by email.',
+'Mot de passe trop court : 8 caractères au minimum.':'Password too short: 8 characters minimum.','C’est déjà ton mot de passe actuel.':'That’s already your current password.',
+'Ce lien de connexion a expiré ou a déjà servi. Demandes-en un nouveau.':'This sign-in link has expired or was already used. Ask for a new one.','Écris ton mot de passe.':'Type your password.',
+'Un compte existe déjà avec cette adresse. Connecte-toi par « Lien par e-mail », puis choisis un mot de passe dans Réglages.':'An account already exists with this address. Sign in with “Email link”, then set a password in Settings.',
+'Tu en as déjà un. Écris-en un nouveau pour le changer.':'You already have one. Type a new one to change it.','Choisis-en un pour te connecter sans attendre d’e-mail.':'Set one to sign in without waiting for an email.',
+'Enregistrer':'Save','Astuce : choisis un mot de passe.':'Tip: set a password.','Tu pourras te connecter tout de suite, sans attendre d’e-mail.':'You’ll sign in straight away, without waiting for an email.',
+'Choisir un mot de passe':'Set a password','Mot de passe enregistré. La prochaine fois, connecte-toi avec « Mot de passe ».':'Password saved. Next time, sign in with “Password”.',
 
 /* --- messages --- */
 'Modification refusée : tu n’as pas les droits sur cet élément.':'Change refused: you don’t have permission for this item.',

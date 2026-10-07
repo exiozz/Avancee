@@ -5,7 +5,7 @@
 function renderPanel(by){
   var el=document.getElementById('panel');
   var t=S.task?taskById(S.task):null;
-  if(!t){el.innerHTML='';document.body.classList.remove('has-panel');return;}
+  if(!t){el.innerHTML='';el._k=null;document.body.classList.remove('has-panel');return;}
   document.body.classList.add('has-panel');
   var e=by[t.projectId]||null, ed=canW(e), id=esc(t.id), p=e?e.p:null, sel=t.labels||[], ls=p?(p.labels||[]):[], pr=prioOf(t), done=isDone(t,e);
   var h='<div class="scrim" data-act="bg"></div><aside class="tpanel" id="dlg" role="dialog" aria-labelledby="mt-'+id+'" tabindex="-1"'+(p?' style="--c:'+hue(p)+'"':'')+'>';
@@ -86,6 +86,7 @@ function renderPanel(by){
   if(!act.length&&t.createdAt)act=[{t:'Carte créée',at:t.createdAt}];
   if(act.length)h+='<section class="tp-s"><h4>Activité</h4><ul class="tl">'+act.slice(0,12).map(function(a){return '<li><span class="a-dot"></span><span class="grow">'+esc(trText(a.t))+'</span><span class="cnt">'+ago(a.at)+'</span></li>';}).join('')+'</ul></section>';
   el.innerHTML=tr(h+'</div></aside>');
+  still(el,t.id);
 }
 
 /* ---------- palette de commandes ---------- */
@@ -207,6 +208,8 @@ function renderOverlay(by){
     }
   }
   el.innerHTML=tr(h);
+  still(el,!h?'':S.photo?'photo':S.pal?'pal':S.qa?'qa':S.sheet?'sheet'+S.sheet:'ctx'+(S.ctx?S.ctx.id+S.ctx.x:''));
+  if(!h)el._k=null;
   if(S.ctx){
     var c=document.getElementById('ctx');
     if(c&&c.getBoundingClientRect){

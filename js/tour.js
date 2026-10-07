@@ -94,7 +94,7 @@ function tourPlace(){
 }
 function renderTour(){
   var box=document.getElementById('tour');
-  if(S.tour==null||S.auth!=='in'){if(box){box.innerHTML='';box.hidden=true;}document.body.classList.remove('touring');return;}
+  if(S.tour==null||S.auth!=='in'){if(box){box.innerHTML='';box.hidden=true;box._k=null;}document.body.classList.remove('touring');return;}
   var st=TOUR[S.tour], n=S.tour, last=n===TOUR.length-1;
   document.body.classList.add('touring');
   var h='<div class="tour-block"></div><div class="tour-spot" id="tour-spot"></div>'
@@ -106,7 +106,7 @@ function renderTour(){
     +(last?'<span class="tour-end"><button class="btn" data-act="tour-done">Terminer</button><button class="btn primary" id="tour-go" data-act="tour-create">'+ic('plus')+'Créer mon premier projet</button></span>'
           :'<button class="btn primary" id="tour-go" data-act="tour-next">'+(n===0?'Commencer':'Suivant')+ic('arrow')+'</button>')
     +'</div></section>';
-  box.hidden=false;box.innerHTML=tr(h);
+  box.hidden=false;box.innerHTML=tr(h);still(box,n);
   tourPlace();
   if(S.tourMoved){
     S.tourMoved=false;

@@ -41,7 +41,7 @@ var LS={
 var P={theme:LS.get('theme','system'),accent:LS.get('accent','cobalt'),density:LS.get('density','normal'),size:LS.get('size','m')};
 if(!ACCENTS[P.accent])P.accent='cobalt';
 
-var S={db:null,dl:null,owner:false,unsure:false,preview:false,canEdit:false,me:null,auth:'boot',roles:{},gate:{sending:false,sent:'',err:''},
+var S={db:null,dl:null,owner:false,unsure:false,preview:false,canEdit:false,me:null,auth:'boot',roles:{},gate:{sending:false,sent:'',err:'',mode:LS.get('lgmode','link')==='pw'?'pw':'link',signup:false,kind:''},
   loaded:{s:false,p:false,t:false,c:false,m:false,cfg:false,mb:false},
   raw:{s:[],p:[],t:[],c:[],m:[],cfg:[],mb:[]},
   spaces:[],projects:[],tasks:[],clients:[],meta:{},cfg:{},
@@ -229,6 +229,20 @@ function parseQuick(text,projects,now){
   out.title=s.replace(/\s+/g,' ').trim();
   return out;
 }
+
+/* messages de connexion : ceux du serveur sont en anglais et peu clairs */
+function gateErr(e){
+  var m=String((e&&e.message)||e||''), st=e&&e.status;
+  if(st===429||/rate limit|too many|only request this after/i.test(m))return 'Trop d’e-mails envoyés pour le moment. Attends un peu (jusqu’à une heure), ou connecte-toi avec ton mot de passe.';
+  if(/invalid login credentials/i.test(m))return 'Adresse ou mot de passe incorrect. Si tu n’as jamais choisi de mot de passe, utilise « Lien par e-mail ».';
+  if(/not confirmed/i.test(m))return 'Ton adresse n’est pas encore confirmée : clique sur le lien reçu par e-mail.';
+  if(/at least|too short|weak/i.test(m))return 'Mot de passe trop court : 8 caractères au minimum.';
+  if(/different from the old/i.test(m))return 'C’est déjà ton mot de passe actuel.';
+  if(/expired|invalid.*link|otp/i.test(m))return 'Ce lien de connexion a expiré ou a déjà servi. Demandes-en un nouveau.';
+  return m||'Connexion impossible pour le moment.';
+}
+/* ne rejoue pas les animations d'entrée quand une zone est simplement redessinée */
+function still(el,key){if(!el)return;key=String(key);el.classList.toggle('noanim',el._k===key);el._k=key;}
 
 /* ---------- toasts, indicateur d'enregistrement ---------- */
 var TOAST={n:0,undo:{}};

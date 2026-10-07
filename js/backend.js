@@ -128,7 +128,7 @@ var Cloud=(function(){
     var u=session&&session.user;
     if(!u){me=null;return;}
     var m=u.user_metadata||{};
-    me={id:u.id,email:String(u.email||'').toLowerCase(),name:m.full_name||m.name||m.user_name||'',avatar:m.avatar_url||m.picture||''};
+    me={id:u.id,email:String(u.email||'').toLowerCase(),name:m.full_name||m.name||m.user_name||'',avatar:m.avatar_url||m.picture||'',provider:(u.app_metadata&&u.app_metadata.provider)||''};
   }
   function here(){return location.origin+location.pathname;}
   function init(){
@@ -152,6 +152,9 @@ var Cloud=(function(){
     onAuth:function(f){authCb=f;},
     signIn:function(provider){return sb.auth.signInWithOAuth({provider:provider,options:{redirectTo:here()}});},
     signInEmail:function(email){return sb.auth.signInWithOtp({email:email,options:{emailRedirectTo:here()}});},
+    signInPassword:function(email,pw){return sb.auth.signInWithPassword({email:email,password:pw});},
+    signUp:function(email,pw){return sb.auth.signUp({email:email,password:pw,options:{emailRedirectTo:here()}});},
+    setPassword:function(pw){return sb.auth.updateUser({password:pw});},
     signOut:function(){cache={};return sb.auth.signOut();},
     /* photos : rangées dans le dossier de leur tâche (stockage Supabase, espace « photos ») */
     photoUpload:function(taskId,blob){

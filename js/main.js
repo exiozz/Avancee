@@ -53,6 +53,7 @@ function render(){
     else h+=vProject(by[v],by);
   }
   if(!keep)mainEl.innerHTML=tr(h);
+  still(mainEl,[S.view,S.det,S.menu,S.iconPick,modeOf(by[S.view]?by[S.view].p:{})].join('|'));
   if(S.lastView!==S.view){
     S.lastView=S.view;
     mainEl.classList.remove('enter');void mainEl.offsetWidth;mainEl.classList.add('enter');
@@ -100,18 +101,41 @@ root.addEventListener('click',function(ev){
   if(act==='toast-undo'){var fn=TOAST.undo[id];if(fn){delete TOAST.undo[id];fn();}var te=b.closest('.toast');if(te&&te.parentNode)te.parentNode.removeChild(te);return;}
   if(act==='login'){
     S.gate.err='';
-    Cloud.signIn(id).then(function(r){if(r&&r.error){S.gate.err=r.error.message;render();}},function(){S.gate.err='Connexion impossible pour le moment.';render();});
+    Cloud.signIn(id).then(function(r){if(r&&r.error){S.gate.err=gateErr(r.error);render();}},function(){S.gate.err='Connexion impossible pour le moment.';render();});
     return;
   }
   if(act==='login-email'){
     var em=String((document.getElementById('lg-email')||{}).value||'').trim().toLowerCase();
     if(!validEmail(em)){S.gate.err='Entre une adresse e-mail valide.';render();return;}
     S.gate.sending=true;S.gate.err='';render();
-    Cloud.signInEmail(em).then(function(r){S.gate.sending=false;if(r&&r.error)S.gate.err=r.error.message;else S.gate.sent=em;render();},function(){S.gate.sending=false;S.gate.err='Envoi impossible pour le moment.';render();});
+    Cloud.signInEmail(em).then(function(r){S.gate.sending=false;if(r&&r.error)S.gate.err=gateErr(r.error);else{S.gate.sent=em;S.gate.kind='link';}render();},function(){S.gate.sending=false;S.gate.err='Envoi impossible pour le moment.';render();});
     return;
   }
   if(act==='lang'){I18N.set(id);if(S.auth==='in')closeOverlays();render();return;}
-  if(act==='login-back'){S.gate.sent='';S.gate.err='';render();return;}
+  if(act==='login-mode'){S.gate.mode=id==='pw'?'pw':'link';S.gate.err='';S.gate.signup=false;LS.set('lgmode',S.gate.mode);render();return;}
+  if(act==='login-signup'){S.gate.signup=id==='1';S.gate.err='';render();return;}
+  if(act==='login-pw'){
+    var pe=String((document.getElementById('lg-email')||{}).value||'').trim().toLowerCase(), pw=String((document.getElementById('lg-pw')||{}).value||'');
+    if(!validEmail(pe)){S.gate.err='Entre une adresse e-mail valide.';render();return;}
+    if(S.gate.signup&&pw.length<8){S.gate.err='Mot de passe trop court : 8 caractères au minimum.';render();return;}
+    if(!pw){S.gate.err='Écris ton mot de passe.';render();return;}
+    S.gate.sending=true;S.gate.err='';render();
+    var fin=function(r){
+      S.gate.sending=false;
+      if(r&&r.error){S.gate.err=gateErr(r.error);render();return;}
+      var d=(r&&r.data)||{};
+      if(S.gate.signup&&!d.session){
+        /* le serveur ne dit pas qu'un compte existe déjà : il renvoie une personne sans identité */
+        if(d.user&&d.user.identities&&!d.user.identities.length){S.gate.err='Un compte existe déjà avec cette adresse. Connecte-toi par « Lien par e-mail », puis choisis un mot de passe dans Réglages.';render();return;}
+        S.gate.sent=pe;S.gate.kind='confirm';render();return;
+      }
+      LS.set('lgmode','pw');LS.set('haspw',pe);
+      setTimeout(function(){if(S.auth!=='in')location.reload();},600);   /* normalement la page se recharge toute seule dès la connexion */
+    };
+    (S.gate.signup?Cloud.signUp(pe,pw):Cloud.signInPassword(pe,pw)).then(fin,function(){S.gate.sending=false;S.gate.err='Connexion impossible pour le moment.';render();});
+    return;
+  }
+  if(act==='login-back'){S.gate.sent='';S.gate.err='';S.gate.signup=false;render();return;}
   if(act==='logout'){var bye=function(){location.reload();};Cloud.signOut().then(bye,bye);return;}
   if(S.auth!=='in')return;
   if(tourClick(act))return;
@@ -177,6 +201,19 @@ root.addEventListener('click',function(ev){
   }
   if(act==='onb-done'){saveCfg({onboarded:true});render();return;}
   if(act==='export'){exportData();return;}
+  if(act==='pw-go'){go('settings');S.focus='st-pw';render();return;}
+  if(act==='pw-later'){LS.set('pwtip',1);render();return;}
+  if(act==='pw-save'){
+    var pi=document.getElementById('st-pw'), nv=pi?pi.value:'';
+    if(nv.length<8){toast('Mot de passe trop court : 8 caractères au minimum.',{bad:true});if(pi)pi.focus();return;}
+    Cloud.setPassword(nv).then(function(r){
+      if(r&&r.error){toast(gateErr(r.error),{bad:true});return;}
+      var el=document.getElementById('st-pw');if(el){el.value='';}delete S.dirty['st-pw'];
+      LS.set('haspw',S.me.email);LS.set('lgmode','pw');saveCfg({pwSet:true});
+      toast('Mot de passe enregistré. La prochaine fois, connecte-toi avec « Mot de passe ».');render();
+    },function(){toast('Enregistrement impossible. Réessaie dans un instant.',{bad:true});});
+    return;
+  }
   if(act==='inbox-clear'){
     var dn=inboxTasks().filter(function(x){return x.done;});
     run(function(){var ch=Promise.resolve();dn.forEach(function(x){ch=ch.then(function(){return S.db.doc(PRIV+'tasks/'+x.id).delete();});});return ch;});
@@ -346,7 +383,8 @@ function typing(el){return el&&(el.tagName==='INPUT'||el.tagName==='TEXTAREA'||e
 root.addEventListener('keydown',function(ev){
   var el=ev.target, key=ev.key, mod=ev.ctrlKey||ev.metaKey;
   if(S.auth!=='in'){
-    if(key==='Enter'&&el.id==='lg-email'){ev.preventDefault();var lb=document.querySelector('[data-act="login-email"]');if(lb)lb.click();}
+    if(key==='Enter'&&el.id==='lg-email'){ev.preventDefault();var lp=document.getElementById('lg-pw'), lb=document.querySelector('[data-act="login-email"]');if(lp)lp.focus();else if(lb)lb.click();}
+    if(key==='Enter'&&el.id==='lg-pw'){ev.preventDefault();var lq=document.querySelector('[data-act="login-pw"]');if(lq)lq.click();}
     return;
   }
   if(tourKey(ev))return;
@@ -502,7 +540,7 @@ function allLoaded(){Object.keys(S.loaded).forEach(function(k){S.loaded[k]=true;
 function deepLink(){var x=(location.hash||'').match(/^#p=([\w-]+)/);return x?x[1]:null;}
 function startApp(){
   S.me=Cloud.me();S.db=Cloud.db;S.auth='in';
-  document.getElementById('gate').innerHTML='';document.body.classList.remove('gated');
+  document.getElementById('gate').innerHTML='';document.getElementById('gate')._h=null;document.body.classList.remove('gated');
   rebuild();
   var next=deepLink();
   try{if(!next)next=sessionStorage.getItem('av.next');sessionStorage.removeItem('av.next');}catch(_){}
@@ -522,7 +560,9 @@ async function init(){
   S.online=navigator.onLine!==false;
   window.addEventListener('online',function(){S.online=true;paintSave();});
   window.addEventListener('offline',function(){S.online=false;paintSave();});
-  window.addEventListener('resize',queueRender);
+  /* sur téléphone, faire défiler la page ou ouvrir le clavier change la hauteur : on ne redessine que si la largeur change */
+  var lastW=window.innerWidth;
+  window.addEventListener('resize',function(){if(window.innerWidth===lastW)return;lastW=window.innerWidth;queueRender();});
   try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){applyPrefs();queueRender();});}catch(_){}
   render();
   var st=await Cloud.init();
@@ -531,7 +571,7 @@ async function init(){
   var next=deepLink();
   if(next){try{sessionStorage.setItem('av.next',next);}catch(_){}}
   var er=(location.hash+location.search).match(/error_description=([^&]+)/);
-  if(er){try{S.gate.err=decodeURIComponent(er[1].replace(/\+/g,' '));}catch(_){}}
+  if(er){try{S.gate.err=gateErr(decodeURIComponent(er[1].replace(/\+/g,' ')));}catch(_){}}
   S.auth=st.state;render();
 }
 init();

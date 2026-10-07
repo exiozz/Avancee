@@ -709,3 +709,13 @@ body.touring .toasts{z-index:91}
 .lb-p{left:12px;top:50%;transform:translateY(-50%)}
 .lb-n{right:12px;top:50%;transform:translateY(-50%)}
 .lb-c{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));color:#fff;font:500 .85em var(--f-mono);background:rgba(255,255,255,.14);padding:4px 10px;border-radius:99px}
+
+/* zones simplement redessinées : pas d'animation d'entrée rejouée */
+.noanim .tpanel,.noanim .scrim,.noanim .ov,.noanim .pal,.noanim .qa,.noanim .sheet,.noanim .ctx,.noanim .details,.noanim .pop,.noanim .gate-card,.noanim .tour-card,.noanim .sv.ok{animation:none !important}
+/* connexion par mot de passe */
+.gate-mode{width:100%}
+.gate-mode button{flex:1;justify-content:center}
+.gate-mail .hint{margin:0}
+.gate-mail .linkbtn{font-size:1em}
+.pwrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.pwrow .in{width:200px;max-width:100%}
