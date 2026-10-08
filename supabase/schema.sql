@@ -190,23 +190,26 @@ exception when others then
 end $$;
 grant execute on function public.task_role(uuid), public.photo_task(text) to authenticated;
 
--- espace de stockage privé : 5 Mo par image au plus
+-- espaces de stockage privés : photos (5 Mo par image) et fichiers joints (25 Mo par fichier)
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('photos', 'photos', false, 5242880, array['image/jpeg','image/png','image/webp'])
 on conflict (id) do update set public = false, file_size_limit = excluded.file_size_limit, allowed_mime_types = excluded.allowed_mime_types;
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('fichiers', 'fichiers', false, 26214400, null)
+on conflict (id) do update set public = false, file_size_limit = excluded.file_size_limit;
 
--- on voit les photos des tâches qu'on a le droit de voir (et celles qu'on a envoyées soi-même) ;
+-- même règle pour les photos et les fichiers : on voit ceux des tâches qu'on a le droit de voir (et celles qu'on a envoyées soi-même) ;
 -- on en ajoute là où on a le droit de modifier
 drop policy if exists avancee_photos_read on storage.objects;
 create policy avancee_photos_read on storage.objects for select to authenticated
-  using (bucket_id = 'photos'
+  using (bucket_id in ('photos','fichiers')
      and (owner_id = auth.uid()::text or public.task_role(public.photo_task(name)) is not null));
 drop policy if exists avancee_photos_insert on storage.objects;
 create policy avancee_photos_insert on storage.objects for insert to authenticated
-  with check (bucket_id = 'photos' and public.task_role(public.photo_task(name)) in ('owner','editor'));
+  with check (bucket_id in ('photos','fichiers') and public.task_role(public.photo_task(name)) in ('owner','editor'));
 drop policy if exists avancee_photos_delete on storage.objects;
 create policy avancee_photos_delete on storage.objects for delete to authenticated
-  using (bucket_id = 'photos'
+  using (bucket_id in ('photos','fichiers')
      and (owner_id = auth.uid()::text or public.task_role(public.photo_task(name)) in ('owner','editor')));
 
 -- mises à jour en direct (ignoré si déjà activé)

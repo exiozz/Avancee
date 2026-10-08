@@ -232,6 +232,15 @@ I18N.add('en',{
 '« {0} » est maintenant partagé avec toi.':'“{0}” is now shared with you.','Un projet est maintenant partagé avec toi.':'A project is now shared with you.','Nouveau projet partagé':'New shared project',
 '{0} changements sur tes projets partagés':'{0} changes on your shared projects','Quelqu’un':'Someone','a commenté : « {0} »':'commented: “{0}”',
 
+/* --- fichiers --- */
+'Fichiers':'Files','Joindre un fichier':'Attach a file','PDF, devis, documents, archives… jusqu’à 25 Mo chacun.':'PDFs, quotes, documents, archives… up to 25 MB each.',
+'Télécharger « {0} »':'Download “{0}”','Supprimer « {0} »':'Delete “{0}”','« {0} » supprimé.':'“{0}” deleted.','Envoi en cours…':'Uploading…',
+'Maximum {0} fichiers par tâche.':'Maximum {0} files per task.','Maximum {0} fichiers par tâche : les suivants n’ont pas été ajoutés.':'Maximum {0} files per task: the rest weren’t added.',
+'« {0} » est trop lourd (25 Mo maximum).':'“{0}” is too large (25 MB maximum).','{0} fichiers trop lourds (25 Mo maximum).':'{0} files too large (25 MB maximum).',
+'Les fichiers ne sont pas encore activés : relance le fichier supabase/schema.sql dans Supabase.':'Files aren’t enabled yet: run the file supabase/schema.sql again in Supabase.',
+'Envoi du fichier impossible. Réessaie dans un instant.':'Couldn’t upload the file. Try again in a moment.','Téléchargement impossible pour le moment.':'Can’t download right now.',
+'Fichier ajouté':'File added','Fichiers ajoutés':'Files added',
+
 /* --- messages --- */
 'Modification refusée : tu n’as pas les droits sur cet élément.':'Change refused: you don’t have permission for this item.',
 'Enregistrement impossible. Réessaie dans un instant.':'Couldn’t save. Try again in a moment.',

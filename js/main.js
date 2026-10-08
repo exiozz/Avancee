@@ -260,7 +260,7 @@ root.addEventListener('click',function(ev){
   }
   if(act==='del-task'&&t){if(S.task===t.id)closeTask();deleteTask(t);render();return;}
   if(act==='dup'&&t){
-    var d=clean(t);d.title=(d.title||'')+T(' (copie)');d.pos=Date.now();d.createdAt=Date.now();d.log=[];delete d.photos;d.act=[{t:'Carte dupliquée',at:Date.now()}];
+    var d=clean(t);d.title=(d.title||'')+T(' (copie)');d.pos=Date.now();d.createdAt=Date.now();d.log=[];delete d.photos;delete d.files;d.act=[{t:'Carte dupliquée',at:Date.now()}];
     run(function(){return S.db.collection(realm(t.projectId)+'tasks').doc().set(d);});toast('Carte dupliquée.');render();return;
   }
   if(act==='ctx-prio'&&t){
@@ -313,6 +313,9 @@ root.addEventListener('click',function(ev){
   var mt=S.task?taskById(S.task):null, me=mt?index()[mt.projectId]:null;
   if(!mt){render();return;}
   var item=b.dataset.item;
+  if(act==='file-add'){if(!canW(me))return;var fin2=document.getElementById('file-in');if(fin2){fin2.dataset.task=mt.id;fin2.value='';fin2.click();}return;}
+  if(act==='file-dl'){downloadFile(mt,item);return;}
+  if(act==='file-del'){if(canW(me))removeFile(mt,item);return;}
   if(act==='photo-add'){if(!canW(me))return;var pin=document.getElementById('photo-in');if(pin){pin.dataset.task=mt.id;pin.value='';pin.click();}return;}
   if(act==='photo-del'){if(canW(me))removePhoto(mt,item);return;}
   if(act==='ck-toggle'){
@@ -543,6 +546,12 @@ root.addEventListener('dragend',function(){clearDrag();drag.id=null;});
     var id=pin.dataset.task, files=[].slice.call(pin.files||[]);
     pin.value='';
     if(id&&files.length&&S.canEdit&&S.db)addPhotos(id,files);
+  });
+  var fin=document.getElementById('file-in'); if(!fin)return;
+  fin.addEventListener('change',function(){
+    var id=fin.dataset.task, files=[].slice.call(fin.files||[]);
+    fin.value='';
+    if(id&&files.length&&S.canEdit&&S.db)addFiles(id,files);
   });
 })();
 

@@ -48,6 +48,8 @@ var ICONS={
   folder:'<path d="M3 6a1 1 0 0 1 1-1h3.600l1.600 1.800H16a1 1 0 0 1 1 1V15a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/>',
   image:'<rect x="3" y="4" width="14" height="12" rx="2"/><circle cx="7.300" cy="8.200" r="1.400"/><path d="M3.500 14l3.800-3.600 2.900 2.600 2.300-2 4 3.500"/>',
   bell:'<path d="M5.200 13.800V9.300a4.800 4.800 0 0 1 9.600 0v4.500l1.400 1.700H3.800z"/><path d="M8.300 17.200a1.900 1.900 0 0 0 3.400 0"/>',
+  clip:'<path d="M15.500 9.300l-5.900 5.900a3.600 3.600 0 0 1-5.100-5.100l6.200-6.200a2.400 2.400 0 0 1 3.400 3.400l-6 6a1.200 1.200 0 0 1-1.700-1.700l5.500-5.500"/>',
+  file:'<path d="M5.500 2.800h6l3.500 3.500v10.400a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V3.300a.5.5 0 0 1 .5-.5z"/><path d="M11.500 2.800v3.500H15"/>',
   user:'<circle cx="10" cy="7" r="3.200"/><path d="M4 17c0-3.300 2.700-5.200 6-5.200s6 1.900 6 5.200"/>'
 };
 function ic(n,cls){return '<svg class="ic'+(cls?' '+cls:'')+'" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICONS[n]||'')+'</svg>';}
@@ -85,6 +87,7 @@ function badges(t,e){
   if(ck.length){var d=ck.filter(function(i){return i.d;}).length;h+='<span class="bd'+(d===ck.length?' ok':'')+'" title="Checklist">'+ic('checklist')+d+'/'+ck.length+'</span>';}
   if(t.notes)h+='<span class="bd" title="Description">'+ic('lines')+'</span>';
   if((t.photos||[]).length)h+='<span class="bd" title="Photos">'+ic('image')+t.photos.length+'</span>';
+  if((t.files||[]).length)h+='<span class="bd" title="Fichiers">'+ic('clip')+t.files.length+'</span>';
   if((t.log||[]).length)h+='<span class="bd" title="Commentaires">'+ic('msg')+t.log.length+'</span>';
   if(t.who)h+='<span class="bd who" title="Assigné à '+esc(t.who)+'">'+esc(t.who)+'</span>';
   return h?'<div class="bds">'+h+'</div>':'';

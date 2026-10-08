@@ -47,6 +47,25 @@ function renderPanel(by){
   h+='</div>';
   /* description */
   h+='<section class="tp-s"><h4>Description</h4>'+(ed?'<label class="sr" for="mn-'+id+'">Description</label><textarea class="area" id="mn-'+id+'" data-draft data-change="tdesc" data-id="'+id+'" placeholder="Détails, liens, idées…">'+esc(t.notes||'')+'</textarea>':(t.notes?'<p class="rd">'+esc(t.notes)+'</p>':'<span class="mut">Pas de description.</span>'))+'</section>';
+  /* fichiers */
+  var fls=t.files||[], fup=S.fupl[t.id]||[];
+  if(ed||fls.length){
+    h+='<section class="tp-s"><h4>Fichiers'+(fls.length?'<span class="cnt">'+fls.length+'/'+FILE_MAX+'</span>':'')+'</h4>';
+    if(fls.length||fup.length){
+      h+='<ul class="flist">';
+      fls.forEach(function(f){
+        var ext=fileExt(f.name);
+        h+='<li class="frow"><span class="f-ic" aria-hidden="true">'+ic('file')+(ext?'<b>'+nt(esc(ext).slice(0,4))+'</b>':'')+'</span>'
+          +'<button class="f-name" data-act="file-dl" data-item="'+esc(f.id)+'" title="'+tf('Télécharger « {0} »',esc(f.name))+'"><span class="nm">'+esc(f.name)+'</span><span class="cnt">'+nt(fmtSize(f.size))+'</span></button>'
+          +'<button class="ib sm" data-act="file-dl" data-item="'+esc(f.id)+'" aria-label="'+tf('Télécharger « {0} »',esc(f.name))+'">'+ic('download')+'</button>'
+          +(ed?'<button class="ib sm dng" data-act="file-del" data-item="'+esc(f.id)+'" aria-label="'+tf('Supprimer « {0} »',esc(f.name))+'">'+ic('x')+'</button>':'')+'</li>';
+      });
+      fup.forEach(function(n){h+='<li class="frow up" role="status"><span class="f-ic"><i class="spin"></i></span><span class="f-name"><span class="nm">'+esc(n)+'</span><span class="cnt">Envoi en cours…</span></span></li>';});
+      h+='</ul>';
+    }
+    if(ed&&fls.length+fup.length<FILE_MAX)h+='<button class="addfile" data-act="file-add" data-id="'+id+'">'+ic('clip')+'Joindre un fichier</button><p class="hint">PDF, devis, documents, archives… jusqu’à 25 Mo chacun.</p>';
+    h+='</section>';
+  }
   /* photos */
   var phs=t.photos||[], upl=S.upl[t.id]||0;
   if(ed||phs.length){

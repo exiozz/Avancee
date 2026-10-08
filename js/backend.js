@@ -175,6 +175,22 @@ var Cloud=(function(){
         var m={};(r.data||[]).forEach(function(x,i){m[paths[i]]=x&&!x.error?x.signedUrl:'';});return m;
       });
     },
+    /* fichiers joints : même rangement que les photos, dans l'espace « fichiers » */
+    fileUpload:function(taskId,file){
+      var safe=String(file.name||'fichier').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\w.\-]+/g,'_').replace(/_+/g,'_').slice(-80)||'fichier';
+      var path=taskId+'/'+uuid()+'-'+safe;
+      return sb.storage.from('fichiers').upload(path,file,{contentType:file.type||'application/octet-stream',upsert:false}).then(function(r){
+        if(r.error){var m=r.error.message||'';throw {code:/bucket/i.test(m)?'no_bucket':/size|large/i.test(m)?'too_big':'unavailable',message:m};}
+        return path;
+      });
+    },
+    fileUrl:function(path,name){
+      return sb.storage.from('fichiers').createSignedUrl(path,120,{download:name||true}).then(function(r){if(r.error||!r.data)throw r.error||{};return r.data.signedUrl;});
+    },
+    fileRemove:function(paths){
+      if(!paths||!paths.length)return Promise.resolve();
+      return sb.storage.from('fichiers').remove(paths).then(function(){},function(){});
+    },
     photoRemove:function(paths){
       if(!paths||!paths.length)return Promise.resolve();
       return sb.storage.from('photos').remove(paths).then(function(){},function(){});

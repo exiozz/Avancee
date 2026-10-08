@@ -115,6 +115,14 @@ Les photos sont rangées dans le stockage de Supabase, dans un espace privé nom
 
 L'offre gratuite de Supabase donne 1 Go de stockage, soit plusieurs milliers de photos réduites.
 
+## Fichiers
+
+Dans une tâche, le bloc **Fichiers** (au-dessus des photos) permet de joindre jusqu'à 10 fichiers de 25 Mo au plus : PDF, devis, documents, archives… Ils sont rangés dans l'espace privé `fichiers` de Supabase, avec les mêmes droits que la tâche. Comme pour les photos, **relance `supabase/schema.sql` une fois** pour créer cet espace.
+
+## Notifications de bureau
+
+Dans **Réglages > Notifications de bureau**, active les notifications sur chaque appareil : rappel des tâches du jour (une fois par jour) et activité des autres sur les projets partagés. Elles arrivent tant qu'Avancée est ouverte sur l'appareil (même en arrière-plan). Sur iPhone, il faut d'abord ajouter Avancée à l'écran d'accueil.
+
 ## Langues
 
 Le site existe en **français** et en **anglais**. Il démarre dans la langue du navigateur (français si le navigateur est en français, anglais sinon). On change de langue sur la page de connexion (boutons FR / EN) ou dans **Réglages > Apparence et langue**. Le choix est mémorisé sur l'appareil.

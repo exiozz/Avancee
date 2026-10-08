@@ -49,7 +49,7 @@ var S={db:null,dl:null,owner:false,unsure:false,preview:false,canEdit:false,me:n
   q:'',fl:null,sort:{k:'pos',d:1},cal:null,calProj:'',calMode:'month',
   task:null,taskFresh:false,menu:null,lblMgr:false,nlc:0,dirty:{},
   coll:LS.get('coll',{}),addSpace:false,addIn:null,ren:null,smenu:null,iconPick:false,comp:null,
-  pal:false,pq:'',pi:0,qa:null,tour:null,photo:null,upl:{},sheet:null,ctx:null,focus:null,
+  pal:false,pq:'',pi:0,qa:null,tour:null,photo:null,upl:{},fupl:{},sheet:null,ctx:null,focus:null,
   tf:'all',tv:LS.get('tv','list'),pf:'active',dashEdit:false,det:false,
   saving:0,savedAt:0,online:true,sb:LS.get('sb',null),gAt:0};
 if(S.view==='overview')S.view='home';
@@ -389,7 +389,8 @@ function toggleTask(t,e){
 function deleteTask(t){
   var path=(t._priv?PRIV:'')+'tasks/'+t.id, data=clean(t), files=photoPaths([t]);
   run(function(){return S.db.doc(path).delete();});
-  if(files.length)setTimeout(function(){if(!taskById(t.id))Cloud.photoRemove(files);},9000);   /* après le délai d'annulation */
+  var docs=filePaths([t]);
+  if(files.length||docs.length)setTimeout(function(){if(!taskById(t.id)){Cloud.photoRemove(files);Cloud.fileRemove(docs);}},9000);   /* après le délai d'annulation */
   toast('Carte supprimée.',{undo:function(){run(function(){return S.db.doc(path).set(data);});}});
 }
 function saveCols(pid,arr){return run(function(){return pdoc(pid).update({columns:arr});});}
@@ -410,7 +411,7 @@ function deleteColumn(e,cid){
   });
 }
 function delProjectDocs(p,ts){
-  var base=p._priv?PRIV:'', chain=Cloud.photoRemove(photoPaths(ts));
+  var base=p._priv?PRIV:'', chain=Cloud.photoRemove(photoPaths(ts)).then(function(){return Cloud.fileRemove(filePaths(ts));});
   ts.forEach(function(t){chain=chain.then(function(){return S.db.doc(base+'tasks/'+t.id).delete();});});
   return chain.then(function(){return S.db.doc(base+'projects/'+p.id).delete();}).then(function(){if(S.raw.m.some(function(m){return m.id===p.id;}))return S.db.doc(PRIV+'meta/'+p.id).delete();});
 }
@@ -526,6 +527,58 @@ function removePhoto(t,pid){
   var gone=false;
   setTimeout(function(){var c=taskById(t.id);if(!gone&&(!c||!(c.photos||[]).some(function(p){return p.id===pid;})))Cloud.photoRemove([ph.path]);},9000);
   toast('Photo supprimée.',{undo:function(){gone=true;var c=taskById(t.id);if(c)run(function(){return tdoc(t.id).update({photos:old});});}});
+}
+
+/* ---------- fichiers joints d'une tâche ---------- */
+var FILE_MAX=10, FILE_SIZE=25*1024*1024;
+function filePaths(ts){var out=[];ts.forEach(function(t){(t.files||[]).forEach(function(f){if(f.path)out.push(f.path);});});return out;}
+function fmtSize(n){
+  n=Number(n)||0;
+  if(n<1024)return n+' o';
+  if(n<1024*1024)return Math.max(1,Math.round(n/1024))+' Ko';
+  return (n/1048576).toFixed(n<10*1048576?1:0).replace('.',LANG==='fr'?',':'.')+' Mo';
+}
+function fileExt(name){var m=String(name||'').match(/\.([a-z0-9]{1,5})$/i);return m?m[1].toUpperCase():'';}
+function addFiles(id,files){
+  var t=taskById(id); if(!t)return Promise.resolve();
+  var list=[].slice.call(files||[]), room=FILE_MAX-(t.files||[]).length-(S.fupl[id]||[]).length;
+  if(!list.length)return Promise.resolve();
+  if(room<=0){toast(tf('Maximum {0} fichiers par tâche.',FILE_MAX),{bad:true});return Promise.resolve();}
+  var big=list.filter(function(f){return f.size>FILE_SIZE;});
+  if(big.length)toast(tf(big.length>1?'{0} fichiers trop lourds (25 Mo maximum).':'« {0} » est trop lourd (25 Mo maximum).',big.length>1?big.length:big[0].name),{bad:true});
+  list=list.filter(function(f){return f.size<=FILE_SIZE;});
+  if(list.length>room){list=list.slice(0,room);toast(tf('Maximum {0} fichiers par tâche : les suivants n’ont pas été ajoutés.',FILE_MAX));}
+  if(!list.length)return Promise.resolve();
+  S.fupl[id]=(S.fupl[id]||[]).concat(list.map(function(f){return f.name;}));render();
+  var added=[], failed=0, nobucket=false, chain=Promise.resolve();
+  list.forEach(function(f){
+    chain=chain.then(function(){
+      return Cloud.fileUpload(id,f).then(function(path){added.push({id:rnd(),path:path,name:f.name,size:f.size,type:f.type||'',at:Date.now()});},function(e){failed++;if(e&&e.code==='no_bucket')nobucket=true;})
+        .then(function(){var q=S.fupl[id]||[],i=q.indexOf(f.name);if(i>=0)q.splice(i,1);render();});
+    });
+  });
+  return chain.then(function(){
+    if(S.fupl[id]&&!S.fupl[id].length)delete S.fupl[id];
+    if(nobucket)toast('Les fichiers ne sont pas encore activés : relance le fichier supabase/schema.sql dans Supabase.',{bad:true});
+    else if(failed)toast('Envoi du fichier impossible. Réessaie dans un instant.',{bad:true});
+    var cur=taskById(id);
+    if(!added.length||!cur){if(added.length)Cloud.fileRemove(added.map(function(f){return f.path;}));render();return;}
+    return run(function(){return tdoc(id).update({files:(cur.files||[]).concat(added),act:actOf(cur,added.length>1?'Fichiers ajoutés':'Fichier ajouté')});});
+  });
+}
+function removeFile(t,fid){
+  var f=(t.files||[]).find(function(x){return x.id===fid;}); if(!f)return;
+  var old=t.files.slice(), gone=false;
+  run(function(){return tdoc(t.id).update({files:t.files.filter(function(x){return x.id!==fid;})});});
+  setTimeout(function(){var c=taskById(t.id);if(!gone&&(!c||!(c.files||[]).some(function(x){return x.id===fid;})))Cloud.fileRemove([f.path]);},9000);
+  toast(tf('« {0} » supprimé.',f.name),{undo:function(){gone=true;if(taskById(t.id))run(function(){return tdoc(t.id).update({files:old});});}});
+}
+function downloadFile(t,fid){
+  var f=(t.files||[]).find(function(x){return x.id===fid;}); if(!f)return;
+  Cloud.fileUrl(f.path,f.name).then(function(url){
+    var a=document.createElement('a');a.href=url;a.download=f.name;a.rel='noopener';document.body.appendChild(a);a.click();
+    setTimeout(function(){if(a.parentNode)a.parentNode.removeChild(a);},500);
+  },function(){toast('Téléchargement impossible pour le moment.',{bad:true});});
 }
 
 /* ---------- partage d'un projet ---------- */
