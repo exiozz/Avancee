@@ -123,6 +123,20 @@ Dans une tâche, le bloc **Fichiers** (au-dessus des photos) permet de joindre j
 
 Dans **Réglages > Notifications de bureau**, active les notifications sur chaque appareil : rappel des tâches du jour (une fois par jour) et activité des autres sur les projets partagés. Elles arrivent tant qu'Avancée est ouverte sur l'appareil (même en arrière-plan). Sur iPhone, il faut d'abord ajouter Avancée à l'écran d'accueil.
 
+## Formules (Gratuit, Premium, Pro)
+
+| | Gratuit | Premium — 4,99 €/mois ou 49 €/an | Pro — 9,99 €/mois ou 99 €/an |
+|---|---|---|---|
+| Projets actifs | 5 | illimités | illimités |
+| Photos par tâche | 3 | 8 | 8 |
+| Fichiers par tâche | 3 de 5 Mo | 10 de 25 Mo | 10 de 50 Mo |
+| Couleurs en plus, badge | – | oui | oui |
+| Export en tableur (Excel) | – | – | oui |
+
+Pas encore de paiement en ligne : le bouton « Contacter » ouvre un e-mail vers l'adresse `contact` de `config.js`. Tu actives ensuite la formule toi-même dans **Admin** (menu de gauche, visible seulement par les admins) : adresse e-mail de la personne, formule, durée (1 mois, 1 an, ou sans fin).
+
+Les admins sont listés dans la table `admins` (créée par `schema.sql` avec ton adresse). La limite de 5 projets est aussi vérifiée par le serveur ; les autres limites le sont par l'appli.
+
 ## Langues
 
 Le site existe en **français** et en **anglais**. Il démarre dans la langue du navigateur (français si le navigateur est en français, anglais sinon). On change de langue sur la page de connexion (boutons FR / EN) ou dans **Réglages > Apparence et langue**. Le choix est mémorisé sur l'appareil.

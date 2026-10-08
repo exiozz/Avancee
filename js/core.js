@@ -25,7 +25,13 @@ var ACCENTS={
   emeraude:{n:'Émeraude',l:'#0B8A63',d:'#3DD6A0'},
   corail:{n:'Corail',l:'#D9480F',d:'#FF8A5C'},
   rose:{n:'Rose',l:'#C8327A',d:'#FF7EB6'},
-  ardoise:{n:'Ardoise',l:'#3B4252',d:'#C3C9D6'}
+  ardoise:{n:'Ardoise',l:'#3B4252',d:'#C3C9D6'},
+  /* réservées aux formules Premium et Pro */
+  or:{n:'Or',l:'#A86A00',d:'#F5C451',p:true},
+  menthe:{n:'Menthe',l:'#0A8A7A',d:'#56E0CB',p:true},
+  lavande:{n:'Lavande',l:'#7C4DDB',d:'#C7B2FF',p:true},
+  framboise:{n:'Framboise',l:'#B0154F',d:'#FF6E9C',p:true},
+  nuit:{n:'Nuit',l:'#1E3A8A',d:'#9DB4FF',p:true}
 };
 var WIDGETS={
   today:{t:'Aujourd’hui'},week:{t:'Cette semaine'},projects:{t:'Projets récents'},progress:{t:'Progression'},
@@ -107,6 +113,7 @@ function applyPrefs(){
   if(P.theme==='light'||P.theme==='dark')r.setAttribute('data-theme',P.theme);
   else if(HOST_THEME)r.setAttribute('data-theme',HOST_THEME); else r.removeAttribute('data-theme');
   var a=ACCENTS[P.accent]||ACCENTS.cobalt, dark=isDark();
+  if(a.p&&S.planReady&&!plan().accents)a=ACCENTS.cobalt;   /* formule terminée : on revient à la couleur de base */
   r.style.setProperty('--accent',dark?a.d:a.l);
   r.style.setProperty('--on-accent',dark?'#0B1020':'#FFFFFF');
   r.setAttribute('data-density',P.density);
@@ -174,7 +181,8 @@ function mine(t){var n=norm(myName());return !t.who||!n||norm(t.who)===n;}
 function modeOf(p){var m=S.pmode[p.id]||p.defView||'board';return MODES.some(function(x){return x[0]===m;})?m:'board';}
 function validView(by){
   var v=S.view;
-  if(v==='home'||v==='projects'||v==='calendar'||v==='settings')return true;
+  if(v==='home'||v==='projects'||v==='calendar'||v==='settings'||v==='plans')return true;
+  if(v==='admin')return !!S.admin;
   if(v==='inbox'||v==='tasks'||v==='clients')return S.canEdit;
   if(v.indexOf('c:')===0)return S.canEdit&&S.clients.some(function(c){return 'c:'+c.id===v;});
   return !!by[v];
@@ -310,6 +318,7 @@ function addSpace(name){
 function tplCols(k){var c=TPL[k].cols;return c.map(function(n,i){var o={id:'c'+rnd(),name:T(n)};if(i===c.length-1)o.done=true;return o;});}
 function addProject(name,spaceId,opt){
   opt=opt||{};
+  if(S.planReady&&!canAddProject()){upsell('projects');return;}
   var ref=S.db.collection((opt.priv?PRIV:'')+'projects').doc();
   S.view=ref.id;S.pending=ref.id;S.q='';S.fl=null;S.addIn=null;S.comp=null;S.task=null;persist();
   var doc={name:name,desc:'',icon:'',hue:S.projects.length%6,spaceId:(!spaceId||spaceId==='_')?'':spaceId,status:'active',createdAt:Date.now()};
@@ -456,7 +465,7 @@ function exportData(){
   }catch(_){toast('Export impossible pour le moment.',{bad:true});}
 }
 /* ---------- photos d'une tâche ---------- */
-var PHOTO_MAX=8, PHOTO_SIDE=1600;
+var PHOTO_SIDE=1600;   /* le nombre de photos permis dépend de la formule : plan().photos */
 var PH={url:{},want:{},timer:0};
 function photoPaths(ts){var out=[];ts.forEach(function(t){(t.photos||[]).forEach(function(p){if(p.path)out.push(p.path);});});return out;}
 /* adresse d'affichage d'une photo : le serveur donne un lien valable une heure, gardé en mémoire */
@@ -497,10 +506,10 @@ function shrinkImage(file){
 function addPhotos(id,files){
   var t=taskById(id); if(!t)return Promise.resolve();
   var list=[].slice.call(files||[]).filter(function(f){return /^image\//.test(f.type||'');});
-  var room=PHOTO_MAX-(t.photos||[]).length-(S.upl[id]||0);
+  var lim=plan().photos, room=lim-(t.photos||[]).length-(S.upl[id]||0);
   if(!list.length){toast('Choisis une image : photo, capture d’écran…',{bad:true});return Promise.resolve();}
-  if(room<=0){toast(tf('Maximum {0} photos par tâche.',PHOTO_MAX),{bad:true});return Promise.resolve();}
-  if(list.length>room){list=list.slice(0,room);toast(tf('Maximum {0} photos par tâche : les suivantes n’ont pas été ajoutées.',PHOTO_MAX));}
+  if(room<=0){if(!isPaid())upsell('photos');else toast(tf('Maximum {0} photos par tâche.',lim),{bad:true});return Promise.resolve();}
+  if(list.length>room){list=list.slice(0,room);toast(tf('Maximum {0} photos par tâche : les suivantes n’ont pas été ajoutées.',lim));}
   S.upl[id]=(S.upl[id]||0)+list.length;render();
   var added=[], unread=0, failed=0, nobucket=false, chain=Promise.resolve();
   list.forEach(function(f){
@@ -530,24 +539,24 @@ function removePhoto(t,pid){
 }
 
 /* ---------- fichiers joints d'une tâche ---------- */
-var FILE_MAX=10, FILE_SIZE=25*1024*1024;
+/* nombre et taille des fichiers : selon la formule, plan().files et plan().size */
 function filePaths(ts){var out=[];ts.forEach(function(t){(t.files||[]).forEach(function(f){if(f.path)out.push(f.path);});});return out;}
 function fmtSize(n){
   n=Number(n)||0;
   if(n<1024)return n+' o';
   if(n<1024*1024)return Math.max(1,Math.round(n/1024))+' Ko';
-  return (n/1048576).toFixed(n<10*1048576?1:0).replace('.',LANG==='fr'?',':'.')+' Mo';
+  return (n/1048576).toFixed(n<10*1048576?1:0).replace(/\.0$/,'').replace('.',LANG==='fr'?',':'.')+' Mo';
 }
 function fileExt(name){var m=String(name||'').match(/\.([a-z0-9]{1,5})$/i);return m?m[1].toUpperCase():'';}
 function addFiles(id,files){
   var t=taskById(id); if(!t)return Promise.resolve();
-  var list=[].slice.call(files||[]), room=FILE_MAX-(t.files||[]).length-(S.fupl[id]||[]).length;
+  var pl=plan(), list=[].slice.call(files||[]), room=pl.files-(t.files||[]).length-(S.fupl[id]||[]).length;
   if(!list.length)return Promise.resolve();
-  if(room<=0){toast(tf('Maximum {0} fichiers par tâche.',FILE_MAX),{bad:true});return Promise.resolve();}
-  var big=list.filter(function(f){return f.size>FILE_SIZE;});
-  if(big.length)toast(tf(big.length>1?'{0} fichiers trop lourds (25 Mo maximum).':'« {0} » est trop lourd (25 Mo maximum).',big.length>1?big.length:big[0].name),{bad:true});
-  list=list.filter(function(f){return f.size<=FILE_SIZE;});
-  if(list.length>room){list=list.slice(0,room);toast(tf('Maximum {0} fichiers par tâche : les suivants n’ont pas été ajoutés.',FILE_MAX));}
+  if(room<=0){if(!isPaid())upsell('files');else toast(tf('Maximum {0} fichiers par tâche.',pl.files),{bad:true});return Promise.resolve();}
+  var big=list.filter(function(f){return f.size>pl.size;});
+  if(big.length){if(myPlan()!=='pro')upsell(isPaid()?'size':'files');else toast(tf(big.length>1?'{0} fichiers trop lourds ({1} maximum).':'« {0} » est trop lourd ({1} maximum).',big.length>1?big.length:big[0].name,fmtSize(pl.size)),{bad:true});}
+  list=list.filter(function(f){return f.size<=pl.size;});
+  if(list.length>room){list=list.slice(0,room);toast(tf('Maximum {0} fichiers par tâche : les suivants n’ont pas été ajoutés.',pl.files));}
   if(!list.length)return Promise.resolve();
   S.fupl[id]=(S.fupl[id]||[]).concat(list.map(function(f){return f.name;}));render();
   var added=[], failed=0, nobucket=false, chain=Promise.resolve();

@@ -6,5 +6,6 @@ window.AVANCEE_CONFIG = {
   supabaseUrl: 'https://bmvxtwfucuskqojmmjuy.supabase.co',
   supabaseKey: 'sb_publishable_0K_VKJ4Uw5kcJKeFqvmNPw_I3Cmz8V8',
   providers: [],              // à remplir quand ils sont activés dans Supabase : ['google', 'discord']
-  email: true                 // connexion par lien magique envoyé par e-mail
+  email: true,                // connexion par lien magique envoyé par e-mail
+  contact: 'tomokari.perso@gmail.com'   // adresse (ou lien https://…) du bouton « Contacter » des formules Premium et Pro
 };

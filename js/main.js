@@ -49,6 +49,8 @@ function render(){
     else if(v==='projects')h+=vProjects(by);
     else if(v==='clients')h+=vClients(by);
     else if(v==='settings')h+=vSettings(by);
+    else if(v==='plans')h+=vPlans();
+    else if(v==='admin')h+=vAdmin();
     else if(v.indexOf('c:')===0)h+=vClient(S.clients.find(function(c){return 'c:'+c.id===v;}),by);
     else h+=vProject(by[v],by);
   }
@@ -163,6 +165,7 @@ root.addEventListener('click',function(ev){
   if(S.auth!=='in')return;
   if(tourClick(act))return;
   if(notifClick(act,id))return;
+  if(planClick(act,id,b))return;
   if(act==='ov-bg'){if(ev.target===b){closeOverlays();render();}return;}
   if(act==='bg'){closeTask();render();return;}
   var inOverlay=!!b.closest('#overlay');
@@ -352,6 +355,7 @@ root.addEventListener('click',function(ev){
 root.addEventListener('input',function(ev){
   var el=ev.target; if(!el||!el.id)return;
   if(el.id==='q'){S.q=el.value;render();return;}
+  if(el.id==='adm-q'){S.admQ=el.value;render();return;}
   if(el.id==='pq'){S.pq=el.value;S.pi=0;paintPal();return;}
   if(el.id==='qat'&&S.qa){S.qa.text=el.value;var qc=document.getElementById('qa-chips');if(qc)qc.innerHTML=tr(qaChips());return;}
   if(el.hasAttribute&&el.hasAttribute('data-draft'))S.dirty[el.id]=true;
@@ -376,7 +380,7 @@ root.addEventListener('change',function(ev){
   else if(k==='pname'){v=v.trim();if(!v){render();return;}run(function(){return pdoc(id).update({name:v});});}
   else if(k==='pdesc'){run(function(){return pdoc(id).update({desc:v.trim()});});}
   else if(k==='pdoc'){run(function(){return pdoc(id).update({doc:v});});}
-  else if(k==='pstatus'){run(function(){return pdoc(id).update({status:v});});}
+  else if(k==='pstatus'){var ps0=projById(id);if(ps0&&pstat(ps0)==='archived'&&v!=='archived'&&!canAddProject()){upsell('projects');return;}run(function(){return pdoc(id).update({status:v});});}
   else if(k==='pstart'){run(function(){return pdoc(id).update({start:v||''});});}
   else if(k==='pdead'){run(function(){return pdoc(id).update({deadline:v||''});});}
   else if(k==='pdefview'){S.pmode[id]=v;persist();run(function(){return pdoc(id).update({defView:v});});}
@@ -419,7 +423,7 @@ root.addEventListener('keydown',function(ev){
   if(mod&&key&&key.toLowerCase()==='k'){ev.preventDefault();if(S.db){if(S.pal){closeOverlays();}else openPal();render();}return;}
   if(mod&&key&&key.toLowerCase()==='b'){ev.preventDefault();cycleSb('toggle');render();return;}
   if(key==='Escape'){
-    if(S.photo||S.pal||S.qa||S.sheet||S.ctx){closeOverlays();render();return;}
+    if(S.upsell||S.photo||S.pal||S.qa||S.sheet||S.ctx){closeOverlays();render();return;}
     if(S.comp||S.addSpace||S.addIn||S.ren||S.smenu||S.menu||S.iconPick){S.comp=null;S.addSpace=false;S.addIn=null;S.ren=null;S.smenu=null;S.menu=null;S.iconPick=false;render();return;}
     if(S.task){closeTask();render();return;}
     if(S.dashEdit){S.dashEdit=false;render();return;}
@@ -586,6 +590,7 @@ function startApp(){
   render();
   NOTIF.seen=null;NOTIF.members=null;notifStart();
   Cloud.load().then(function(){
+    loadPlan();
     setTimeout(notifDaily,2500);
     if(S.pwJustSet||(hasPw()&&!S.cfg.pwSet)){S.pwJustSet=false;saveCfg({pwSet:true});}
     if(next&&S.pending===next&&!validView(index())){

@@ -191,6 +191,12 @@ var Cloud=(function(){
       if(!paths||!paths.length)return Promise.resolve();
       return sb.storage.from('fichiers').remove(paths).then(function(){},function(){});
     },
+    /* formules : la ligne de la personne connectée (l'admin voit tout) */
+    premiumMine:function(email){return sb.from('premium').select('*').eq('email',email).then(function(r){if(r.error)throw fail(r.error);return (r.data||[])[0]||null;});},
+    premiumAll:function(){return sb.from('premium').select('*').then(function(r){if(r.error)throw fail(r.error);return r.data||[];});},
+    premiumSave:function(row){return sb.from('premium').upsert(row,{onConflict:'email'}).select('email');},
+    premiumRemove:function(email){return sb.from('premium').delete().eq('email',email).select('email');},
+    isAdmin:function(){return sb.rpc('is_admin').then(function(r){if(r.error)throw r.error;return r.data===true;});},
     photoRemove:function(paths){
       if(!paths||!paths.length)return Promise.resolve();
       return sb.storage.from('photos').remove(paths).then(function(){},function(){});

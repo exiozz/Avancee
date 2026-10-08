@@ -63,15 +63,18 @@ function renderSide(by,ready){
     });
     h+='</div>';
   }
-  h+='<div class="sfoot"><button class="nav'+(S.view==='settings'?' on':'')+'" data-act="view" data-id="settings" title="Réglages">'+ic('settings')+'<span class="lbl grow">Réglages</span></button>';
-  if(S.me)h+='<button class="nav me" data-act="view" data-id="settings" title="'+esc(S.me.email)+'">'+avatar(S.me)+'<span class="lbl grow nm">'+esc(S.me.name||S.me.email)+'</span></button>';
+  h+='<div class="sfoot">';
+  if(S.admin)h+='<button class="nav'+(S.view==='admin'?' on':'')+'" data-act="view" data-id="admin" title="Admin">'+ic('bolt')+'<span class="lbl grow">Admin</span></button>';
+  else if(S.planReady&&!isPaid())h+='<button class="nav up'+(S.view==='plans'?' on':'')+'" data-act="view" data-id="plans" title="Passer à Premium">'+ic('star')+'<span class="lbl grow">Passer à Premium</span></button>';
+  h+='<button class="nav'+(S.view==='settings'?' on':'')+'" data-act="view" data-id="settings" title="Réglages">'+ic('settings')+'<span class="lbl grow">Réglages</span></button>';
+  if(S.me)h+='<button class="nav me" data-act="view" data-id="settings" title="'+esc(S.me.email)+'">'+avatar(S.me)+'<span class="lbl grow nm">'+esc(S.me.name||S.me.email)+'</span>'+(isPaid()?'<span class="pbadge lbl">'+PLANS[myPlan()].n+'</span>':'')+'</button>';
   h+='<button class="nav railonly" data-act="sb" data-id="open" title="Agrandir le menu">'+ic('sidebar')+'</button></div>';
   document.getElementById('side').innerHTML=tr(h+'</div>');
   still(document.getElementById('side'),S.smenu);
 }
 function renderTop(by){
   var v=S.view, sub=false, crumb='';
-  var names={home:'Accueil',inbox:'Inbox',tasks:'Mes tâches',calendar:'Calendrier',clients:'Clients',projects:'Projets',settings:'Réglages'};
+  var names={home:'Accueil',inbox:'Inbox',tasks:'Mes tâches',calendar:'Calendrier',clients:'Clients',projects:'Projets',settings:'Réglages',plans:'Formules',admin:'Admin'};
   if(names[v])crumb='<span class="crumb-i">'+names[v]+'</span>';
   else if(v.indexOf('c:')===0){
     var c=S.clients.find(function(x){return 'c:'+x.id===v;}); sub='clients';
@@ -527,12 +530,16 @@ function segPref(k,opts){
 }
 function vSettings(by){
   var ed=S.canEdit, h='<header class="phd"><h1>Réglages</h1><p class="lead">L’apparence est mémorisée sur cet appareil.</p></header><div class="sgrid">';
-  if(S.me)h+='<section class="panel scard"><h2>'+ic('user')+'Compte</h2><div class="acct">'+avatar(S.me,'lg')+'<div class="grow"><strong>'+esc(S.me.name||T('Mon compte'))+'</strong><span class="mut">'+esc(S.me.email)+'</span></div><button class="btn" data-act="logout">Se déconnecter</button></div><div class="srow"><label for="st-pw">Mot de passe<small>'+(S.cfg.pwSet||hasPw()?'Tu en as déjà un. Écris-en un nouveau pour le changer.':'Choisis-en un pour te connecter sans attendre d’e-mail.')+'</small></label><span class="pwrow"><input class="in" id="st-pw" type="password" autocomplete="new-password" placeholder="8 caractères ou plus" data-draft><button class="btn" data-act="pw-save">Enregistrer</button></span></div></section>';
+  if(S.me)h+='<section class="panel scard"><h2>'+ic('user')+'Compte</h2><div class="acct">'+avatar(S.me,'lg')+'<div class="grow"><strong>'+esc(S.me.name||T('Mon compte'))+(isPaid()?' <span class="pbadge">'+PLANS[myPlan()].n+'</span>':'')+'</strong><span class="mut">'+esc(S.me.email)+'</span></div><button class="btn" data-act="logout">Se déconnecter</button></div><div class="srow"><label for="st-pw">Mot de passe<small>'+(S.cfg.pwSet||hasPw()?'Tu en as déjà un. Écris-en un nouveau pour le changer.':'Choisis-en un pour te connecter sans attendre d’e-mail.')+'</small></label><span class="pwrow"><input class="in" id="st-pw" type="password" autocomplete="new-password" placeholder="8 caractères ou plus" data-draft><button class="btn" data-act="pw-save">Enregistrer</button></span></div></section>';
+  if(S.me){
+    var mp=myPlan(), pr=planRow();
+    h+='<section class="panel scard"><h2>'+ic('star')+'Formule</h2><div class="srow"><span>'+PLANS[mp].n+'<small>'+(S.admin?'Admin : tout est débloqué.':mp==='free'?'5 projets actifs, 3 photos et 3 fichiers par tâche.':(pr&&pr.until?tf('Jusqu’au {0}.',fmtDay(pr.until)):'Sans date de fin.'))+'</small></span><button class="btn'+(mp==='free'?' primary':'')+'" data-act="view" data-id="plans">'+(mp==='free'?'Passer à Premium':'Voir les formules')+'</button></div></section>';
+  }
   if(ed)h+='<section class="panel scard"><h2>'+ic('user')+'Profil</h2><div class="srow"><label for="st-name">Ton prénom<small>Pour le message d’accueil et « Mes tâches ».</small></label><input class="in" id="st-name" value="'+esc(myName())+'" data-draft data-change="cfgname" placeholder="Ton prénom" autocomplete="off"></div></section>';
   h+='<section class="panel scard"><h2>'+ic('sun')+'Apparence et langue</h2>'
     +'<div class="srow"><span>Langue</span><span class="seg" role="group" aria-label="Langue">'+Object.keys(I18N.langs).map(function(k){return '<button data-act="lang" data-id="'+k+'" aria-pressed="'+(LANG===k)+'">'+nt(I18N.langs[k])+'</button>';}).join('')+'</span></div>'
     +'<div class="srow"><span>Thème</span>'+segPref('theme',[['system','Système','monitor'],['light','Clair','sun'],['dark','Sombre','moon']])+'</div>'
-    +'<div class="srow"><span>Couleur d’accent</span><span class="swatches" role="group" aria-label="Couleur d’accent">'+Object.keys(ACCENTS).map(function(k){var a=ACCENTS[k];return '<button class="sw lg" style="--sc:'+(isDark()?a.d:a.l)+'" data-act="pref" data-k="accent" data-id="'+k+'" aria-pressed="'+(P.accent===k)+'" aria-label="'+a.n+'" title="'+a.n+'"></button>';}).join('')+'</span></div>'
+    +'<div class="srow"><span>Couleur d’accent</span><span class="swatches" role="group" aria-label="Couleur d’accent">'+Object.keys(ACCENTS).map(function(k){var a=ACCENTS[k], lock=a.p&&!plan().accents;return '<button class="sw lg'+(lock?' lock':'')+'" style="--sc:'+(isDark()?a.d:a.l)+'" '+(lock?'data-act="upsell" data-id="accents"':'data-act="pref" data-k="accent" data-id="'+k+'"')+' aria-pressed="'+(P.accent===k&&!lock)+'" aria-label="'+nt(T(a.n)+(lock?' (Premium)':''))+'" title="'+nt(T(a.n)+(lock?' (Premium)':''))+'">'+(lock?ic('lock'):'')+'</button>';}).join('')+'</span></div>'
     +'<div class="srow"><span>Densité</span>'+segPref('density',[['compact','Compacte'],['normal','Normale'],['comfy','Confortable']])+'</div>'
     +'<div class="srow"><span>Taille du texte</span>'+segPref('size',[['s','Petite'],['m','Moyenne'],['l','Grande']])+'</div></section>';
   if(S.me)h+=notifCard();
@@ -540,7 +547,7 @@ function vSettings(by){
     var hidden=dashHidden();
     h+='<section class="panel scard"><h2>'+ic('grid')+'Tableau de bord</h2><p class="hint">Choisis les blocs affichés sur l’accueil. Pour les réorganiser, utilise « Personnaliser » sur l’accueil.</p><div class="chips">'+WORDER.map(function(k){return '<button class="fchip" data-act="w-toggle" data-id="'+k+'" aria-pressed="'+(hidden.indexOf(k)<0)+'">'+WIDGETS[k].t+'</button>';}).join('')+'</div></section>';
     h+='<section class="panel scard"><h2>'+ic('users')+'Partage</h2><p class="hint">Chaque projet se partage séparément : ouvre un projet, puis « Partager ». Tu choisis pour chaque personne « Lecteur » ou « Éditeur ». Ton Inbox, tes clients, tes montants et tes notes privées restent visibles par toi seul.</p></section>';
-    h+='<section class="panel scard"><h2>'+ic('download')+'Données</h2><p class="hint">Télécharge une copie de tout ton espace (projets, tâches, clients) dans un fichier.</p><div class="row-btns"><button class="btn" data-act="export">'+ic('download')+'Exporter en JSON</button></div></section>';
+    h+='<section class="panel scard"><h2>'+ic('download')+'Données</h2><p class="hint">Télécharge une copie de tout ton espace (projets, tâches, clients) dans un fichier.</p><div class="row-btns"><button class="btn" data-act="export">'+ic('download')+'Exporter en JSON</button><button class="btn" data-act="export-csv">'+ic('table')+'Exporter en tableur (Excel)'+(plan().csv?'':' <span class="pbadge">Pro</span>')+'</button></div></section>';
   }
   h+='<section class="panel scard"><h2>'+ic('bolt')+'Tutoriel</h2><p class="hint">Une visite guidée de l’appli en une minute : le menu, les projets, le partage, les tâches.</p><div class="row-btns"><button class="btn" data-act="tour-start">'+ic('arrow')+'Revoir le tutoriel</button></div></section>';
   var ks=[['Ctrl K','Rechercher et lancer une commande'],['N','Nouvelle tâche'],['Maj P','Nouveau projet'],['G puis H','Accueil'],['G puis I','Inbox'],['G puis T','Mes tâches'],['G puis C','Calendrier'],['G puis P','Projets'],['Ctrl B','Afficher ou masquer le menu'],['Échap','Fermer']];

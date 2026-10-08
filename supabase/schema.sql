@@ -86,6 +86,37 @@ begin
   end loop;
 end $$;
 
+-- ---------- formules (Gratuit, Premium, Pro) ----------
+-- admins : peuvent donner ou retirer une formule. Personne d'autre ne peut lire cette table.
+create table if not exists public.admins (
+  email text primary key check (email = lower(email))
+);
+insert into public.admins (email) values ('tomokari.perso@gmail.com') on conflict do nothing;
+-- une ligne par personne ayant Premium ou Pro (sans ligne, ou date passée : formule Gratuite)
+create table if not exists public.premium (
+  email text primary key check (email = lower(email) and position('@' in email) > 1),
+  plan text not null check (plan in ('premium','pro')),
+  period text not null default 'month' check (period in ('month','year','gift')),
+  until timestamptz,                     -- vide = sans fin
+  granted_by text,
+  updated_at timestamptz not null default now()
+);
+create or replace function public.is_admin() returns boolean
+language sql stable security definer set search_path = public as $$
+  select public.my_email() <> '' and exists (select 1 from public.admins a where a.email = public.my_email())
+$$;
+create or replace function public.my_plan() returns text
+language sql stable security definer set search_path = public as $$
+  select case when public.is_admin() then 'pro'
+    else coalesce((select p.plan from public.premium p
+                   where p.email = public.my_email() and public.my_email() <> '' and (p.until is null or p.until > now())), 'free') end
+$$;
+create or replace function public.my_active_projects() returns int
+language sql stable security definer set search_path = public as $$
+  select count(*)::int from public.projects
+  where owner = auth.uid() and coalesce(data->>'status', 'active') <> 'archived'
+$$;
+
 -- ---------- droits ----------
 alter table public.spaces   enable row level security;
 alter table public.projects enable row level security;
@@ -94,6 +125,8 @@ alter table public.clients  enable row level security;
 alter table public.meta     enable row level security;
 alter table public.settings enable row level security;
 alter table public.members  enable row level security;
+alter table public.admins   enable row level security;
+alter table public.premium  enable row level security;
 
 -- personne n'accède à rien sans être connecté
 revoke all on public.spaces, public.projects, public.tasks, public.clients, public.meta, public.settings, public.members from anon;
@@ -103,7 +136,10 @@ revoke update on public.spaces, public.projects, public.tasks, public.clients, p
 grant update (data) on public.spaces, public.projects, public.clients, public.meta, public.settings to authenticated;
 grant update (data, project_id) on public.tasks to authenticated;
 grant update (role) on public.members to authenticated;
-grant execute on function public.my_email(), public.project_role(uuid) to authenticated;
+grant execute on function public.my_email(), public.project_role(uuid), public.is_admin(), public.my_plan(), public.my_active_projects() to authenticated;
+revoke all on public.admins, public.premium from anon;
+revoke all on public.admins from authenticated;
+grant select, insert, update, delete on public.premium to authenticated;
 
 -- espaces, clients, réglages, infos privées : uniquement leur propriétaire
 drop policy if exists own_all on public.spaces;
@@ -125,8 +161,9 @@ drop policy if exists projects_read on public.projects;
 create policy projects_read on public.projects for select to authenticated
   using (owner = auth.uid() or public.project_role(id) is not null);
 drop policy if exists projects_insert on public.projects;
+-- formule Gratuite : 5 projets actifs au plus
 create policy projects_insert on public.projects for insert to authenticated
-  with check (owner = auth.uid());
+  with check (owner = auth.uid() and (public.my_plan() <> 'free' or public.my_active_projects() < 5));
 drop policy if exists projects_update on public.projects;
 create policy projects_update on public.projects for update to authenticated
   using (public.project_role(id) in ('owner','editor'))
@@ -190,12 +227,12 @@ exception when others then
 end $$;
 grant execute on function public.task_role(uuid), public.photo_task(text) to authenticated;
 
--- espaces de stockage privés : photos (5 Mo par image) et fichiers joints (25 Mo par fichier)
+-- espaces de stockage privés : photos (5 Mo par image) et fichiers joints (50 Mo au plus, selon la formule)
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('photos', 'photos', false, 5242880, array['image/jpeg','image/png','image/webp'])
 on conflict (id) do update set public = false, file_size_limit = excluded.file_size_limit, allowed_mime_types = excluded.allowed_mime_types;
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('fichiers', 'fichiers', false, 26214400, null)
+values ('fichiers', 'fichiers', false, 52428800, null)
 on conflict (id) do update set public = false, file_size_limit = excluded.file_size_limit;
 
 -- même règle pour les photos et les fichiers : on voit ceux des tâches qu'on a le droit de voir (et celles qu'on a envoyées soi-même) ;
@@ -211,6 +248,14 @@ drop policy if exists avancee_photos_delete on storage.objects;
 create policy avancee_photos_delete on storage.objects for delete to authenticated
   using (bucket_id in ('photos','fichiers')
      and (owner_id = auth.uid()::text or public.task_role(public.photo_task(name)) in ('owner','editor')));
+
+-- formules : chacun voit la sienne ; seuls les admins voient et modifient tout
+drop policy if exists premium_read on public.premium;
+create policy premium_read on public.premium for select to authenticated
+  using (email = public.my_email() or public.is_admin());
+drop policy if exists premium_admin on public.premium;
+create policy premium_admin on public.premium for all to authenticated
+  using (public.is_admin()) with check (public.is_admin());
 
 -- mises à jour en direct (ignoré si déjà activé)
 do $$

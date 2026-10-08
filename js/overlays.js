@@ -50,7 +50,7 @@ function renderPanel(by){
   /* fichiers */
   var fls=t.files||[], fup=S.fupl[t.id]||[];
   if(ed||fls.length){
-    h+='<section class="tp-s"><h4>Fichiers'+(fls.length?'<span class="cnt">'+fls.length+'/'+FILE_MAX+'</span>':'')+'</h4>';
+    h+='<section class="tp-s"><h4>Fichiers'+(fls.length?'<span class="cnt">'+fls.length+'/'+plan().files+'</span>':'')+'</h4>';
     if(fls.length||fup.length){
       h+='<ul class="flist">';
       fls.forEach(function(f){
@@ -63,18 +63,20 @@ function renderPanel(by){
       fup.forEach(function(n){h+='<li class="frow up" role="status"><span class="f-ic"><i class="spin"></i></span><span class="f-name"><span class="nm">'+esc(n)+'</span><span class="cnt">Envoi en cours…</span></span></li>';});
       h+='</ul>';
     }
-    if(ed&&fls.length+fup.length<FILE_MAX)h+='<button class="addfile" data-act="file-add" data-id="'+id+'">'+ic('clip')+'Joindre un fichier</button><p class="hint">PDF, devis, documents, archives… jusqu’à 25 Mo chacun.</p>';
+    if(ed&&fls.length+fup.length<plan().files)h+='<button class="addfile" data-act="file-add" data-id="'+id+'">'+ic('clip')+'Joindre un fichier</button><p class="hint">'+tf('PDF, devis, documents, archives… jusqu’à {0} chacun.',fmtSize(plan().size))+'</p>';
+    else if(ed&&!isPaid())h+='<button class="addfile up" data-act="upsell" data-id="files">'+ic('star')+'Plus de fichiers avec Premium</button>';
     h+='</section>';
   }
   /* photos */
   var phs=t.photos||[], upl=S.upl[t.id]||0;
   if(ed||phs.length){
-    h+='<section class="tp-s"><h4>Photos'+(phs.length?'<span class="cnt">'+phs.length+'/'+PHOTO_MAX+'</span>':'')+'</h4><div class="phgrid">';
+    h+='<section class="tp-s"><h4>Photos'+(phs.length?'<span class="cnt">'+phs.length+'/'+plan().photos+'</span>':'')+'</h4><div class="phgrid">';
     phs.forEach(function(ph,i){
       h+='<div class="ph"><button class="ph-b" data-act="photo-open" data-item="'+i+'" aria-label="Agrandir la photo '+(i+1)+'">'+photoImg(ph,'Photo '+(i+1))+'</button>'+(ed?'<button class="ph-x" data-act="photo-del" data-item="'+esc(ph.id)+'" aria-label="Supprimer la photo '+(i+1)+'">'+ic('x')+'</button>':'')+'</div>';
     });
     for(var u=0;u<upl;u++)h+='<div class="ph up" role="status" aria-label="Envoi de la photo…"><i class="spin"></i></div>';
-    if(ed&&phs.length+upl<PHOTO_MAX)h+='<button class="ph add" data-act="photo-add" data-id="'+id+'">'+ic('image')+'<span>Ajouter des photos</span></button>';
+    if(ed&&phs.length+upl<plan().photos)h+='<button class="ph add" data-act="photo-add" data-id="'+id+'">'+ic('image')+'<span>Ajouter des photos</span></button>';
+    else if(ed&&!isPaid())h+='<button class="ph add up" data-act="upsell" data-id="photos">'+ic('star')+'<span>Plus de photos avec Premium</span></button>';
     h+='</div></section>';
   }
   /* checklist */
@@ -155,6 +157,8 @@ function palItems(by){
   add('Langue','settings','Français','lang','fr',{kw:'langue language french'});
   add('Langue','settings','English','lang','en',{kw:'langue language anglais'});
   add('Aide','bolt','Revoir le tutoriel','tour-start','',{kw:'aide tuto tutorial help guide visite'});
+  add('Aller à','star','Formules','view','plans',{kw:'premium pro abonnement prix offre'});
+  if(S.admin)add('Aller à','bolt','Admin','view','admin',{kw:'admin premium formules'});
   if(S.me)add('Compte','user','Se déconnecter','logout','',{kw:'deconnexion quitter compte'});
   if(q&&ed)out.push({g:'Créer',icon:'plus',label:T('Créer la tâche « '+S.pq.trim()+' »'),act:'qa-create',id:''});
   return out;
@@ -194,7 +198,8 @@ function renderOverlay(by){
   var el=document.getElementById('overlay'), h='';
   var pt=S.photo?taskById(S.photo.id):null, pl=pt?(pt.photos||[]):[];
   if(S.photo&&!pl.length)S.photo=null;
-  if(S.photo){
+  if(S.upsell){h=upsellHtml();}
+  else if(S.photo){
     var pi=Math.max(0,Math.min(pl.length-1,S.photo.i));S.photo.i=pi;
     h='<div class="ov lb" data-act="ov-bg"><div class="lbx" role="dialog" aria-label="Photo">'+photoImg(pl[pi],'Photo '+(pi+1))+'</div>'
       +'<button class="lb-btn lb-x" data-act="ov-close" aria-label="Fermer">'+ic('x')+'</button>'
@@ -213,6 +218,8 @@ function renderOverlay(by){
     else{
       items=[['pal','','search','Rechercher']];
       if(S.canEdit)items.push(['view','calendar','calendar','Calendrier'],['view','clients','users','Clients']);
+      items.push(['view','plans','star','Formules']);
+      if(S.admin)items.push(['view','admin','bolt','Admin']);
       items.push(['view','settings','settings','Réglages']);
     }
     h='<div class="ov bottom" data-act="ov-bg"><div class="sheet" role="dialog" aria-label="'+(S.sheet==='plus'?'Créer':'Menu')+'"><span class="sheet-grab" aria-hidden="true"></span>'+items.map(function(i){return '<button class="sheet-i" data-act="'+i[0]+'" data-id="'+i[1]+'">'+ic(i[2])+'<span>'+i[3]+'</span></button>';}).join('')+'</div></div>';
@@ -238,6 +245,6 @@ function renderOverlay(by){
     }
   }
 }
-function closeOverlays(){S.photo=null;S.pal=false;S.pq='';S.pi=0;S.qa=null;S.sheet=null;S.ctx=null;}
+function closeOverlays(){S.upsell=null;S.photo=null;S.pal=false;S.pq='';S.pi=0;S.qa=null;S.sheet=null;S.ctx=null;}
 function openPal(){closeOverlays();S.pal=true;S.focus='pq';}
 function openQa(o){closeOverlays();var cur=index()[S.view];S.qa=Object.assign({text:'',due:'',pid:(cur&&cur.rw?S.view:'')},o||{});S.focus='qat';}
