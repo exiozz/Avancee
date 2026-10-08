@@ -172,7 +172,7 @@ function vHome(by){
     h+='<div class="note warn"><p><strong>Ce sont des exemples.</strong> Ils montrent ce que l’appli sait faire. Supprime-les quand tu veux.</p>'
       +(S.confirm==='demo'?'<button class="btn danger" data-act="demo-del">Confirmer</button><button class="btn" data-act="cancel">Annuler</button>':'<button class="btn" data-act="demo-del">Supprimer les exemples</button>')+'</div>';
   }
-  if(S.me&&S.me.provider==='email'&&!S.cfg.pwSet&&LS.get('haspw','')!==S.me.email&&!LS.get('pwtip',0)&&S.tour==null){
+  if(S.me&&S.me.provider==='email'&&!S.cfg.pwSet&&!hasPw()&&LS.get('haspw','')!==S.me.email&&!LS.get('pwtip',0)&&S.tour==null){
     h+='<div class="note"><p><strong>Astuce : choisis un mot de passe.</strong> Tu pourras te connecter tout de suite, sans attendre d’e-mail.</p><button class="btn sm" data-act="pw-go">Choisir un mot de passe</button><button class="btn quiet sm" data-act="pw-later">Plus tard</button></div>';
   }
   if(ed&&!S.cfg.onboarded){
@@ -527,7 +527,7 @@ function segPref(k,opts){
 }
 function vSettings(by){
   var ed=S.canEdit, h='<header class="phd"><h1>Réglages</h1><p class="lead">L’apparence est mémorisée sur cet appareil.</p></header><div class="sgrid">';
-  if(S.me)h+='<section class="panel scard"><h2>'+ic('user')+'Compte</h2><div class="acct">'+avatar(S.me,'lg')+'<div class="grow"><strong>'+esc(S.me.name||T('Mon compte'))+'</strong><span class="mut">'+esc(S.me.email)+'</span></div><button class="btn" data-act="logout">Se déconnecter</button></div><div class="srow"><label for="st-pw">Mot de passe<small>'+(S.cfg.pwSet?'Tu en as déjà un. Écris-en un nouveau pour le changer.':'Choisis-en un pour te connecter sans attendre d’e-mail.')+'</small></label><span class="pwrow"><input class="in" id="st-pw" type="password" autocomplete="new-password" placeholder="8 caractères ou plus" data-draft><button class="btn" data-act="pw-save">Enregistrer</button></span></div></section>';
+  if(S.me)h+='<section class="panel scard"><h2>'+ic('user')+'Compte</h2><div class="acct">'+avatar(S.me,'lg')+'<div class="grow"><strong>'+esc(S.me.name||T('Mon compte'))+'</strong><span class="mut">'+esc(S.me.email)+'</span></div><button class="btn" data-act="logout">Se déconnecter</button></div><div class="srow"><label for="st-pw">Mot de passe<small>'+(S.cfg.pwSet||hasPw()?'Tu en as déjà un. Écris-en un nouveau pour le changer.':'Choisis-en un pour te connecter sans attendre d’e-mail.')+'</small></label><span class="pwrow"><input class="in" id="st-pw" type="password" autocomplete="new-password" placeholder="8 caractères ou plus" data-draft><button class="btn" data-act="pw-save">Enregistrer</button></span></div></section>';
   if(ed)h+='<section class="panel scard"><h2>'+ic('user')+'Profil</h2><div class="srow"><label for="st-name">Ton prénom<small>Pour le message d’accueil et « Mes tâches ».</small></label><input class="in" id="st-name" value="'+esc(myName())+'" data-draft data-change="cfgname" placeholder="Ton prénom" autocomplete="off"></div></section>';
   h+='<section class="panel scard"><h2>'+ic('sun')+'Apparence et langue</h2>'
     +'<div class="srow"><span>Langue</span><span class="seg" role="group" aria-label="Langue">'+Object.keys(I18N.langs).map(function(k){return '<button data-act="lang" data-id="'+k+'" aria-pressed="'+(LANG===k)+'">'+nt(I18N.langs[k])+'</button>';}).join('')+'</span></div>'

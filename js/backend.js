@@ -129,8 +129,10 @@ var Cloud=(function(){
   function setUser(session){
     var u=session&&session.user;
     if(!u){me=null;return;}
-    var m=u.user_metadata||{};
-    me={id:u.id,email:String(u.email||'').toLowerCase(),name:m.full_name||m.name||m.user_name||'',avatar:m.avatar_url||m.picture||'',provider:(u.app_metadata&&u.app_metadata.provider)||''};
+    var m=u.user_metadata||{}, amr=[];
+    /* comment la personne s'est connectée (mot de passe, lien, Google…) : écrit dans son jeton de connexion */
+    try{var part=String(session.access_token||'').split('.')[1];if(part){var j=JSON.parse(decodeURIComponent(escape(atob(part.replace(/-/g,'+').replace(/_/g,'/')))));amr=(j.amr||[]).map(function(x){return x&&x.method||x;});}}catch(_){}
+    me={id:u.id,email:String(u.email||'').toLowerCase(),name:m.full_name||m.name||m.user_name||'',avatar:m.avatar_url||m.picture||'',provider:(u.app_metadata&&u.app_metadata.provider)||'',amr:amr};
   }
   function here(){return location.origin+location.pathname;}
   function init(){

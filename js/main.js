@@ -154,6 +154,7 @@ root.addEventListener('click',function(ev){
       LS.set('lgmode','pw');LS.set('haspw',pe);
       setTimeout(function(){if(S.auth!=='in')location.reload();},600);   /* normalement la page se recharge toute seule dès la connexion */
     };
+    LS.set('lgmode','pw');
     (S.gate.signup?Cloud.signUp(pe,pw):Cloud.signInPassword(pe,pw)).then(fin,function(){S.gate.sending=false;S.gate.err='Connexion impossible pour le moment.';render();});
     return;
   }
@@ -577,7 +578,7 @@ function startApp(){
   NOTIF.seen=null;NOTIF.members=null;notifStart();
   Cloud.load().then(function(){
     setTimeout(notifDaily,2500);
-    if(S.pwJustSet){S.pwJustSet=false;saveCfg({pwSet:true});}
+    if(S.pwJustSet||(hasPw()&&!S.cfg.pwSet)){S.pwJustSet=false;saveCfg({pwSet:true});}
     if(next&&S.pending===next&&!validView(index())){
       S.pending=null;S.view='home';
       toast(tf('Ce projet n’existe pas, ou il n’est pas partagé avec ton adresse ({0}).',S.me.email),{bad:true});

@@ -92,6 +92,7 @@ function metaOf(pid){return S.meta[pid]||{};}
 function clientOf(p){var id=metaOf(p.id).clientId;return id?S.clients.find(function(c){return c.id===id;}):null;}
 function clean(o){var n=JSON.parse(JSON.stringify(o));delete n.id;delete n._priv;delete n._col;delete n._owner;return n;}
 function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');}
+function hasPw(){return !!(S.me&&(S.me.amr||[]).indexOf('password')>=0);}
 function myName(){var n=String(S.cfg.name||'').trim();if(n)return n;return S.me&&S.me.name?String(S.me.name).split(' ')[0]:'';}
 
 /* ---------- apparence ---------- */
