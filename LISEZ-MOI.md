@@ -41,7 +41,7 @@ Pour mettre à jour plus tard : onglet **Deploys**, et glisse de nouveau le doss
 Dans Supabase : **Authentication > URL Configuration**.
 
 - **Site URL** : l'adresse de ton site, par exemple `https://avancee.netlify.app`
-- **Redirect URLs** : ajoute la même adresse.
+- **Redirect URLs** : ajoute la même adresse suivie de `/**`, par exemple `https://avancee-theta.vercel.app/**` (nécessaire pour les liens « mot de passe oublié »).
 
 Sans ça, la connexion te renvoie vers une page d'erreur.
 

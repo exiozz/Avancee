@@ -3,6 +3,8 @@
    Les écritures sont appliquées tout de suite à l'écran, puis envoyées ; si le serveur refuse, on recharge. */
 'use strict';
 var Cloud=(function(){
+  /* arrivée depuis l'e-mail « mot de passe oublié » : à repérer avant que la bibliothèque ne nettoie l'adresse */
+  var RECOVERY=/[?&]reset=1/.test(location.search)||/type=recovery/.test(location.hash);
   var cfg=window.AVANCEE_CONFIG||{}, sb=null, me=null, cache={}, subs={}, timers={}, authCb=null, lastLoad=0;
   /* table -> forme. key : colonne servant d'identifiant ; single : une ligne par personne ; plain : colonnes simples */
   var T={spaces:{},projects:{},clients:{},tasks:{},meta:{key:'project_id'},settings:{key:'owner',single:true},members:{plain:true}};
@@ -141,7 +143,7 @@ var Cloud=(function(){
         if(was!==now&&authCb)authCb(me);
       });
       if(me)live();
-      return {state:me?'in':'out'};
+      return {state:me?'in':'out',recovery:!!(me&&RECOVERY)};
     },function(){return {state:'out'};});
   }
   return {
@@ -155,6 +157,7 @@ var Cloud=(function(){
     signInPassword:function(email,pw){return sb.auth.signInWithPassword({email:email,password:pw});},
     signUp:function(email,pw){return sb.auth.signUp({email:email,password:pw,options:{emailRedirectTo:here()}});},
     setPassword:function(pw){return sb.auth.updateUser({password:pw});},
+    resetPassword:function(email){return sb.auth.resetPasswordForEmail(email,{redirectTo:here()+'?reset=1'});},
     signOut:function(){cache={};return sb.auth.signOut();},
     /* photos : rangées dans le dossier de leur tâche (stockage Supabase, espace « photos ») */
     photoUpload:function(taskId,blob){

@@ -548,8 +548,12 @@ function vSettings(by){
 }
 
 /* ---------- écran de connexion ---------- */
+function pwBox(id,ac,ph,v){
+  var sh=S.gate.show;
+  return '<span class="pwbox"><input class="in" id="'+id+'" type="'+(sh?'text':'password')+'" autocomplete="'+ac+'" autocapitalize="off" spellcheck="false" placeholder="'+ph+'" value="'+esc(v)+'"><button type="button" class="pw-eye" data-act="pw-eye" aria-pressed="'+sh+'" aria-label="'+(sh?'Masquer le mot de passe':'Afficher le mot de passe')+'" title="'+(sh?'Masquer le mot de passe':'Afficher le mot de passe')+'">'+ic(sh?'eyeoff':'eye')+'</button></span>';
+}
 function renderGate(){
-  var g=document.getElementById('gate'), old=document.getElementById('lg-email'), val=old?old.value:'', oldp=document.getElementById('lg-pw'), pwv=oldp?oldp.value:'';
+  var g=document.getElementById('gate'), old=document.getElementById('lg-email'), val=old?old.value:(LS.get('lgemail','')||''), oldp=document.getElementById('lg-pw'), pwv=oldp?oldp.value:'';
   function put(html){html=tr(html);if(g._h!==html){g.innerHTML=html;g._h=html;}still(g,'gate');}
   document.body.classList.add('gated');
   if(S.auth==='boot'){g.innerHTML='<div class="gate"><div class="gate-card boot">'+LOGO+'<div class="sk sk-l w60"></div><div class="sk sk-l w40"></div></div></div>';g._h=null;return;}
@@ -557,24 +561,38 @@ function renderGate(){
   var h='<div class="gate"><div class="gate-card"><div class="gate-top">'+LOGO+langs+'</div><h1>Avancée</h1><p class="lead">L’espace de travail simple pour organiser tes projets, tes clients et ton travail.</p>';
   if(S.auth==='setup'){
     h+='<div class="note warn"><p><strong>Le site n’est pas encore relié à sa base de données.</strong> Ouvre le fichier <code>config.js</code> et colle l’adresse de ton projet Supabase et sa clé « publishable », puis remets le site en ligne. Le guide <code>LISEZ-MOI.md</code> détaille chaque étape.</p></div>';
+  }else if(S.auth==='reset'){
+    var rv=(document.getElementById('rs-pw')||{}).value||'';
+    h+='<div class="gate-sub"><strong>Choisis ton nouveau mot de passe</strong><span>Pour le compte <b>'+esc(S.me?S.me.email:'')+'</b>.</span></div>'
+      +'<div class="gate-mail"><label for="rs-pw">Nouveau mot de passe</label>'+pwBox('rs-pw','new-password','8 caractères ou plus',rv)
+      +'<button class="btn primary lg" data-act="reset-save"'+(S.gate.sending?' disabled':'')+'>'+(S.gate.sending?'<i class="spin"></i>Enregistrement…':'Enregistrer et continuer')+'</button>'
+      +'<button class="btn quiet sm" data-act="reset-skip">Plus tard</button></div>';
   }else if(S.gate.sent){
-    h+='<div class="gate-sent"><span class="empty-ic">'+ic('check')+'</span><strong>Regarde ta boîte mail</strong><span>'+(S.gate.kind==='confirm'?'Un e-mail de confirmation vient d’être envoyé à':'Un lien de connexion vient d’être envoyé à')+' <b>'+esc(S.gate.sent)+'</b>'+(S.gate.kind==='confirm'?'. Clique sur le lien dedans : c’est la seule fois, ensuite ton mot de passe suffit.':'. Ouvre-le sur cet appareil.')+'</span><button class="btn quiet sm" data-act="login-back">Utiliser une autre adresse</button></div>';
+    var sk=S.gate.kind, stx={confirm:['Un e-mail de confirmation vient d’être envoyé à','. Clique sur le lien dedans : c’est la seule fois, ensuite ton mot de passe suffit.'],reset:['Un lien pour choisir ton nouveau mot de passe vient d’être envoyé à','. Ouvre-le sur cet appareil.'],link:['Un lien de connexion vient d’être envoyé à','. Ouvre-le sur cet appareil.']}[sk]||['Un lien de connexion vient d’être envoyé à','. Ouvre-le sur cet appareil.'];
+    h+='<div class="gate-sent"><span class="empty-ic">'+ic('check')+'</span><strong>Regarde ta boîte mail</strong><span>'+stx[0]+' <b>'+esc(S.gate.sent)+'</b>'+stx[1]+'</span><span class="hint">Rien reçu après quelques minutes ? Regarde dans les spams.</span><button class="btn quiet sm" data-act="login-back">Retour</button></div>';
   }else{
     var names={google:'Google',discord:'Discord',github:'GitHub',apple:'Apple',azure:'Microsoft',gitlab:'GitLab',twitch:'Twitch'};
     var ps=Cloud.providers();
     h+='<div class="gate-btns">'+ps.map(function(p){return '<button class="btn lg" data-act="login" data-id="'+esc(p)+'">Continuer avec '+esc(names[p]||p)+'</button>';}).join('')+'</div>';
     if(Cloud.emailLogin()){
       if(ps.length)h+='<div class="gate-or"><span>ou</span></div>';
-      var pwm=S.gate.mode==='pw', su=S.gate.signup;
-      h+='<div class="seg gate-mode" role="group" aria-label="Façon de se connecter"><button data-act="login-mode" data-id="link" aria-pressed="'+(!pwm)+'">Lien par e-mail</button><button data-act="login-mode" data-id="pw" aria-pressed="'+pwm+'">Mot de passe</button></div>';
-      h+='<div class="gate-mail"><label for="lg-email">Adresse e-mail</label><input class="in" id="lg-email" type="email" inputmode="email" autocomplete="email" placeholder="toi@exemple.com" value="'+esc(val)+'">';
-      if(pwm){
-        h+='<label for="lg-pw">Mot de passe</label><input class="in" id="lg-pw" type="password" autocomplete="'+(su?'new-password':'current-password')+'" placeholder="'+(su?'8 caractères ou plus':'Ton mot de passe')+'" value="'+esc(pwv)+'">'
-          +'<button class="btn primary lg" data-act="login-pw"'+(S.gate.sending?' disabled':'')+'>'+(S.gate.sending?'<i class="spin"></i>Connexion…':(su?'Créer mon compte':'Se connecter'))+'</button>'
-          +(su?'<p class="hint">Tu reçois un seul e-mail pour confirmer ton adresse. Ensuite, ton mot de passe suffit.</p><p class="hint">Déjà un compte ? <button class="linkbtn" data-act="login-signup" data-id="0">Se connecter</button></p>'
-              :'<p class="hint">Première fois ici ? <button class="linkbtn" data-act="login-signup" data-id="1">Créer mon compte</button></p><p class="hint">Jamais choisi de mot de passe, ou oublié ? Passe par « Lien par e-mail », puis choisis-en un dans Réglages.</p>');
+      var pwm=S.gate.mode==='pw', su=S.gate.signup, fg=pwm&&S.gate.forgot;
+      if(fg){
+        h+='<div class="gate-sub"><strong>Mot de passe oublié</strong><span>Entre ton adresse : tu reçois un lien pour en choisir un nouveau. Ça marche aussi si tu n’en as jamais eu.</span></div>';
       }else{
-        h+='<button class="btn primary lg" data-act="login-email"'+(S.gate.sending?' disabled':'')+'>'+(S.gate.sending?'<i class="spin"></i>Envoi…':'Recevoir un lien de connexion')+'</button><p class="hint">Tu reçois un lien par e-mail. Une fois connecté, tu peux choisir un mot de passe dans Réglages pour ne plus attendre d’e-mail.</p>';
+        h+='<div class="seg gate-mode" role="group" aria-label="Façon de se connecter"><button data-act="login-mode" data-id="pw" aria-pressed="'+pwm+'">Mot de passe</button><button data-act="login-mode" data-id="link" aria-pressed="'+(!pwm)+'">Lien par e-mail</button></div>';
+      }
+      h+='<div class="gate-mail"><label for="lg-email">Adresse e-mail</label><input class="in" id="lg-email" type="email" inputmode="email" autocomplete="email" placeholder="toi@exemple.com" value="'+esc(val)+'">';
+      if(fg){
+        h+='<button class="btn primary lg" data-act="login-forgot-send"'+(S.gate.sending?' disabled':'')+'>'+(S.gate.sending?'<i class="spin"></i>Envoi…':'Recevoir le lien')+'</button>'
+          +'<div class="gate-links"><button class="linkbtn" data-act="login-forgot" data-id="0">'+ic('left')+'Retour à la connexion</button></div>';
+      }else if(pwm){
+        h+='<label for="lg-pw">Mot de passe</label>'+pwBox('lg-pw',su?'new-password':'current-password',su?'8 caractères ou plus':'Ton mot de passe',pwv)
+          +'<button class="btn primary lg" data-act="login-pw"'+(S.gate.sending?' disabled':'')+'>'+(S.gate.sending?'<i class="spin"></i>Connexion…':(su?'Créer mon compte':'Se connecter'))+'</button>'
+          +(su?'<p class="hint">Un seul e-mail pour confirmer ton adresse, ensuite ton mot de passe suffit.</p><div class="gate-links"><button class="linkbtn" data-act="login-signup" data-id="0">J’ai déjà un compte</button></div>'
+              :'<div class="gate-links"><button class="linkbtn" data-act="login-forgot" data-id="1">Mot de passe oublié ?</button><button class="linkbtn" data-act="login-signup" data-id="1">Créer un compte</button></div>');
+      }else{
+        h+='<button class="btn primary lg" data-act="login-email"'+(S.gate.sending?' disabled':'')+'>'+(S.gate.sending?'<i class="spin"></i>Envoi…':'Recevoir un lien de connexion')+'</button><p class="hint">Pratique si tu n’as pas encore de mot de passe. Tu pourras en choisir un ensuite dans Réglages.</p>';
       }
       h+='</div>';
     }

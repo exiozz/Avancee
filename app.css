@@ -719,3 +719,18 @@ body.touring .toasts{z-index:91}
 .gate-mail .linkbtn{font-size:1em}
 .pwrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 .pwrow .in{width:200px;max-width:100%}
+
+/* mot de passe : afficher / masquer, liens, mot de passe oublié */
+.pwbox{position:relative;display:block}
+.pwbox .in{width:100%;padding-right:46px}
+.pw-eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:9px;display:grid;place-items:center;color:var(--muted)}
+.pw-eye:hover{color:var(--ink);background:var(--hover)}
+.pw-eye .ic{width:18px;height:18px}
+.gate-links{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.gate-links .linkbtn{display:inline-flex;align-items:center;gap:4px;padding:6px 0}
+.gate-links .linkbtn .ic{width:15px;height:15px}
+.gate-sub{display:flex;flex-direction:column;gap:4px}
+.gate-sub strong{font:600 1.15em var(--f-display)}
+.gate-sub span{color:var(--muted)}
+.gate-sub b{color:var(--ink)}
+.gate-mail>.btn.quiet{align-self:center}

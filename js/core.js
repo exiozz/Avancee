@@ -41,7 +41,7 @@ var LS={
 var P={theme:LS.get('theme','system'),accent:LS.get('accent','cobalt'),density:LS.get('density','normal'),size:LS.get('size','m')};
 if(!ACCENTS[P.accent])P.accent='cobalt';
 
-var S={db:null,dl:null,owner:false,unsure:false,preview:false,canEdit:false,me:null,auth:'boot',roles:{},gate:{sending:false,sent:'',err:'',mode:LS.get('lgmode','link')==='pw'?'pw':'link',signup:false,kind:''},
+var S={db:null,dl:null,owner:false,unsure:false,preview:false,canEdit:false,me:null,auth:'boot',roles:{},gate:{sending:false,sent:'',err:'',mode:LS.get('lgmode','pw')==='link'?'link':'pw',signup:false,forgot:false,show:false,kind:''},
   loaded:{s:false,p:false,t:false,c:false,m:false,cfg:false,mb:false},
   raw:{s:[],p:[],t:[],c:[],m:[],cfg:[],mb:[]},
   spaces:[],projects:[],tasks:[],clients:[],meta:{},cfg:{},

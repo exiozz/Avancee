@@ -206,6 +206,17 @@ I18N.add('en',{
 'Enregistrer':'Save','Astuce : choisis un mot de passe.':'Tip: set a password.','Tu pourras te connecter tout de suite, sans attendre d’e-mail.':'You’ll sign in straight away, without waiting for an email.',
 'Choisir un mot de passe':'Set a password','Mot de passe enregistré. La prochaine fois, connecte-toi avec « Mot de passe ».':'Password saved. Next time, sign in with “Password”.',
 
+/* --- mot de passe oublié --- */
+'Afficher le mot de passe':'Show password','Masquer le mot de passe':'Hide password','Mot de passe oublié ?':'Forgot password?','Créer un compte':'Create an account',
+'J’ai déjà un compte':'I already have an account','Un seul e-mail pour confirmer ton adresse, ensuite ton mot de passe suffit.':'A single email to confirm your address, then your password is enough.',
+'Pratique si tu n’as pas encore de mot de passe. Tu pourras en choisir un ensuite dans Réglages.':'Handy if you don’t have a password yet. You can set one afterwards in Settings.',
+'Mot de passe oublié':'Forgot password','Entre ton adresse : tu reçois un lien pour en choisir un nouveau. Ça marche aussi si tu n’en as jamais eu.':'Enter your address: you’ll get a link to choose a new one. It also works if you never had one.',
+'Recevoir le lien':'Send me the link','Retour à la connexion':'Back to sign in','Retour':'Back',
+'Un lien pour choisir ton nouveau mot de passe vient d’être envoyé à':'A link to choose your new password has just been sent to',
+'Rien reçu après quelques minutes ? Regarde dans les spams.':'Nothing after a few minutes? Check your spam folder.',
+'Choisis ton nouveau mot de passe':'Choose your new password','Pour le compte':'For the account','Nouveau mot de passe':'New password',
+'Enregistrer et continuer':'Save and continue','Enregistrement…':'Saving…','Plus tard':'Later','Enregistrement impossible. Réessaie dans un instant.':'Couldn’t save. Try again in a moment.',
+
 /* --- messages --- */
 'Modification refusée : tu n’as pas les droits sur cet élément.':'Change refused: you don’t have permission for this item.',
 'Enregistrement impossible. Réessaie dans un instant.':'Couldn’t save. Try again in a moment.',
