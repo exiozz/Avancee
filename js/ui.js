@@ -47,6 +47,7 @@ var ICONS={
   activity:'<path d="M2.500 10.500h3.500l2-5.500 4 10 2-4.500h3.500"/>',
   folder:'<path d="M3 6a1 1 0 0 1 1-1h3.600l1.600 1.800H16a1 1 0 0 1 1 1V15a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/>',
   image:'<rect x="3" y="4" width="14" height="12" rx="2"/><circle cx="7.300" cy="8.200" r="1.400"/><path d="M3.500 14l3.800-3.600 2.900 2.600 2.300-2 4 3.500"/>',
+  bell:'<path d="M5.200 13.800V9.300a4.800 4.800 0 0 1 9.600 0v4.500l1.400 1.700H3.800z"/><path d="M8.300 17.200a1.900 1.900 0 0 0 3.400 0"/>',
   user:'<circle cx="10" cy="7" r="3.200"/><path d="M4 17c0-3.300 2.700-5.200 6-5.200s6 1.900 6 5.200"/>'
 };
 function ic(n,cls){return '<svg class="ic'+(cls?' '+cls:'')+'" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICONS[n]||'')+'</svg>';}

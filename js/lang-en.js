@@ -217,6 +217,21 @@ I18N.add('en',{
 'Choisis ton nouveau mot de passe':'Choose your new password','Pour le compte':'For the account','Nouveau mot de passe':'New password',
 'Enregistrer et continuer':'Save and continue','Enregistrement…':'Saving…','Plus tard':'Later','Enregistrement impossible. Réessaie dans un instant.':'Couldn’t save. Try again in a moment.',
 
+/* --- notifications --- */
+'Notifications de bureau':'Desktop notifications','Activer les notifications':'Turn on notifications','Rappel des tâches du jour':'Reminder of today’s tasks',
+'Activité sur les projets partagés':'Activity on shared projects','Quelles notifications':'Which notifications','Envoyer un test':'Send a test','Désactiver':'Turn off',
+'Reçois un petit message sur ton écran pour les tâches du jour et quand quelqu’un avance sur un projet partagé.':'Get a small message on your screen for today’s tasks and when someone makes progress on a shared project.',
+'Elles arrivent tant qu’Avancée est ouverte sur cet appareil, même dans un onglet en arrière-plan ou une fenêtre réduite. Quand tu regardes déjà l’appli, un petit message s’affiche en bas à la place.':'They arrive as long as Avancée is open on this device, even in a background tab or a minimised window. When you’re already looking at the app, a small message shows at the bottom instead.',
+'Ce navigateur ne sait pas afficher de notifications. Sur iPhone : ajoute d’abord Avancée à l’écran d’accueil (bouton Partager, puis « Sur l’écran d’accueil »), ouvre-la depuis l’icône, puis reviens ici.':'This browser can’t show notifications. On iPhone: first add Avancée to your home screen (Share button, then “Add to Home Screen”), open it from the icon, then come back here.',
+'Les notifications sont bloquées pour ce site. Pour les autoriser : clique sur le cadenas à gauche de l’adresse du site, mets « Notifications » sur « Autoriser », puis recharge la page.':'Notifications are blocked for this site. To allow them: click the padlock left of the site address, set “Notifications” to “Allow”, then reload the page.',
+'Notifications activées sur cet appareil.':'Notifications turned on for this device.','Notifications désactivées sur cet appareil.':'Notifications turned off for this device.',
+'Notifications bloquées par le navigateur.':'Notifications blocked by the browser.','Les notifications sont activées. Tu seras prévenu ici.':'Notifications are on. You’ll be alerted here.',
+'Voici à quoi ressemble une notification.':'This is what a notification looks like.',
+'Notification envoyée. Si rien n’apparaît, vérifie le mode « Ne pas déranger » de ton ordinateur.':'Notification sent. If nothing shows up, check your computer’s “Do not disturb” mode.',
+'Impossible d’afficher la notification sur ce navigateur.':'Can’t show the notification in this browser.','Ta journée':'Your day',
+'« {0} » est maintenant partagé avec toi.':'“{0}” is now shared with you.','Un projet est maintenant partagé avec toi.':'A project is now shared with you.','Nouveau projet partagé':'New shared project',
+'{0} changements sur tes projets partagés':'{0} changes on your shared projects','Quelqu’un':'Someone','a commenté : « {0} »':'commented: “{0}”',
+
 /* --- messages --- */
 'Modification refusée : tu n’as pas les droits sur cet élément.':'Change refused: you don’t have permission for this item.',
 'Enregistrement impossible. Réessaie dans un instant.':'Couldn’t save. Try again in a moment.',

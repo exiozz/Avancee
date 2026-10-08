@@ -84,7 +84,7 @@ function renderPanel(by){
   /* activité */
   var act=(t.act||[]).slice().reverse();
   if(!act.length&&t.createdAt)act=[{t:'Carte créée',at:t.createdAt}];
-  if(act.length)h+='<section class="tp-s"><h4>Activité</h4><ul class="tl">'+act.slice(0,12).map(function(a){return '<li><span class="a-dot"></span><span class="grow">'+esc(trText(a.t))+'</span><span class="cnt">'+ago(a.at)+'</span></li>';}).join('')+'</ul></section>';
+  if(act.length)h+='<section class="tp-s"><h4>Activité</h4><ul class="tl">'+act.slice(0,12).map(function(a){return '<li><span class="a-dot"></span><span class="grow">'+esc(trText(a.t))+(a.uid&&S.me&&a.uid!==S.me.id&&a.by?' <span class="mut">· '+esc(a.by)+'</span>':'')+'</span><span class="cnt">'+ago(a.at)+'</span></li>';}).join('')+'</ul></section>';
   el.innerHTML=tr(h+'</div></aside>');
   still(el,t.id);
 }

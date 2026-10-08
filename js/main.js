@@ -161,6 +161,7 @@ root.addEventListener('click',function(ev){
   if(act==='logout'){var bye=function(){location.reload();};Cloud.signOut().then(bye,bye);return;}
   if(S.auth!=='in')return;
   if(tourClick(act))return;
+  if(notifClick(act,id))return;
   if(act==='ov-bg'){if(ev.target===b){closeOverlays();render();}return;}
   if(act==='bg'){closeTask();render();return;}
   var inOverlay=!!b.closest('#overlay');
@@ -466,7 +467,7 @@ root.addEventListener('keydown',function(ev){
     else if(kind==='check'||kind==='cmt'){
       var mt=S.task?taskById(S.task):null;
       if(mt&&kind==='check')run(function(){return tdoc(mt.id).update({check:(mt.check||[]).concat([{id:rnd(),t:v,d:false}])});});
-      if(mt&&kind==='cmt')run(function(){return tdoc(mt.id).update({log:(mt.log||[]).concat([{id:rnd(),t:v,at:Date.now()}]),act:actOf(mt,'Commentaire ajouté')});});
+      if(mt&&kind==='cmt')run(function(){return tdoc(mt.id).update({log:(mt.log||[]).concat([{id:rnd(),t:v,at:Date.now(),uid:S.me&&S.me.id}]),act:actOf(mt,'Commentaire ajouté')});});
     }
     return;
   }
@@ -553,7 +554,9 @@ function snapList(snap,priv){
 }
 function sub(path,key,priv){
   S.db.collection(path).onSnapshot(function(snap){
-    S.raw[key]=snapList(snap,priv);S.loaded[key]=true;rebuild();queueRender();
+    var list=snapList(snap,priv);
+    try{notifDiff(key,list);}catch(_){}
+    S.raw[key]=list;S.loaded[key]=true;rebuild();queueRender();
   },function(e){
     S.error=(e&&e.code)||'erreur';
     S.loaded[key]=true;rebuild();queueRender();
@@ -571,7 +574,9 @@ function startApp(){
   if(next){S.view=next;S.pending=next;}
   sub('spaces','s');sub('projects','p');sub('tasks','t');sub('clients','c');sub('meta','m');sub('settings','cfg');sub('members','mb');
   render();
+  NOTIF.seen=null;NOTIF.members=null;notifStart();
   Cloud.load().then(function(){
+    setTimeout(notifDaily,2500);
     if(S.pwJustSet){S.pwJustSet=false;saveCfg({pwSet:true});}
     if(next&&S.pending===next&&!validView(index())){
       S.pending=null;S.view='home';
@@ -582,6 +587,7 @@ function startApp(){
 }
 async function init(){
   applyPrefs();
+  notifInitSW();
   S.online=navigator.onLine!==false;
   /* lien de projet collé dans un onglet où l'appli est déjà ouverte */
   window.addEventListener('hashchange',function(){var x=deepLink();if(x&&S.auth==='in'&&x!==S.view&&projById(x)){go(x);render();}});

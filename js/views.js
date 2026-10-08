@@ -140,7 +140,7 @@ function widgetBody(k,d,by){
   }
   if(k==='activity'){
     var a=recentActivity(by,7);
-    return a.length?'<ul class="acts-l">'+a.map(function(x){return '<li><button data-act="open" data-id="'+esc(x.task.id)+'"><span class="a-dot"></span><span class="a-t"><b>'+esc(x.task.title)+'</b> · '+esc(trText(x.t))+'</span><span class="cnt">'+ago(x.at)+'</span></button></li>';}).join('')+'</ul>':empty('activity','Pas encore d’activité','Les déplacements et changements de tes cartes apparaîtront ici.');
+    return a.length?'<ul class="acts-l">'+a.map(function(x){return '<li><button data-act="open" data-id="'+esc(x.task.id)+'"><span class="a-dot"></span><span class="a-t"><b>'+esc(x.task.title)+'</b> · '+esc(trText(x.t))+(x.uid&&S.me&&x.uid!==S.me.id&&x.by?' · '+esc(x.by):'')+'</span><span class="cnt">'+ago(x.at)+'</span></button></li>';}).join('')+'</ul>':empty('activity','Pas encore d’activité','Les déplacements et changements de tes cartes apparaîtront ici.');
   }
   if(k==='clients'){
     var cs=S.clients.filter(function(c){return (c.status||'active')==='active'||c.status==='lead';});
@@ -535,6 +535,7 @@ function vSettings(by){
     +'<div class="srow"><span>Couleur d’accent</span><span class="swatches" role="group" aria-label="Couleur d’accent">'+Object.keys(ACCENTS).map(function(k){var a=ACCENTS[k];return '<button class="sw lg" style="--sc:'+(isDark()?a.d:a.l)+'" data-act="pref" data-k="accent" data-id="'+k+'" aria-pressed="'+(P.accent===k)+'" aria-label="'+a.n+'" title="'+a.n+'"></button>';}).join('')+'</span></div>'
     +'<div class="srow"><span>Densité</span>'+segPref('density',[['compact','Compacte'],['normal','Normale'],['comfy','Confortable']])+'</div>'
     +'<div class="srow"><span>Taille du texte</span>'+segPref('size',[['s','Petite'],['m','Moyenne'],['l','Grande']])+'</div></section>';
+  if(S.me)h+=notifCard();
   if(ed){
     var hidden=dashHidden();
     h+='<section class="panel scard"><h2>'+ic('grid')+'Tableau de bord</h2><p class="hint">Choisis les blocs affichés sur l’accueil. Pour les réorganiser, utilise « Personnaliser » sur l’accueil.</p><div class="chips">'+WORDER.map(function(k){return '<button class="fchip" data-act="w-toggle" data-id="'+k+'" aria-pressed="'+(hidden.indexOf(k)<0)+'">'+WIDGETS[k].t+'</button>';}).join('')+'</div></section>';

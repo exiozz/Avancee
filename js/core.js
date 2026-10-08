@@ -190,7 +190,7 @@ function recentActivity(by,n){
     if(t.projectId&&!by[t.projectId])return;
     var a=t.act||[];
     if(!a.length&&t.createdAt)out.push({at:t.createdAt,t:'Carte créée',task:t});
-    a.forEach(function(x){out.push({at:x.at,t:x.t,task:t});});
+    a.forEach(function(x){out.push({at:x.at,t:x.t,task:t,uid:x.uid,by:x.by});});
   });
   return out.sort(function(a,b){return b.at-a.at;}).slice(0,n||8);
 }
@@ -289,7 +289,8 @@ function pdoc(id){return S.db.doc(realm(id)+'projects/'+id);}
 function sdoc(id){return S.db.doc('spaces/'+id);}
 function cdoc(id){return S.db.doc(PRIV+'clients/'+id);}
 function curE(){return index()[S.view];}
-function actOf(t,text){return (t.act||[]).concat([{t:text,at:Date.now()}]).slice(-30);}
+/* chaque ligne d'historique garde qui l'a faite : sert à prévenir les autres personnes du projet */
+function actOf(t,text){var a={t:text,at:Date.now()};if(S.me){a.uid=S.me.id;a.by=myName()||S.me.name||S.me.email;}return (t.act||[]).concat([a]).slice(-30);}
 
 /* ---------- écritures ---------- */
 function setMeta(pid,patch){
@@ -340,7 +341,7 @@ function deleteSpace(id){
   });
 }
 function newTaskDoc(o){
-  return Object.assign({projectId:'',title:'',columnId:'',pos:Date.now(),prio:0,due:'',notes:'',who:'',createdAt:Date.now(),doneAt:null,act:[{t:'Carte créée',at:Date.now()}]},o);
+  return Object.assign({projectId:'',title:'',columnId:'',pos:Date.now(),prio:0,due:'',notes:'',who:'',createdAt:Date.now(),doneAt:null,act:[S.me?{t:'Carte créée',at:Date.now(),uid:S.me.id,by:myName()||S.me.name||S.me.email}:{t:'Carte créée',at:Date.now()}]},o);
 }
 function addTask(pid,title,colId,extra){
   var doc=newTaskDoc(Object.assign({projectId:pid,title:title,columnId:colId},extra||{}));
