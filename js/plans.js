@@ -65,7 +65,7 @@ function featList(k){
   L.push(p.projects===Infinity?'Projets illimités':tf('{0} projets actifs',p.projects));
   L.push(tf('{0} photos par tâche',p.photos));
   L.push(tf('{0} fichiers par tâche, {1} chacun',p.files,fmtSize(p.size)));
-  L.push(p.mail?tf('Inbox : écrire, {0} messages par heure',p.mail):'Inbox : lire les messages reçus');
+  L.push(p.mail?tf('Mail : écrire, {0} messages par heure',p.mail):'Mail : lire les messages reçus');
   L.push(p.accents?'Couleurs en plus et badge':'Couleurs de base');
   if(p.skins)L.push(p.skinAnim?'Thèmes à effets avec fond animé':'Thèmes à effets : Sakura, Aurore, Océan');
   if(k==='pro'){L.push('Export des tâches en tableur (Excel)');L.push('Aide prioritaire');}

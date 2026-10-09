@@ -414,6 +414,7 @@ function extraClick(act,id,b){
   if(moreClick(act,id,b))return true;
   if(mailClick(act,id))return true;
   if(skinClick(act,id))return true;
+  if(keysClick(act,id))return true;
   if(act.indexOf('wb-')===0){
     var e=curE(); if(!e)return true;
     if(act==='wb-zoom'){
@@ -463,6 +464,7 @@ function extraClick(act,id,b){
   return false;
 }
 function extraChange(k,id,v,el){
+  if(k==='keypick'){KEYS.pick=v;return true;}
   if(moreChange(k,id,v))return true;
   var e=curE();
   if(k==='wbpick'){if(e&&canW(e)&&v&&taskById(v))wbAddTaskNode(e,v);render();return true;}

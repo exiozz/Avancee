@@ -1,4 +1,4 @@
-/* On Stride — Inbox : une messagerie interne présentée comme une boîte mail.
+/* On Stride — Mail : une messagerie interne présentée comme une boîte mail.
    On écrit à l'adresse e-mail d'une personne ; elle lit le message en se connectant à On Stride avec cette adresse.
    Les messages sont dans la table « messages » (voir supabase/schema.sql). Aucun vrai e-mail n'est envoyé :
    le destinataire est prévenu par une notification dans l'appli. Écrire est réservé aux formules Premium et Pro,
@@ -165,7 +165,7 @@ function vMail(){
   if(MAIL.q){var q=norm(MAIL.q);list=list.filter(function(t){return norm(t.who+' '+t.other+' '+t.subject+' '+t.ms.map(function(m){return m.body;}).join(' ')).indexOf(q)>=0;});}
   var cur=MAIL.open?all.find(function(t){return t.id===MAIL.open;}):null;
   if(MAIL.open&&!cur&&MAIL.loaded)MAIL.open=null;
-  var h='<header class="phd ml-hd"><div><h1>Inbox</h1><p class="lead">Tes messages avec les autres personnes sur On Stride.</p></div><button class="btn primary" data-act="mail-new">'+ic('plus')+'Nouveau message</button></header>';
+  var h='<header class="phd ml-hd"><div><h1>Mail</h1><p class="lead">Tes messages avec les autres personnes sur On Stride.</p></div><button class="btn primary" data-act="mail-new">'+ic('plus')+'Nouveau message</button></header>';
   if(MAIL.err)h+='<div class="note bad"><p>'+(MAIL.err==='no_schema'?'La messagerie n’est pas encore activée : relance le fichier supabase/schema.sql dans Supabase (SQL Editor), puis recharge la page.':'Les messages ne se chargent pas pour le moment. Recharge la page.')+'</p></div>';
   h+='<div class="mail" data-pane="'+(MAIL.compose||cur?'1':'0')+'"><section class="ml-list panel" aria-label="Conversations"><div class="ml-tabs"><span class="seg" role="group"><button data-act="mail-box" data-id="in" aria-pressed="'+(MAIL.box!=='out')+'">'+ic('inbox')+'Reçus'+(nin?'<span class="pillc">'+nin+'</span>':'')+'</button><button data-act="mail-box" data-id="out" aria-pressed="'+(MAIL.box==='out')+'">'+ic('arrow')+'Envoyés</button></span>'+(nbox>4||MAIL.q?'<span class="fq ml-fq">'+ic('search')+'<label class="sr" for="ml-q">Chercher dans les messages</label><input id="ml-q" type="search" value="'+esc(MAIL.q)+'" placeholder="Chercher dans les messages" autocomplete="off"></span>':'')+'</div>';
   if(!MAIL.loaded)h+='<p class="ml-none mut">Chargement…</p>';

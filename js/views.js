@@ -3,7 +3,7 @@
 
 /* ---------- navigation ---------- */
 function navDefs(){
-  if(S.canEdit)return [['home','home','Accueil'],['mail','inbox','Inbox'],['inbox','box','Bazar'],['tasks','tasks','Mes tâches'],['calendar','calendar','Calendrier'],['clients','users','Clients'],['projects','grid','Projets']];
+  if(S.canEdit)return [['home','home','Accueil'],['mail','inbox','Mail'],['inbox','box','Bazar'],['tasks','tasks','Mes tâches'],['calendar','calendar','Calendrier'],['clients','users','Clients'],['projects','grid','Projets']];
   return [['home','home','Accueil'],['calendar','calendar','Calendrier'],['projects','grid','Projets']];
 }
 function navCount(v,by){
@@ -27,7 +27,7 @@ function projRow(p,by){
 }
 function renderSide(by,ready){
   var ed=S.canEdit, h='<div class="side-in"><div class="ws">'+LOGO+'<span class="ws-name lbl grow">On Stride</span><button class="ib lbl" data-act="sb" data-id="rail" aria-label="Réduire le menu" title="Réduire le menu (Ctrl B)">'+ic('sidebar')+'</button></div>';
-  h+='<button class="nav srch" data-act="pal" title="Rechercher">'+ic('search')+'<span class="lbl grow">Rechercher</span><span class="lbl">'+kbd('Ctrl K')+'</span></button>';
+  h+='<button class="nav srch" data-act="pal" title="Rechercher">'+ic('search')+'<span class="lbl grow">Rechercher</span>'+(keyHint('pal')?'<span class="lbl"><kbd>'+nt(escRaw(keyHint('pal')))+'</kbd></span>':'')+'</button>';
   if(!ready){document.getElementById('side').innerHTML=tr(h+'<div class="sk sk-l w80"></div><div class="sk sk-l w60"></div><div class="sk sk-l w80"></div></div>');return;}
   h+='<nav class="navs" aria-label="Navigation">';
   navDefs().forEach(function(n){
@@ -75,7 +75,7 @@ function renderSide(by,ready){
 }
 function renderTop(by){
   var v=S.view, sub=false, crumb='';
-  var names={home:'Accueil',mail:'Inbox',inbox:'Bazar',tasks:'Mes tâches',calendar:'Calendrier',clients:'Clients',projects:'Projets',settings:'Réglages',plans:'Formules',admin:'Admin'};
+  var names={home:'Accueil',mail:'Mail',inbox:'Bazar',tasks:'Mes tâches',calendar:'Calendrier',clients:'Clients',projects:'Projets',settings:'Réglages',plans:'Formules',admin:'Admin'};
   if(names[v])crumb='<span class="crumb-i">'+names[v]+'</span>';
   else if(v.indexOf('c:')===0){
     var c=S.clients.find(function(x){return 'c:'+x.id===v;}); sub='clients';
@@ -84,17 +84,17 @@ function renderTop(by){
     var p=by[v].p; sub='projects';
     crumb='<button class="crumb-i mut hide-s" data-act="view" data-id="projects">'+esc(spaceName(p))+'</button><span class="sep hide-s">/</span><span class="crumb-i"><span class="picon">'+picon(p)+'</span><span class="nm">'+esc(p.name)+'</span>'+(isShared(p)?ic('users','mut'):'')+'</span>';
   }
-  var h='<button class="ib sbt" data-act="sb" data-id="cycle" aria-label="Afficher ou masquer le menu" title="Menu (Ctrl B)">'+ic('sidebar')+'</button>';
+  var h='<button class="ib sbt" data-act="sb" data-id="cycle" aria-label="Afficher ou masquer le menu" title="'+keyTip('Menu','sb')+'">'+ic('sidebar')+'</button>';
   if(sub)h+='<button class="ib back" data-act="view" data-id="'+sub+'" aria-label="Retour">'+ic('left')+'</button>';
   h+='<nav class="crumb" aria-label="Fil d’Ariane">'+crumb+'</nav><span class="grow"></span>'+saveHtml();
   if(by[v]&&!by[v].own)h+='<span class="badge'+(by[v].rw?' ed':'')+'">'+(by[v].rw?'Éditeur':'Lecture seule')+'</span>';
-  h+='<button class="ib" data-act="pal" aria-label="Rechercher" title="Rechercher (Ctrl K)">'+ic('search')+'</button>';
-  if(S.canEdit)h+='<button class="btn primary sm hide-s" data-act="qa" title="Nouvelle tâche (N)">'+ic('plus')+'Tâche</button>';
+  h+='<button class="ib" data-act="pal" aria-label="Rechercher" title="'+keyTip('Rechercher','pal')+'">'+ic('search')+'</button>';
+  if(S.canEdit)h+='<button class="btn primary sm hide-s" data-act="qa" title="'+keyTip('Nouvelle tâche','qa')+'">'+ic('plus')+'Tâche</button>';
   h+='<button class="ib only-s" data-act="sheet" data-id="menu" aria-label="Menu">'+ic('menu')+'</button>';
   document.getElementById('top').innerHTML=tr(h);
 }
 function renderTabbar(by){
-  var defs=S.canEdit?[['home','home','Accueil'],['mail','inbox','Inbox'],null,['inbox','box','Bazar'],['projects','grid','Projets']]   /* deux onglets de chaque côté : le bouton + reste au centre */
+  var defs=S.canEdit?[['home','home','Accueil'],['mail','inbox','Mail'],null,['inbox','box','Bazar'],['projects','grid','Projets']]   /* deux onglets de chaque côté : le bouton + reste au centre */
                     :[['home','home','Accueil'],['projects','grid','Projets'],['calendar','calendar','Calendrier'],['settings','settings','Réglages']];
   var h='';
   defs.forEach(function(n){
@@ -372,7 +372,7 @@ function vClient(c,by){
   function f(key,label,type){var fid='cf-'+key+'-'+id;return prop(label,'<input class="pv" id="'+fid+'" type="'+(type||'text')+'" value="'+esc(c[key]||'')+'" data-draft data-change="cf" data-f="'+key+'" data-id="'+id+'" placeholder="Vide" autocomplete="off">',fid);}
   var h='<div class="phead"><label class="sr" for="cf-name-'+id+'">Nom du client</label><input class="h1in" id="cf-name-'+id+'" value="'+esc(c.name)+'" data-draft data-change="cf" data-f="name" data-id="'+id+'" autocomplete="off">';
   h+='<div class="props">'+f('company','Société')+f('email','E-mail','email')+f('phone','Téléphone','tel')+prop('Statut',selH('cf-status-'+id,'cf',id,L(CST),st,'pv',' data-f="status"'),'cf-status-'+id)+'</div>'
-    +(validEmail(String(c.email||'').trim())?'<div class="row-btns"><button class="btn sm" data-act="mail-new" data-id="'+esc(String(c.email).trim().toLowerCase())+'">'+ic('inbox')+'Lui écrire dans l’Inbox</button></div>':'')+'</div>';
+    +(validEmail(String(c.email||'').trim())?'<div class="row-btns"><button class="btn sm" data-act="mail-new" data-id="'+esc(String(c.email).trim().toLowerCase())+'">'+ic('inbox')+'Lui écrire par Mail</button></div>':'')+'</div>';
   h+='<div class="stats"><div class="stat"><span>Projets</span><b>'+s.ps.length+'</b></div><div class="stat"><span>Montant total</span><b>'+eur(s.amount)+'</b></div><div class="stat"><span>Encaissé</span><b>'+eur(s.paid)+'</b></div><div class="stat'+(s.rest>0?' bad':'')+'"><span>Reste à encaisser</span><b>'+eur(s.rest)+'</b></div></div>';
   h+='<section class="sect"><h2><label for="cf-notes-'+id+'">Notes</label></h2><textarea class="area" id="cf-notes-'+id+'" data-draft data-change="cf" data-f="notes" data-id="'+id+'" placeholder="Besoins, tarifs convenus, interlocuteurs, historique…">'+esc(c.notes||'')+'</textarea></section>';
   h+='<section class="sect"><h2>Projets de ce client</h2>';
@@ -560,8 +560,7 @@ function vSettings(by){
     h+='<section class="panel scard"><h2>'+ic('download')+'Données</h2><p class="hint">Télécharge une copie de tout ton espace (projets, tâches, clients) dans un fichier.</p><div class="row-btns"><button class="btn" data-act="export">'+ic('download')+'Exporter en JSON</button><button class="btn" data-act="export-csv">'+ic('table')+'Exporter en tableur (Excel)'+(plan().csv?'':' <span class="pbadge">Pro</span>')+'</button></div></section>';
   }
   h+='<section class="panel scard"><h2>'+ic('bolt')+'Tutoriel</h2><p class="hint">Une visite guidée de l’appli en une minute : le menu, les projets, le partage, les tâches.</p><div class="row-btns"><button class="btn" data-act="tour-start">'+ic('arrow')+'Revoir le tutoriel</button></div></section>';
-  var ks=[['Ctrl K','Rechercher et lancer une commande'],['N','Nouvelle tâche'],['Maj P','Nouveau projet'],['G puis H','Accueil'],['G puis I','Inbox'],['G puis B','Bazar'],['G puis T','Mes tâches'],['G puis C','Calendrier'],['G puis P','Projets'],['Ctrl B','Afficher ou masquer le menu'],['Échap','Fermer']];
-  h+='<section class="panel scard hide-s"><h2>'+ic('bolt')+'Raccourcis clavier</h2><ul class="klist">'+ks.map(function(k){return '<li><span>'+k[1]+'</span><span>'+k[0].split(' puis ').map(kbd).join(' puis ')+'</span></li>';}).join('')+'</ul></section>';
+  h+=keysCard();
   return h+'</div>';
 }
 

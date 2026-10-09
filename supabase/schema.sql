@@ -4,7 +4,7 @@
 --
 -- Qui voit quoi :
 --   * chaque personne a son propre espace (espaces, projets, Bazar, clients, montants, réglages) ;
---   * les messages de l'Inbox ne sont visibles que par la personne qui écrit et celle qui reçoit ;
+--   * les messages (Mail) ne sont visibles que par la personne qui écrit et celle qui reçoit ;
 --     tout le monde peut les lire, écrire est réservé aux formules Premium et Pro ;
 --   * un projet peut être partagé à une adresse e-mail en « editor » (éditeur) ou « viewer » (lecteur) ;
 --   * les clients, les montants et les notes privées ne sont jamais visibles par les invités.
@@ -272,7 +272,7 @@ drop policy if exists premium_admin on public.premium;
 create policy premium_admin on public.premium for all to authenticated
   using (public.is_admin()) with check (public.is_admin());
 
--- ---------- messagerie interne (Inbox) ----------
+-- ---------- messagerie interne (Mail) ----------
 -- On écrit à une adresse e-mail ; la personne lit le message en se connectant avec cette adresse.
 create table if not exists public.messages (
   id uuid primary key default gen_random_uuid(),

@@ -13,11 +13,12 @@ Le guide de mise en ligne est dans [LISEZ-MOI.md](LISEZ-MOI.md).
 - **Mode Focus** : depuis l’accueil, une seule tâche à l’écran, la plus utile à faire maintenant (en retard, du jour, prioritaire, pas bloquée par une autre).
 - **À encaisser** : un bloc d’accueil qui liste ce qu’on te doit, avec un message de relance prêt à envoyer pour les projets livrés.
 - **Cartes récurrentes** : une carte peut se répéter chaque jour, semaine ou mois ; terminée, elle revient à la prochaine date.
-- **Inbox** : une messagerie entre personnes du site, présentée comme une boîte mail (reçus, envoyés, objet, réponses, non lus, recherche). Tout le monde lit ; écrire est réservé à Premium (20 messages par heure) et Pro (100).
-- **Bazar** : les tâches notées en vrac, à ranger plus tard (l’ancien Inbox).
+- **Mail** : une messagerie entre personnes du site, présentée comme une boîte mail (reçus, envoyés, objet, réponses, non lus, recherche). Tout le monde lit ; écrire est réservé à Premium (20 messages par heure) et Pro (100).
+- **Bazar** : les tâches notées en vrac, à ranger plus tard (appelé Inbox au tout début).
 - **Mon rythme** : un bloc d’accueil avec les cartes terminées sur 7 jours, comparées aux 7 d’avant.
 - **Dupliquer un projet** : pour s’en servir comme modèle (colonnes, labels, cartes, tableau blanc).
 - **Thèmes à effets** (Premium et Pro) : Sakura, Aurore, Océan. Couleurs et fond du thème, petit effet à chaque clic ; en Pro, le fond s’anime.
 - **Chef de projet** : un admin du site invité sur un projet peut y modifier le contenu et gérer les invités, sans voir les infos privées du propriétaire.
+- **Raccourcis clavier modifiables** : dans Réglages, on change chaque raccourci, on en supprime et on en crée (aller à une page, ouvrir un projet précis, lancer le mode Focus…). Ils suivent le compte d’un appareil à l’autre.
 
-L’Inbox et le rôle de chef de projet passent par la base de données ; le reste vit dans `js/extras.js`, `js/more.js` et `js/skins.js`. L’Inbox (`js/mail.js`) utilise la table `messages` : il faut relancer `supabase/schema.sql` une fois, voir [LISEZ-MOI.md](LISEZ-MOI.md).
+Mail et le rôle de chef de projet passent par la base de données ; le reste vit dans `js/extras.js`, `js/more.js` et `js/skins.js`. Mail (`js/mail.js`) utilise la table `messages` : il faut relancer `supabase/schema.sql` une fois, voir [LISEZ-MOI.md](LISEZ-MOI.md).
