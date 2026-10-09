@@ -73,24 +73,19 @@ Le **Bazar** est l'ancien Inbox : les tâches notées en vrac, à ranger plus ta
 
 **À faire une fois** : dans Supabase > **SQL Editor**, recolle tout le fichier `supabase/schema.sql` et clique **Run**. Il crée la table des messages et ne supprime rien. Tant que ce n'est pas fait, l'Inbox affiche un message qui te le rappelle.
 
-Règles imposées par le serveur : un message n'est visible que par la personne qui l'écrit et celle qui le reçoit ; on ne peut pas écrire au nom de quelqu'un d'autre ; 60 messages par heure et par personne au plus.
+Règles imposées par le serveur : un message n'est visible que par la personne qui l'écrit et celle qui le reçoit ; on ne peut pas écrire au nom de quelqu'un d'autre.
 
-### Alerte par e-mail (facultatif)
+### Qui peut écrire
 
-Sans ce réglage, tout fonctionne : le destinataire voit simplement son message en ouvrant le site. Avec, il reçoit en plus un vrai e-mail « Untel t'a écrit sur On Stride » (sans le contenu du message), avec un bouton pour venir le lire.
+Tout le monde peut **lire** les messages qu'il reçoit. **Écrire et répondre** est réservé aux formules payantes, avec un nombre de messages par heure :
 
-Supabase n'envoie pas ce genre d'e-mails lui-même : on passe par un service d'envoi, **Resend** (gratuit pour un petit volume ; vérifie les limites sur leur page de tarifs).
+- Gratuit : lecture seule ;
+- Premium : 20 messages par heure ;
+- Pro : 100 messages par heure.
 
-1. Crée un compte sur https://resend.com. Dans **Domains**, ajoute un nom de domaine qui t'appartient et suis les instructions (quelques lignes DNS à copier chez ton registrar). Sans domaine validé, Resend n'envoie qu'à ta propre adresse.
-2. Dans **API Keys**, crée une clé et copie-la.
-3. Dans Supabase > **Edge Functions** > **Deploy a new function** > « Via Editor » : nomme-la exactement `notify-message`, colle le contenu de `supabase/functions/notify-message/index.ts`, puis **Deploy**.
-   (Avec l'outil en ligne de commande : `supabase functions deploy notify-message`.)
-4. Dans **Edge Functions > Secrets**, ajoute :
-   - `RESEND_API_KEY` : la clé de l'étape 2 ;
-   - `MAIL_FROM` : l'expéditeur, sur ton domaine validé, par exemple `On Stride <notif@tondomaine.fr>` ;
-   - `APP_URL` : l'adresse de ton site, par exemple `https://onstride.vercel.app`.
+Ces limites sont imposées par le serveur (fonction `my_mail_quota` dans `schema.sql`) ; pour les changer, modifie les chiffres à cet endroit et dans `js/plans.js`, puis relance le fichier SQL.
 
-La fonction n'envoie une alerte que pour un message que la personne connectée vient réellement d'écrire, une seule fois par message, et 30 alertes par heure et par personne au plus.
+Aucun vrai e-mail n'est envoyé : la personne est prévenue par une notification dans l'appli (et sur son écran si elle a activé les notifications de bureau dans Réglages), tant que le site est ouvert chez elle.
 
 ## Partager un projet
 

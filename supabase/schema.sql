@@ -5,6 +5,7 @@
 -- Qui voit quoi :
 --   * chaque personne a son propre espace (espaces, projets, Bazar, clients, montants, réglages) ;
 --   * les messages de l'Inbox ne sont visibles que par la personne qui écrit et celle qui reçoit ;
+--     tout le monde peut les lire, écrire est réservé aux formules Premium et Pro ;
 --   * un projet peut être partagé à une adresse e-mail en « editor » (éditeur) ou « viewer » (lecteur) ;
 --   * les clients, les montants et les notes privées ne sont jamais visibles par les invités.
 
@@ -272,17 +273,21 @@ create table if not exists public.messages (
   created_at timestamptz not null default now(),
   read_at timestamptz,                                    -- lu par le destinataire
   del_from boolean not null default false,                -- supprimé chez l'expéditeur
-  del_to boolean not null default false,                  -- supprimé chez le destinataire
-  notified_at timestamptz                                 -- alerte par e-mail envoyée (fonction notify-message)
+  del_to boolean not null default false                   -- supprimé chez le destinataire
 );
 create index if not exists messages_to_idx on public.messages(to_email, created_at desc);
 create index if not exists messages_from_idx on public.messages(from_id, created_at desc);
 create index if not exists messages_thread_idx on public.messages(thread);
 
--- garde-fou anti-spam : nombre de messages envoyés par la personne connectée depuis une heure
+-- nombre de messages envoyés par la personne connectée depuis une heure
 create or replace function public.my_recent_messages() returns int
 language sql stable security definer set search_path = public as $$
   select count(*)::int from public.messages where from_id = auth.uid() and created_at > now() - interval '1 hour'
+$$;
+-- messages par heure selon la formule : Gratuit 0 (lecture seule), Premium 20, Pro 100
+create or replace function public.my_mail_quota() returns int
+language sql stable security definer set search_path = public as $$
+  select case public.my_plan() when 'pro' then 100 when 'premium' then 20 else 0 end
 $$;
 -- chacun ne modifie que ce qui le concerne : le destinataire « lu » et sa corbeille, l'expéditeur sa corbeille
 create or replace function public.messages_guard() returns trigger
@@ -302,17 +307,17 @@ revoke all on public.messages from anon;
 revoke all on public.messages from authenticated;
 grant select, insert on public.messages to authenticated;
 grant update (read_at, del_from, del_to) on public.messages to authenticated;
-grant execute on function public.my_recent_messages() to authenticated;
+grant execute on function public.my_recent_messages(), public.my_mail_quota() to authenticated;
 
 drop policy if exists messages_read on public.messages;
 create policy messages_read on public.messages for select to authenticated
   using (from_id = auth.uid() or (public.my_email() <> '' and to_email = public.my_email()));
 drop policy if exists messages_insert on public.messages;
--- on n'écrit qu'en son propre nom, pas à soi-même, et 60 messages par heure au plus
+-- on n'écrit qu'en son propre nom, pas à soi-même, et dans la limite de sa formule
 create policy messages_insert on public.messages for insert to authenticated
   with check (from_id = auth.uid() and from_email = public.my_email() and to_email <> public.my_email()
-      and read_at is null and notified_at is null and not del_from and not del_to
-      and public.my_recent_messages() < 60);
+      and read_at is null and not del_from and not del_to
+      and public.my_recent_messages() < public.my_mail_quota());
 drop policy if exists messages_update on public.messages;
 create policy messages_update on public.messages for update to authenticated
   using (from_id = auth.uid() or (public.my_email() <> '' and to_email = public.my_email()))

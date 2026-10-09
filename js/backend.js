@@ -212,10 +212,6 @@ var Cloud=(function(){
     mailPatch:function(ids,patch){
       return sb.from('messages').update(patch).in('id',ids).then(function(r){if(r.error)throw fail(r.error);});
     },
-    /* alerte par vrai e-mail : ne fait rien si la fonction n'est pas installée */
-    mailNotify:function(id){
-      try{return sb.functions.invoke('notify-message',{body:{id:id,url:location.origin+location.pathname}}).then(function(){},function(){});}catch(_){return Promise.resolve();}
-    },
     /* formules : la ligne de la personne connectée (l'admin voit tout) */
     premiumMine:function(email){return sb.from('premium').select('*').eq('email',email).then(function(r){if(r.error)throw fail(r.error);return (r.data||[])[0]||null;});},
     premiumAll:function(){return sb.from('premium').select('*').then(function(r){if(r.error)throw fail(r.error);return r.data||[];});},

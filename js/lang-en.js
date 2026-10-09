@@ -363,6 +363,25 @@ I18N.add('en',{
 'C’est ta propre adresse : écris à quelqu’un d’autre.':'That is your own address: write to someone else.','Écris ton message avant de l’envoyer.':'Write your message before sending it.',
 'Message trop long : 10 000 caractères au maximum.':'Message too long: 10,000 characters at most.',
 'La messagerie n’est pas encore activée : relance le fichier supabase/schema.sql dans Supabase.':'Messaging is not enabled yet: run the supabase/schema.sql file again in Supabase.',
-'Envoi refusé : trop de messages envoyés en peu de temps. Réessaie plus tard.':'Sending refused: too many messages sent in a short time. Try again later.','Envoi impossible pour le moment. Réessaie dans un instant.':'Could not send right now. Try again in a moment.',
+'Envoi refusé : ta formule ne permet pas d’envoyer ce message pour le moment.':'Sending refused: your plan does not allow sending this message right now.','Envoi impossible pour le moment. Réessaie dans un instant.':'Could not send right now. Try again in a moment.',
 'Conversation supprimée.':'Conversation deleted.','Tâche créée dans le Bazar.':'Task created in the Bazaar.'
+});
+
+/* --- inbox selon la formule, recherche, mon rythme, dupliquer un projet --- */
+I18N.add('en',{
+'Écrire des messages est réservé aux formules Premium (20 par heure) et Pro (100 par heure). En Gratuit, tu peux lire ceux que tu reçois.':'Writing messages is reserved for the Premium (20 per hour) and Pro (100 per hour) plans. On Free, you can read the ones you receive.',
+'Tu as atteint ton nombre de messages pour cette heure. La formule Pro en permet 100 par heure.':'You have reached your number of messages for this hour. The Pro plan allows 100 per hour.',
+'Dupliquer un projet demande une place libre : tu as atteint 5 projets actifs, la limite de la formule Gratuite.':'Duplicating a project needs a free slot: you have reached 5 active projects, the Free plan limit.',
+'Inbox : écrire, {0} messages par heure':'Inbox: write, {0} messages per hour','Inbox : lire les messages reçus':'Inbox: read received messages',
+'Tu as atteint {0} messages cette heure. Réessaie un peu plus tard.':'You have reached {0} messages this hour. Try again a little later.',
+'Nombre de messages que ta formule permet d’envoyer par heure':'Number of messages your plan lets you send per hour',
+'{0} messages restants cette heure':'{0} messages left this hour','{0} message restant cette heure':'{0} message left this hour','Quota de l’heure atteint':'Hourly quota reached',
+'Répondre est réservé aux formules Premium et Pro.':'Replying is reserved for the Premium and Pro plans.','Voir les formules':'See plans',
+'Chercher dans les messages':'Search messages','Aucun message trouvé':'No message found','Essaie un autre mot, un nom ou une adresse.':'Try another word, a name or an address.',
+'Lui écrire dans l’Inbox':'Write to them in the Inbox',
+'Mon rythme':'My pace','Termine une carte pour voir ton rythme ici.':'Finish a card to see your pace here.','{0} de plus que les 7 jours d’avant.':'{0} more than the 7 days before.','Une de plus que les 7 jours d’avant.':'One more than the 7 days before.',
+'{0} de moins que les 7 jours d’avant.':'{0} fewer than the 7 days before.','Une de moins que les 7 jours d’avant.':'One fewer than the 7 days before.','Autant que les 7 jours d’avant.':'Same as the 7 days before.',
+'cartes terminées en 7 jours':'cards done in 7 days','carte terminée en 7 jours':'card done in 7 days','Cartes terminées par jour : {0}':'Cards done per day: {0}',
+'Copie les colonnes, les labels, les cartes et le tableau blanc. Les cartes repartent de la première colonne.':'Copies the columns, labels, cards and whiteboard. Cards start again from the first column.','Dupliquer le projet':'Duplicate project',
+'Projet dupliqué : {0} copiées, à refaire depuis la première colonne.':'Project duplicated: {0} copied, to redo from the first column.','carte':'card','cartes':'cards'
 });

@@ -34,10 +34,10 @@ var ACCENTS={
   nuit:{n:'Nuit',l:'#1E3A8A',d:'#9DB4FF',p:true}
 };
 var WIDGETS={
-  today:{t:'Aujourd’hui'},week:{t:'Cette semaine'},pay:{t:'À encaisser',owner:true},projects:{t:'Projets récents'},progress:{t:'Progression'},
+  today:{t:'Aujourd’hui'},week:{t:'Cette semaine'},pay:{t:'À encaisser',owner:true},pace:{t:'Mon rythme'},projects:{t:'Projets récents'},progress:{t:'Progression'},
   activity:{t:'Activité récente'},clients:{t:'Clients',owner:true},notes:{t:'Notes rapides',owner:true}
 };
-var WORDER=['today','week','projects','progress','activity','clients','pay','notes'];
+var WORDER=['today','week','projects','progress','activity','clients','pay','pace','notes'];
 
 /* préférences locales (par appareil) */
 var LS={
