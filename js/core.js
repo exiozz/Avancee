@@ -183,7 +183,7 @@ function validView(by){
   var v=S.view;
   if(v==='home'||v==='projects'||v==='calendar'||v==='settings'||v==='plans')return true;
   if(v==='admin')return !!S.admin;
-  if(v==='inbox'||v==='tasks'||v==='clients')return S.canEdit;
+  if(v==='inbox'||v==='mail'||v==='tasks'||v==='clients')return S.canEdit;
   if(v.indexOf('c:')===0)return S.canEdit&&S.clients.some(function(c){return 'c:'+c.id===v;});
   return !!by[v];
 }
@@ -368,7 +368,7 @@ function quickCreate(q){
     var e=index()[q.projectId];
     addTask(q.projectId,q.title,e.cols[0].id,extra);
     toast('Tâche ajoutée à « '+e.p.name+' ».');
-  }else{addInbox(q.title,extra);toast('Tâche ajoutée à l’Inbox.');}
+  }else{addInbox(q.title,extra);toast('Tâche ajoutée au Bazar.');}
 }
 /* range une tâche de l'Inbox dans un projet */
 function fileTask(id,pid){

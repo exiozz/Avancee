@@ -66,6 +66,32 @@ Dans les deux cas, l'adresse de retour à donner est :
 
 Puis remets dans `config.js` : `providers: ['google', 'discord']`, et redépose le dossier sur Netlify.
 
+## Inbox : la messagerie
+
+L'**Inbox** est une boîte de messages entre personnes qui ont un compte sur ton site. On écrit à une adresse e-mail ; la personne lit le message en se connectant avec cette adresse (si elle n'a pas encore de compte, le message l'attend).
+Le **Bazar** est l'ancien Inbox : les tâches notées en vrac, à ranger plus tard dans un projet.
+
+**À faire une fois** : dans Supabase > **SQL Editor**, recolle tout le fichier `supabase/schema.sql` et clique **Run**. Il crée la table des messages et ne supprime rien. Tant que ce n'est pas fait, l'Inbox affiche un message qui te le rappelle.
+
+Règles imposées par le serveur : un message n'est visible que par la personne qui l'écrit et celle qui le reçoit ; on ne peut pas écrire au nom de quelqu'un d'autre ; 60 messages par heure et par personne au plus.
+
+### Alerte par e-mail (facultatif)
+
+Sans ce réglage, tout fonctionne : le destinataire voit simplement son message en ouvrant le site. Avec, il reçoit en plus un vrai e-mail « Untel t'a écrit sur On Stride » (sans le contenu du message), avec un bouton pour venir le lire.
+
+Supabase n'envoie pas ce genre d'e-mails lui-même : on passe par un service d'envoi, **Resend** (gratuit pour un petit volume ; vérifie les limites sur leur page de tarifs).
+
+1. Crée un compte sur https://resend.com. Dans **Domains**, ajoute un nom de domaine qui t'appartient et suis les instructions (quelques lignes DNS à copier chez ton registrar). Sans domaine validé, Resend n'envoie qu'à ta propre adresse.
+2. Dans **API Keys**, crée une clé et copie-la.
+3. Dans Supabase > **Edge Functions** > **Deploy a new function** > « Via Editor » : nomme-la exactement `notify-message`, colle le contenu de `supabase/functions/notify-message/index.ts`, puis **Deploy**.
+   (Avec l'outil en ligne de commande : `supabase functions deploy notify-message`.)
+4. Dans **Edge Functions > Secrets**, ajoute :
+   - `RESEND_API_KEY` : la clé de l'étape 2 ;
+   - `MAIL_FROM` : l'expéditeur, sur ton domaine validé, par exemple `On Stride <notif@tondomaine.fr>` ;
+   - `APP_URL` : l'adresse de ton site, par exemple `https://onstride.vercel.app`.
+
+La fonction n'envoie une alerte que pour un message que la personne connectée vient réellement d'écrire, une seule fois par message, et 30 alertes par heure et par personne au plus.
+
 ## Partager un projet
 
 Ouvre un projet > **Partager** > entre l'adresse e-mail de la personne et choisis :
@@ -78,7 +104,7 @@ Si un client avec une adresse e-mail est relié au projet, le site propose de l'
 La personne se connecte au site **avec cette adresse** et retrouve le projet dans « Partagés avec moi ».
 Aucun e-mail n'est envoyé automatiquement : envoie-lui le lien avec « Copier le lien du projet ».
 
-Ce que les invités ne voient jamais, même en éditeur : ton Inbox, tes autres projets, tes clients, les montants et les notes privées. C'est le serveur qui l'impose, pas seulement l'affichage.
+Ce que les invités ne voient jamais, même en éditeur : ton Bazar, tes messages, tes autres projets, tes clients, les montants et les notes privées. C'est le serveur qui l'impose, pas seulement l'affichage.
 
 ## Installer comme une appli
 

@@ -5,7 +5,7 @@
 var Cloud=(function(){
   /* arrivée depuis l'e-mail « mot de passe oublié » : à repérer avant que la bibliothèque ne nettoie l'adresse */
   var RECOVERY=/[?&]reset=1/.test(location.search)||/type=recovery/.test(location.hash);
-  var cfg=window.AVANCEE_CONFIG||{}, sb=null, me=null, cache={}, subs={}, timers={}, authCb=null, lastLoad=0;
+  var cfg=window.AVANCEE_CONFIG||{}, sb=null, me=null, cache={}, subs={}, timers={}, authCb=null, lastLoad=0, mailCb=null;
   /* table -> forme. key : colonne servant d'identifiant ; single : une ligne par personne ; plain : colonnes simples */
   var T={spaces:{},projects:{},clients:{},tasks:{},meta:{key:'project_id'},settings:{key:'owner',single:true},members:{plain:true}};
   var NAMES=Object.keys(T);
@@ -55,6 +55,8 @@ var Cloud=(function(){
           if(t==='projects')later('tasks');
         });
       });
+      /* messagerie : une table à part, rechargée par js/mail.js */
+      ch.on('postgres_changes',{event:'*',schema:'public',table:'messages'},function(){if(mailCb)mailCb();});
       ch.subscribe();
     }catch(_){}
     document.addEventListener('visibilitychange',function(){
@@ -190,6 +192,29 @@ var Cloud=(function(){
     fileRemove:function(paths){
       if(!paths||!paths.length)return Promise.resolve();
       return sb.storage.from('fichiers').remove(paths).then(function(){},function(){});
+    },
+    /* messagerie interne (table « messages ») */
+    onMail:function(f){mailCb=f;},
+    mailLoad:function(){
+      return sb.from('messages').select('id,thread,from_id,from_email,from_name,to_email,subject,body,created_at,read_at,del_from,del_to').order('created_at',{ascending:false}).limit(600).then(function(r){
+        if(r.error)throw fail(r.error);
+        return r.data||[];
+      });
+    },
+    mailSend:function(m){
+      var id=uuid(), row={id:id,thread:m.thread||id,from_email:me.email,from_name:String(m.from_name||'').slice(0,80),to_email:m.to_email,subject:m.subject||'',body:m.body};
+      return sb.from('messages').insert(row).select('id,thread,from_id,from_email,from_name,to_email,subject,body,created_at,read_at,del_from,del_to').then(function(r){
+        if(r.error)throw fail(r.error);
+        if(!r.data||!r.data.length)throw {code:'invalid_argument',message:'refusé'};
+        return r.data[0];
+      });
+    },
+    mailPatch:function(ids,patch){
+      return sb.from('messages').update(patch).in('id',ids).then(function(r){if(r.error)throw fail(r.error);});
+    },
+    /* alerte par vrai e-mail : ne fait rien si la fonction n'est pas installée */
+    mailNotify:function(id){
+      try{return sb.functions.invoke('notify-message',{body:{id:id,url:location.origin+location.pathname}}).then(function(){},function(){});}catch(_){return Promise.resolve();}
     },
     /* formules : la ligne de la personne connectée (l'admin voit tout) */
     premiumMine:function(email){return sb.from('premium').select('*').eq('email',email).then(function(r){if(r.error)throw fail(r.error);return (r.data||[])[0]||null;});},

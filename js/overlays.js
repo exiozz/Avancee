@@ -9,7 +9,7 @@ function renderPanel(by){
   document.body.classList.add('has-panel');
   var e=by[t.projectId]||null, ed=canW(e), id=esc(t.id), p=e?e.p:null, sel=t.labels||[], ls=p?(p.labels||[]):[], pr=prioOf(t), done=isDone(t,e);
   var h='<div class="scrim" data-act="bg"></div><aside class="tpanel" id="dlg" role="dialog" aria-labelledby="mt-'+id+'" tabindex="-1"'+(p?' style="--c:'+hue(p)+'"':'')+'>';
-  h+='<header class="tp-h"><span class="crumb2">'+(p?'<span class="picon">'+picon(p)+'</span><span class="nm">'+esc(p.name)+'</span><span class="cnt">/ '+esc(colName(e,t._col))+'</span>':ic('inbox')+'<span class="nm">Inbox</span>')+'</span><span class="grow"></span>';
+  h+='<header class="tp-h"><span class="crumb2">'+(p?'<span class="picon">'+picon(p)+'</span><span class="nm">'+esc(p.name)+'</span><span class="cnt">/ '+esc(colName(e,t._col))+'</span>':ic('box')+'<span class="nm">Bazar</span>')+'</span><span class="grow"></span>';
   if(ed)h+='<button class="ib" data-act="dup" data-id="'+id+'" aria-label="Dupliquer" title="Dupliquer">'+ic('copy')+'</button><button class="ib dng" data-act="del-task" data-id="'+id+'" aria-label="Supprimer" title="Supprimer">'+ic('trash')+'</button>';
   h+='<button class="ib" data-act="close" aria-label="Fermer" title="Fermer (Échap)">'+ic('x')+'</button></header><div class="tp-b">';
   h+='<div class="tp-title">'+chkBtn(t,e)+(ed?'<label class="sr" for="mt-'+id+'">Titre</label><textarea class="mtitle'+(done?' struck':'')+'" id="mt-'+id+'" rows="1" data-draft data-change="ttitle" data-id="'+id+'">'+esc(t.title)+'</textarea>':'<h2 class="mtitle" id="mt-'+id+'">'+esc(t.title)+'</h2>')+'</div>';
@@ -17,7 +17,7 @@ function renderPanel(by){
   h+='<div class="tp-props">';
   if(ed){
     if(e){var copt={}; e.cols.forEach(function(c){copt[c.id]=c.name;});h+=prop(ic('board')+'Colonne',selH('mc-'+id,'mcol',id,copt,t._col),'mc-'+id);}
-    else{var popts={'':T('Inbox (pas encore rangée)')}; rwProjects(by).forEach(function(x){popts[x.id]=x.name;});h+=prop(ic('folder')+'Projet',selH('mf-'+id,'file',id,popts,''),'mf-'+id);}
+    else{var popts={'':T('Bazar (pas encore rangée)')}; rwProjects(by).forEach(function(x){popts[x.id]=x.name;});h+=prop(ic('folder')+'Projet',selH('mf-'+id,'file',id,popts,''),'mf-'+id);}
     h+=prop(ic('flag')+'Priorité',selH('mp-'+id,'tprio',id,L(PRIO),pr),'mp-'+id);
     h+=prop(ic('user')+'Assigné à','<input class="pv" id="mw-'+id+'" value="'+esc(t.who||'')+'" data-draft data-change="twho" data-id="'+id+'" placeholder="Personne" autocomplete="off">','mw-'+id);
     h+=prop(ic('clock')+'Échéance','<input class="pv" type="date" id="md-'+id+'" value="'+esc(t.due||'')+'" data-change="tdue" data-id="'+id+'">','md-'+id);
@@ -131,7 +131,7 @@ function palItems(by){
       return norm((t.title||'')+' '+(t.notes||'')+' '+(t.who||'')+' '+(t.log||[]).map(function(c){return c.t;}).join(' ')).indexOf(q)>=0;
     }).slice(0,8).forEach(function(t){
       var e=by[t.projectId];
-      out.push({g:'Tâches',icon:'tasks',label:t.title,act:'open',id:t.id,sub:e?e.p.name:'Inbox'});
+      out.push({g:'Tâches',icon:'tasks',label:t.title,act:'open',id:t.id,sub:e?e.p.name:'Bazar'});
     });
     if(ed)S.clients.filter(function(c){return norm(c.name+' '+(c.company||'')+' '+(c.email||'')).indexOf(q)>=0;}).slice(0,5).forEach(function(c){
       out.push({g:'Clients',icon:'user',label:c.name,act:'view',id:'c:'+c.id,sub:c.company||''});
@@ -191,7 +191,7 @@ function qaParsed(){
 }
 function qaChips(){
   var q=qaParsed(), p=q.projectId?projById(q.projectId):null, h='';
-  h+='<span class="qchip">'+(p?'<span class="picon">'+picon(p)+'</span>'+esc(p.name):ic('inbox')+'Inbox')+'</span>';
+  h+='<span class="qchip">'+(p?'<span class="picon">'+picon(p)+'</span>'+esc(p.name):ic('box')+'Bazar')+'</span>';
   if(q.due)h+='<span class="qchip on">'+ic('clock')+fmtDate(q.due)+'</span>';
   if(q.prio)h+='<span class="qchip on p'+q.prio+'">'+ic('flag')+'Priorité '+PRIO[q.prio].toLowerCase()+'</span>';
   return h;
@@ -213,7 +213,7 @@ function renderOverlay(by){
     h='<div class="ov top" data-act="ov-bg"><div class="pal" role="dialog" aria-label="Palette de commandes"><div class="pal-in">'+ic('search')+'<label class="sr" for="pq">Rechercher ou lancer une commande</label><input id="pq" value="'+esc(S.pq)+'" placeholder="Rechercher un projet, une tâche, une commande…" autocomplete="off" role="combobox" aria-expanded="true" aria-controls="pal-res"><button class="ib sm only-s" data-act="ov-close" aria-label="Fermer">'+ic('x')+'</button></div>'
       +'<div class="pal-res" id="pal-res" role="listbox">'+palList(by)+'</div><footer class="pal-f hide-s"><span>'+kbd('↑')+kbd('↓')+' naviguer</span><span>'+kbd('↵')+' ouvrir</span><span>'+kbd('Échap')+' fermer</span></footer></div></div>';
   }else if(S.qa){
-    var popts={'':'Inbox'}; rwProjects(by).forEach(function(p){popts[p.id]=p.name;});
+    var popts={'':'Bazar'}; rwProjects(by).forEach(function(p){popts[p.id]=p.name;});
     h='<div class="ov top" data-act="ov-bg"><div class="qa" role="dialog" aria-label="Nouvelle tâche"><label class="sr" for="qat">Titre de la tâche</label><input id="qat" value="'+esc(S.qa.text)+'" placeholder="Corriger le responsive demain priorité haute" autocomplete="off">'
       +'<div class="qa-chips" id="qa-chips">'+qaChips()+'</div><p class="hint">Écris naturellement : « demain », « vendredi », « 12/11 », « dans 3 jours », « priorité haute », « #nomduprojet ».</p>'
       +'<footer><label class="sr" for="qap">Projet</label>'+selH('qap','qapid','',popts,S.qa.pid||'','in sm')+'<span class="grow"></span><button class="btn" data-act="ov-close">Annuler</button><button class="btn primary" data-act="qa-ok">Créer '+kbd('↵')+'</button></footer></div></div>';

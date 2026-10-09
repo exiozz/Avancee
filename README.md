@@ -13,5 +13,7 @@ Le guide de mise en ligne est dans [LISEZ-MOI.md](LISEZ-MOI.md).
 - **Mode Focus** : depuis l’accueil, une seule tâche à l’écran, la plus utile à faire maintenant (en retard, du jour, prioritaire, pas bloquée par une autre).
 - **À encaisser** : un bloc d’accueil qui liste ce qu’on te doit, avec un message de relance prêt à envoyer pour les projets livrés.
 - **Cartes récurrentes** : une carte peut se répéter chaque jour, semaine ou mois ; terminée, elle revient à la prochaine date.
+- **Inbox** : une messagerie entre personnes du site, présentée comme une boîte mail (reçus, envoyés, objet, réponses, non lus). Alerte par vrai e-mail en option.
+- **Bazar** : les tâches notées en vrac, à ranger plus tard (l’ancien Inbox).
 
-Ces fonctions n’ajoutent rien à la base de données : elles vivent dans `js/extras.js` et `js/more.js`.
+Les six premières n’ajoutent rien à la base de données (`js/extras.js`, `js/more.js`). L’Inbox (`js/mail.js`) utilise la table `messages` : il faut relancer `supabase/schema.sql` une fois, voir [LISEZ-MOI.md](LISEZ-MOI.md).

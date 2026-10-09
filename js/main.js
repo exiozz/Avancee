@@ -44,6 +44,7 @@ function render(){
     if(S.error)h+='<div class="note bad"><p>'+(S.error==='no_schema'?'La base de données n’est pas encore initialisée : exécute le fichier supabase/schema.sql dans Supabase (SQL Editor), puis recharge la page.':'Les données ne se chargent pas correctement ('+esc(S.error)+'). Recharge la page.')+'</p></div>';
     if(!ok||v==='home')h+=vHome(by);
     else if(v==='inbox')h+=vInbox(by);
+    else if(v==='mail')h+=vMail();
     else if(v==='tasks')h+=vTasks(by);
     else if(v==='calendar')h+=vCalendar(by);
     else if(v==='projects')h+=vProjects(by);
@@ -452,7 +453,7 @@ root.addEventListener('keydown',function(ev){
   if(!typing(el)&&!mod&&!ev.altKey&&S.db){
     var k=key&&key.length===1?key.toLowerCase():key;
     if(S.gAt&&Date.now()-S.gAt<1200){
-      var map={h:'home',i:'inbox',t:'tasks',c:'calendar',p:'projects',s:'settings'};
+      var map={h:'home',i:'mail',b:'inbox',t:'tasks',c:'calendar',p:'projects',s:'settings'};
       S.gAt=0;
       if(map[k]){ev.preventDefault();S.view=map[k];var by=index();if(!validView(by))S.view='home';go(S.view);render();return;}
     }
@@ -594,7 +595,7 @@ function startApp(){
   if(next){S.view=next;S.pending=next;}
   sub('spaces','s');sub('projects','p');sub('tasks','t');sub('clients','c');sub('meta','m');sub('settings','cfg');sub('members','mb');
   render();
-  NOTIF.seen=null;NOTIF.members=null;notifStart();
+  NOTIF.seen=null;NOTIF.members=null;notifStart();mailStart();
   Cloud.load().then(function(){
     loadPlan();
     setTimeout(notifDaily,2500);

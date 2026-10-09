@@ -160,7 +160,7 @@ function exportCsv(){
   function cell(v){v=String(v==null?'':v);return /[";\n\r]/.test(v)||/^[=+\-@]/.test(v)?'"'+(/^[=+\-@]/.test(v)?"'":'')+v.replace(/"/g,'""')+'"':v;}
   S.tasks.forEach(function(t){
     var e=by[t.projectId]||null, p=e?e.p:null;
-    rows.push([p?p.name:'Inbox',t.title,e?colName(e,t._col):'',isDone(t,e)?T('Oui'):T('Non'),T(PRIO[prioOf(t)]),t.due||'',t.who||'',p?(t.labels||[]).map(function(id){var l=findLabel(p,id);return l?(l.name||''):'';}).filter(Boolean).join(', '):'',t.notes||'']);
+    rows.push([p?p.name:'Bazar',t.title,e?colName(e,t._col):'',isDone(t,e)?T('Oui'):T('Non'),T(PRIO[prioOf(t)]),t.due||'',t.who||'',p?(t.labels||[]).map(function(id){var l=findLabel(p,id);return l?(l.name||''):'';}).filter(Boolean).join(', '):'',t.notes||'']);
   });
   var csv='﻿'+rows.map(function(r){return r.map(cell).join(sep);}).join('\r\n');
   try{

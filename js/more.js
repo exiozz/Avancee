@@ -42,7 +42,7 @@ function zenHtml(by){
   }
   var t=x.t, e=x.e, id=esc(t.id), r=timerOn(), on=r&&r.task===t.id;
   h+='<div class="zen-b"><p class="zen-why">'+nt(escRaw(x.why))+'</p><h2 id="zen-t">'+esc(t.title||T('Sans titre'))+'</h2>'
-    +'<p class="zen-p">'+(e?'<span class="picon">'+picon(e.p)+'</span><span>'+esc(e.p.name)+'</span><span class="cnt">/ '+esc(colName(e,t._col))+'</span>':ic('inbox')+'<span>Inbox</span>')+'</p>'
+    +'<p class="zen-p">'+(e?'<span class="picon">'+picon(e.p)+'</span><span>'+esc(e.p.name)+'</span><span class="cnt">/ '+esc(colName(e,t._col))+'</span>':ic('box')+'<span>Bazar</span>')+'</p>'
     +badges(t,e)+(t.notes?'<p class="zen-n">'+esc(String(t.notes).slice(0,260))+(String(t.notes).length>260?'…':'')+'</p>':'')+'</div>';
   h+='<footer><button class="btn primary" data-act="zen-done" data-id="'+id+'">'+ic('check')+'C’est fait</button>'
     +(e&&e.own?(on?'<button class="btn" data-act="timer-stop">'+ic('stop')+'Arrêter le chrono</button>':'<button class="btn" data-act="zen-go" data-id="'+id+'">'+ic('play')+'Je m’y mets</button>'):'')
