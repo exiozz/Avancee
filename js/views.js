@@ -3,10 +3,11 @@
 
 /* ---------- navigation ---------- */
 function navDefs(){
-  if(S.canEdit)return [['home','home','Accueil'],['inbox','inbox','Inbox'],['tasks','tasks','Mes tâches'],['calendar','calendar','Calendrier'],['clients','users','Clients'],['projects','grid','Projets']];
+  if(S.canEdit)return [['home','home','Accueil'],['mail','inbox','Inbox'],['inbox','box','Bazar'],['tasks','tasks','Mes tâches'],['calendar','calendar','Calendrier'],['clients','users','Clients'],['projects','grid','Projets']];
   return [['home','home','Accueil'],['calendar','calendar','Calendrier'],['projects','grid','Projets']];
 }
 function navCount(v,by){
+  if(v==='mail')return mailUnread();
   if(v==='inbox')return inboxTasks().filter(function(t){return !t.done;}).length;
   if(v==='tasks'){var td=todayStr();return liveTasks(by).filter(function(t){return mine(t)&&t.due&&t.due<=td&&!isDone(t,by[t.projectId]);}).length;}
   return 0;
@@ -74,7 +75,7 @@ function renderSide(by,ready){
 }
 function renderTop(by){
   var v=S.view, sub=false, crumb='';
-  var names={home:'Accueil',inbox:'Inbox',tasks:'Mes tâches',calendar:'Calendrier',clients:'Clients',projects:'Projets',settings:'Réglages',plans:'Formules',admin:'Admin'};
+  var names={home:'Accueil',mail:'Inbox',inbox:'Bazar',tasks:'Mes tâches',calendar:'Calendrier',clients:'Clients',projects:'Projets',settings:'Réglages',plans:'Formules',admin:'Admin'};
   if(names[v])crumb='<span class="crumb-i">'+names[v]+'</span>';
   else if(v.indexOf('c:')===0){
     var c=S.clients.find(function(x){return 'c:'+x.id===v;}); sub='clients';
@@ -93,7 +94,7 @@ function renderTop(by){
   document.getElementById('top').innerHTML=tr(h);
 }
 function renderTabbar(by){
-  var defs=S.canEdit?[['home','home','Accueil'],['inbox','inbox','Inbox'],null,['tasks','tasks','Tâches'],['projects','grid','Projets']]
+  var defs=S.canEdit?[['home','home','Accueil'],['mail','inbox','Inbox'],['inbox','box','Bazar'],null,['tasks','tasks','Tâches'],['projects','grid','Projets']]
                     :[['home','home','Accueil'],['projects','grid','Projets'],['calendar','calendar','Calendrier'],['settings','settings','Réglages']];
   var h='';
   defs.forEach(function(n){
@@ -152,6 +153,7 @@ function widgetBody(k,d,by){
     return rows+(rest>0?'<p class="wfoot">Reste à encaisser : <b>'+eur(rest)+'</b></p>':'');
   }
   if(k==='pay')return payWidget(by);
+  if(k==='pace')return paceWidget(by);
   if(k==='notes')return '<label class="sr" for="qn">Notes rapides</label><textarea class="wnotes" id="qn" data-draft data-change="cfgnotes" placeholder="Une idée, un numéro, un pense-bête… Visible par toi seul.">'+esc(S.cfg.notes||'')+'</textarea>';
   return '';
 }
@@ -218,13 +220,13 @@ function vInbox(by){
   var all=inboxTasks(), open=all.filter(function(t){return !t.done;}), done=all.filter(function(t){return t.done;});
   var d=dashData(by), popts={'':T('Ranger dans…')};
   rwProjects(by).forEach(function(p){popts[p.id]=p.name;});
-  var h='<header class="phd"><h1>Inbox</h1><p class="lead">Note tout de suite, range plus tard. Visible par toi seul.</p></header>';
+  var h='<header class="phd"><h1>Bazar</h1><p class="lead">Tout ce que tu notes en vrac, à ranger plus tard dans un projet. Visible par toi seul.</p></header>';
   h+='<div class="qadd"><label class="sr" for="ibx">Ajouter rapidement</label>'+ic('plus')+'<input id="ibx" data-draft data-add="inbox" placeholder="Ajouter rapidement… ex. « Envoyer le devis demain priorité haute »" autocomplete="off"></div>';
   if(open.length){
     h+='<ul class="tlist panel">'+open.map(function(t){
       return taskRow(t,by,{extra:function(x){return '<span class="row-acts">'+selH('file-'+esc(x.id),'file',esc(x.id),popts,'','in sm',' aria-label="Ranger dans un projet"')+'<button class="ib sm dng" data-act="del-task" data-id="'+esc(x.id)+'" aria-label="Supprimer">'+ic('trash')+'</button></span>';}});
     }).join('')+'</ul>';
-  }else h+=empty('inbox','Inbox à zéro','Écris une tâche ci-dessus sans choisir de projet. Tu la rangeras plus tard.');
+  }else h+=empty('box','Bazar vide','Écris une tâche ci-dessus sans choisir de projet. Tu la rangeras plus tard.');
   var rem=d.late.concat(d.tod).filter(function(t){return t.projectId;});
   if(rem.length)h+='<section class="sect"><h2>Rappels <span class="pillc">'+rem.length+'</span></h2><div class="panel pad-s">'+rem.slice(0,10).map(function(t){return mini(t,by);}).join('')+'</div></section>';
   if(done.length)h+='<section class="sect"><h2>Traitées <span class="cnt">'+done.length+'</span><span class="grow"></span><button class="btn quiet sm" data-act="inbox-clear">Vider</button></h2><ul class="tlist panel">'+done.slice(0,20).map(function(t){return taskRow(t,by);}).join('')+'</ul></section>';
@@ -265,7 +267,7 @@ function vTasks(by){
       var ts=groups[b[0]].sort(srt);
       h+='<section class="col'+(b[0]==='late'&&ts.length?' bad':'')+'"><div class="col-h"><h3 class="col-name">'+b[1]+'</h3><span class="cnt">'+ts.length+'</span></div><div class="cl">'+ts.map(function(t){
         var e=by[t.projectId]||null;
-        return '<article class="card'+(S.task===t.id?' sel':'')+'" tabindex="0" data-act="open" data-id="'+esc(t.id)+'" data-card><div class="ct">'+chkBtn(t,e)+'<span class="ctt">'+esc(t.title)+'</span></div>'+(e?'<span class="pchip" style="--c:'+hue(e.p)+'"><span class="picon">'+picon(e.p)+'</span><span class="nm">'+esc(e.p.name)+'</span></span>':'<span class="pchip">'+ic('inbox')+'<span class="nm">Inbox</span></span>')+badges(t,e)+'</article>';
+        return '<article class="card'+(S.task===t.id?' sel':'')+'" tabindex="0" data-act="open" data-id="'+esc(t.id)+'" data-card><div class="ct">'+chkBtn(t,e)+'<span class="ctt">'+esc(t.title)+'</span></div>'+(e?'<span class="pchip" style="--c:'+hue(e.p)+'"><span class="picon">'+picon(e.p)+'</span><span class="nm">'+esc(e.p.name)+'</span></span>':'<span class="pchip">'+ic('box')+'<span class="nm">Bazar</span></span>')+badges(t,e)+'</article>';
       }).join('')+'</div></section>';
     });
     return h+'</div></div>';
@@ -369,7 +371,8 @@ function vClient(c,by){
   var id=esc(c.id), s=clientStats(c,by), st=CST[c.status]?c.status:'active';
   function f(key,label,type){var fid='cf-'+key+'-'+id;return prop(label,'<input class="pv" id="'+fid+'" type="'+(type||'text')+'" value="'+esc(c[key]||'')+'" data-draft data-change="cf" data-f="'+key+'" data-id="'+id+'" placeholder="Vide" autocomplete="off">',fid);}
   var h='<div class="phead"><label class="sr" for="cf-name-'+id+'">Nom du client</label><input class="h1in" id="cf-name-'+id+'" value="'+esc(c.name)+'" data-draft data-change="cf" data-f="name" data-id="'+id+'" autocomplete="off">';
-  h+='<div class="props">'+f('company','Société')+f('email','E-mail','email')+f('phone','Téléphone','tel')+prop('Statut',selH('cf-status-'+id,'cf',id,L(CST),st,'pv',' data-f="status"'),'cf-status-'+id)+'</div></div>';
+  h+='<div class="props">'+f('company','Société')+f('email','E-mail','email')+f('phone','Téléphone','tel')+prop('Statut',selH('cf-status-'+id,'cf',id,L(CST),st,'pv',' data-f="status"'),'cf-status-'+id)+'</div>'
+    +(validEmail(String(c.email||'').trim())?'<div class="row-btns"><button class="btn sm" data-act="mail-new" data-id="'+esc(String(c.email).trim().toLowerCase())+'">'+ic('inbox')+'Lui écrire dans l’Inbox</button></div>':'')+'</div>';
   h+='<div class="stats"><div class="stat"><span>Projets</span><b>'+s.ps.length+'</b></div><div class="stat"><span>Montant total</span><b>'+eur(s.amount)+'</b></div><div class="stat"><span>Encaissé</span><b>'+eur(s.paid)+'</b></div><div class="stat'+(s.rest>0?' bad':'')+'"><span>Reste à encaisser</span><b>'+eur(s.rest)+'</b></div></div>';
   h+='<section class="sect"><h2><label for="cf-notes-'+id+'">Notes</label></h2><textarea class="area" id="cf-notes-'+id+'" data-draft data-change="cf" data-f="notes" data-id="'+id+'" placeholder="Besoins, tarifs convenus, interlocuteurs, historique…">'+esc(c.notes||'')+'</textarea></section>';
   h+='<section class="sect"><h2>Projets de ce client</h2>';
@@ -518,7 +521,7 @@ function vProject(e,by){
       +timeProps(e,m)
       +'</div><label class="sr" for="pno-'+id+'">Notes privées</label><textarea class="area sm" id="pno-'+id+'" data-draft data-change="pnotes" data-id="'+id+'" placeholder="Notes privées : tarif, conditions, contacts, tout ce qui ne se partage pas.">'+esc(m.pnotes||'')+'</textarea>'+payRow(e,m)+'</section>';
     if(S.confirm==='p:'+p.id)h+='<div class="row-btns"><span class="cnt">Supprimer ce projet et ses '+pl(e.total,'carte','cartes')+' ?</span><button class="btn danger" data-act="del-project" data-id="'+id+'">Supprimer</button><button class="btn" data-act="cancel">Annuler</button></div>';
-    else h+='<div class="row-btns"><button class="btn quiet sm" data-act="del-project" data-id="'+id+'">'+ic('trash')+'Supprimer le projet</button></div>';
+    else h+='<div class="row-btns"><button class="btn quiet sm" data-act="dup-project" data-id="'+id+'" title="Copie les colonnes, les labels, les cartes et le tableau blanc. Les cartes repartent de la première colonne.">'+ic('copy')+'Dupliquer le projet</button><button class="btn quiet sm" data-act="del-project" data-id="'+id+'">'+ic('trash')+'Supprimer le projet</button></div>';
     h+='</div>';
   }else if(!ed&&p.start){h+='<p class="hint">Début : '+fmtDate(p.start)+'</p>';}
   h+='</div><div class="toolbar"><div class="tabs" role="group" aria-label="Affichage">'+MODES.map(function(x){return '<button data-act="mode" data-id="'+x[0]+'" aria-pressed="'+(mode===x[0])+'">'+ic(x[2])+x[1]+'</button>';}).join('')+'</div>'+(mode!=='doc'&&mode!=='cal'&&mode!=='wb'?filterBar(e):'')+'</div>';
@@ -548,11 +551,11 @@ function vSettings(by){
   if(ed){
     var hidden=dashHidden();
     h+='<section class="panel scard"><h2>'+ic('grid')+'Tableau de bord</h2><p class="hint">Choisis les blocs affichés sur l’accueil. Pour les réorganiser, utilise « Personnaliser » sur l’accueil.</p><div class="chips">'+WORDER.map(function(k){return '<button class="fchip" data-act="w-toggle" data-id="'+k+'" aria-pressed="'+(hidden.indexOf(k)<0)+'">'+WIDGETS[k].t+'</button>';}).join('')+'</div></section>';
-    h+='<section class="panel scard"><h2>'+ic('users')+'Partage</h2><p class="hint">Chaque projet se partage séparément : ouvre un projet, puis « Partager ». Tu choisis pour chaque personne « Lecteur » ou « Éditeur ». Ton Inbox, tes clients, tes montants et tes notes privées restent visibles par toi seul.</p></section>';
+    h+='<section class="panel scard"><h2>'+ic('users')+'Partage</h2><p class="hint">Chaque projet se partage séparément : ouvre un projet, puis « Partager ». Tu choisis pour chaque personne « Lecteur » ou « Éditeur ». Ton Bazar, tes messages, tes clients, tes montants et tes notes privées restent visibles par toi seul.</p></section>';
     h+='<section class="panel scard"><h2>'+ic('download')+'Données</h2><p class="hint">Télécharge une copie de tout ton espace (projets, tâches, clients) dans un fichier.</p><div class="row-btns"><button class="btn" data-act="export">'+ic('download')+'Exporter en JSON</button><button class="btn" data-act="export-csv">'+ic('table')+'Exporter en tableur (Excel)'+(plan().csv?'':' <span class="pbadge">Pro</span>')+'</button></div></section>';
   }
   h+='<section class="panel scard"><h2>'+ic('bolt')+'Tutoriel</h2><p class="hint">Une visite guidée de l’appli en une minute : le menu, les projets, le partage, les tâches.</p><div class="row-btns"><button class="btn" data-act="tour-start">'+ic('arrow')+'Revoir le tutoriel</button></div></section>';
-  var ks=[['Ctrl K','Rechercher et lancer une commande'],['N','Nouvelle tâche'],['Maj P','Nouveau projet'],['G puis H','Accueil'],['G puis I','Inbox'],['G puis T','Mes tâches'],['G puis C','Calendrier'],['G puis P','Projets'],['Ctrl B','Afficher ou masquer le menu'],['Échap','Fermer']];
+  var ks=[['Ctrl K','Rechercher et lancer une commande'],['N','Nouvelle tâche'],['Maj P','Nouveau projet'],['G puis H','Accueil'],['G puis I','Inbox'],['G puis B','Bazar'],['G puis T','Mes tâches'],['G puis C','Calendrier'],['G puis P','Projets'],['Ctrl B','Afficher ou masquer le menu'],['Échap','Fermer']];
   h+='<section class="panel scard hide-s"><h2>'+ic('bolt')+'Raccourcis clavier</h2><ul class="klist">'+ks.map(function(k){return '<li><span>'+k[1]+'</span><span>'+k[0].split(' puis ').map(kbd).join(' puis ')+'</span></li>';}).join('')+'</ul></section>';
   return h+'</div>';
 }

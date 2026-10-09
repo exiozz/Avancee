@@ -5,9 +5,9 @@
 
 var MB=1024*1024;
 var PLANS={
-  free:{n:'Gratuit',projects:5,photos:3,files:3,size:5*MB,accents:false,csv:false},
-  premium:{n:'Premium',month:4.99,year:49,projects:Infinity,photos:8,files:10,size:25*MB,accents:true,csv:false},
-  pro:{n:'Pro',month:9.99,year:99,projects:Infinity,photos:8,files:10,size:50*MB,accents:true,csv:true}
+  free:{n:'Gratuit',projects:5,photos:3,files:3,size:5*MB,accents:false,csv:false,mail:0},
+  premium:{n:'Premium',month:4.99,year:49,projects:Infinity,photos:8,files:10,size:25*MB,accents:true,csv:false,mail:20},
+  pro:{n:'Pro',month:9.99,year:99,projects:Infinity,photos:8,files:10,size:50*MB,accents:true,csv:true,mail:100}
 };
 var PLAN_ORDER=['free','premium','pro'];
 var PERIODS={month:'1 mois',year:'1 an',gift:'Sans fin (offert)'};
@@ -46,7 +46,10 @@ var UPSELL={
   files:'La formule Gratuite permet 3 fichiers de 5 Mo par tâche. Premium : 10 fichiers de 25 Mo, Pro : 50 Mo.',
   size:'Ce fichier dépasse la taille permise par ta formule.',
   accents:'Ces couleurs sont réservées aux formules Premium et Pro.',
-  csv:'L’export en tableur fait partie de la formule Pro.'
+  csv:'L’export en tableur fait partie de la formule Pro.',
+  mail:'Écrire des messages est réservé aux formules Premium (20 par heure) et Pro (100 par heure). En Gratuit, tu peux lire ceux que tu reçois.',
+  mailmax:'Tu as atteint ton nombre de messages pour cette heure. La formule Pro en permet 100 par heure.',
+  dup:'Dupliquer un projet demande une place libre : tu as atteint 5 projets actifs, la limite de la formule Gratuite.'
 };
 function upsell(why){closeOverlays();S.upsell=why||'projects';render();}
 function upsellHtml(){
@@ -60,6 +63,7 @@ function featList(k){
   L.push(p.projects===Infinity?'Projets illimités':tf('{0} projets actifs',p.projects));
   L.push(tf('{0} photos par tâche',p.photos));
   L.push(tf('{0} fichiers par tâche, {1} chacun',p.files,fmtSize(p.size)));
+  L.push(p.mail?tf('Inbox : écrire, {0} messages par heure',p.mail):'Inbox : lire les messages reçus');
   L.push(p.accents?'Couleurs en plus et badge':'Couleurs de base');
   if(k==='pro'){L.push('Export des tâches en tableur (Excel)');L.push('Aide prioritaire');}
   L.push('Partage, tâches, calendrier, clients, notifications');
@@ -160,7 +164,7 @@ function exportCsv(){
   function cell(v){v=String(v==null?'':v);return /[";\n\r]/.test(v)||/^[=+\-@]/.test(v)?'"'+(/^[=+\-@]/.test(v)?"'":'')+v.replace(/"/g,'""')+'"':v;}
   S.tasks.forEach(function(t){
     var e=by[t.projectId]||null, p=e?e.p:null;
-    rows.push([p?p.name:'Inbox',t.title,e?colName(e,t._col):'',isDone(t,e)?T('Oui'):T('Non'),T(PRIO[prioOf(t)]),t.due||'',t.who||'',p?(t.labels||[]).map(function(id){var l=findLabel(p,id);return l?(l.name||''):'';}).filter(Boolean).join(', '):'',t.notes||'']);
+    rows.push([p?p.name:'Bazar',t.title,e?colName(e,t._col):'',isDone(t,e)?T('Oui'):T('Non'),T(PRIO[prioOf(t)]),t.due||'',t.who||'',p?(t.labels||[]).map(function(id){var l=findLabel(p,id);return l?(l.name||''):'';}).filter(Boolean).join(', '):'',t.notes||'']);
   });
   var csv='﻿'+rows.map(function(r){return r.map(cell).join(sep);}).join('\r\n');
   try{

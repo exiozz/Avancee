@@ -393,6 +393,7 @@ function reportHtml(by){
    ===================================================================== */
 function extraClick(act,id,b){
   if(moreClick(act,id,b))return true;
+  if(mailClick(act,id))return true;
   if(act.indexOf('wb-')===0){
     var e=curE(); if(!e)return true;
     if(act==='wb-zoom'){
@@ -458,6 +459,7 @@ function extraChange(k,id,v,el){
 }
 function extraKey(ev){
   var key=ev.key;
+  if(mailKey(ev))return true;
   if(key==='Escape'&&(S.report||S.zen)){closeOverlays();render();return true;}
   if(!document.getElementById('wb')||typing(ev.target)||S.task||S.pal||S.qa)return false;
   var e=curE(); if(!e)return false;
@@ -469,6 +471,7 @@ function extraKey(ev){
 function extraAfter(){
   document.querySelectorAll('textarea.wb-x').forEach(function(el){el.style.height='auto';if(el.scrollHeight)el.style.height=Math.min(220,el.scrollHeight)+'px';});
   timerChip();
+  mailAfter();
 }
 document.body.addEventListener('input',function(ev){
   var el=ev.target;

@@ -65,7 +65,7 @@ I18N.add('en',{
 /* --- inbox, mes tâches --- */
 'Ranger dans…':'File into…','Note tout de suite, range plus tard. Visible par toi seul.':'Jot it down now, file it later. Only you can see this.',
 'Ajouter rapidement':'Quick add','Ajouter rapidement… ex. « Envoyer le devis demain priorité haute »':'Quick add… e.g. “Send the quote tomorrow high priority”',
-'Ranger dans un projet':'File into a project','Supprimer':'Delete','Inbox à zéro':'Inbox zero',
+'Ranger dans un projet':'File into a project','Supprimer':'Delete','Bazar vide':'Bazaar is empty','Bazar':'Bazaar',
 'Écris une tâche ci-dessus sans choisir de projet. Tu la rangeras plus tard.':'Type a task above without picking a project. You can file it later.',
 'Rappels':'Reminders','Traitées':'Processed','Vider':'Clear',
 'Priorité haute':'High priority','Priorité moyenne':'Medium priority','Priorité basse':'Low priority','Sans échéance':'No due date','Plus tard':'Later',
@@ -132,7 +132,7 @@ I18N.add('en',{
 'Couleur d’accent':'Accent colour','Densité':'Density','Compacte':'Compact','Normale':'Normal','Confortable':'Comfortable',
 'Taille du texte':'Text size','Petite':'Small','Grande':'Large','Tableau de bord':'Dashboard',
 'Choisis les blocs affichés sur l’accueil. Pour les réorganiser, utilise « Personnaliser » sur l’accueil.':'Choose which blocks appear on the home page. To rearrange them, use “Customise” on the home page.',
-'Partage':'Sharing','Chaque projet se partage séparément : ouvre un projet, puis « Partager ». Tu choisis pour chaque personne « Lecteur » ou « Éditeur ». Ton Inbox, tes clients, tes montants et tes notes privées restent visibles par toi seul.':'Each project is shared separately: open a project, then “Share”. For each person you choose “Viewer” or “Editor”. Your Inbox, clients, amounts and private notes stay visible to you only.',
+'Partage':'Sharing','Chaque projet se partage séparément : ouvre un projet, puis « Partager ». Tu choisis pour chaque personne « Lecteur » ou « Éditeur ». Ton Bazar, tes messages, tes clients, tes montants et tes notes privées restent visibles par toi seul.':'Each project is shared separately: open a project, then “Share”. For each person you choose “Viewer” or “Editor”. Your Bazaar, messages, clients, amounts and private notes stay visible to you only.',
 'Données':'Data','Télécharge une copie de tout ton espace (projets, tâches, clients) dans un fichier.':'Download a copy of your whole workspace (projects, tasks, clients) as a file.',
 'Exporter en JSON':'Export as JSON','Rechercher et lancer une commande':'Search and run a command','Raccourcis clavier':'Keyboard shortcuts',
 
@@ -148,7 +148,7 @@ I18N.add('en',{
 'Connexion impossible pour le moment.':'Can’t sign in right now.','Entre une adresse e-mail valide.':'Enter a valid email address.','Envoi impossible pour le moment.':'Can’t send right now.',
 
 /* --- panneau de tâche --- */
-'Dupliquer':'Duplicate','Titre':'Title','Inbox (pas encore rangée)':'Inbox (not filed yet)','Projet':'Project','Assigné à':'Assigned to','Personne':'Person',
+'Dupliquer':'Duplicate','Titre':'Title','Bazar (pas encore rangée)':'Bazaar (not filed yet)','Projet':'Project','Assigné à':'Assigned to','Personne':'Person',
 'Supprimer le label':'Delete the label','Gérer':'Manage','+ Créer un label':'+ Create a label','Nom du label':'Label name','Couleur du label':'Label colour',
 'Détails, liens, idées…':'Details, links, ideas…','Pas de description.':'No description.','Décocher':'Uncheck','Cocher':'Check',
 'Élément de checklist':'Checklist item','Supprimer l’élément':'Delete the item','Ajouter un élément, puis Entrée':'Add an item, then Enter','Nouvel élément':'New item',
@@ -172,7 +172,7 @@ I18N.add('en',{
 'Tes projets':'Your projects','Un projet, c’est un client, un site, une idée… Écris son nom ici puis appuie sur Entrée pour le créer. Dedans, chaque tâche est une carte que tu fais avancer : À faire, En cours, Terminé.':'A project is a client, a website, an idea… Type its name here and press Enter to create it. Inside, each task is a card you move forward: To do, In progress, Done.',
 'Partager un projet':'Share a project','Dans un projet, le bouton « Partager » invite quelqu’un avec son adresse e-mail. En lecteur, il regarde ton avancée. En éditeur, il peut aussi modifier les cartes.':'In a project, the “Share” button invites someone by email address. As a viewer, they follow your progress. As an editor, they can also change the cards.',
 'Ce bouton note une tâche en deux secondes, depuis n’importe quelle page. Tu peux écrire « demain » ou « priorité haute » : l’appli comprend toute seule.':'This button captures a task in two seconds, from any page. You can type “tomorrow” or “high priority”: the app works it out.',
-'L’Inbox':'The Inbox','Une tâche sans projet arrive dans l’Inbox. Tu notes vite sur le moment, tu ranges dans un projet plus tard.':'A task with no project lands in the Inbox. Jot it down now, file it into a project later.',
+'Le Bazar':'The Bazaar','Une tâche sans projet arrive dans le Bazar. Tu notes vite sur le moment, tu ranges dans un projet plus tard. L’Inbox, elle, sert à échanger des messages.':'A task with no project lands in the Bazaar. Jot it down now, file it into a project later. The Inbox is for exchanging messages.',
 'Ton accueil':'Your home page','L’accueil résume tout : ce qui est prévu aujourd’hui, ce qui est en retard et où en sont tes projets. Touche un chiffre pour voir le détail.':'The home page sums it all up: what’s due today, what’s overdue and how your projects are going. Tap a number to see the details.',
 'C’est parti !':'Off you go!','Le mieux pour commencer : créer ton premier projet. Tu peux revoir ce tutoriel quand tu veux dans Réglages.':'The best way to start: create your first project. You can replay this tutorial any time in Settings.',
 'Passer le tutoriel':'Skip the tutorial','Précédent':'Back','Suivant':'Next','Commencer':'Start','Créer mon premier projet':'Create my first project',
@@ -272,7 +272,7 @@ I18N.add('en',{
 /* --- messages --- */
 'Modification refusée : tu n’as pas les droits sur cet élément.':'Change refused: you don’t have permission for this item.',
 'Enregistrement impossible. Réessaie dans un instant.':'Couldn’t save. Try again in a moment.',
-'Tâche ajoutée à « {q} ».':'Task added to “{q}”.','Tâche ajoutée à l’Inbox.':'Task added to the Inbox.','Rangée dans « {q} ».':'Filed into “{q}”.','Déplacée dans « {q} ».':'Moved to “{q}”.',
+'Tâche ajoutée à « {q} ».':'Task added to “{q}”.','Tâche ajoutée au Bazar.':'Task added to the Bazaar.','Rangée dans « {q} ».':'Filed into “{q}”.','Déplacée dans « {q} ».':'Moved to “{q}”.',
 'Carte supprimée.':'Card deleted.','Carte dupliquée.':'Card duplicated.','Lien copié.':'Link copied.',
 'Projet privé : tes invités ne le voient plus.':'Private project: your guests can no longer see it.','Projet partagé : tes invités peuvent le voir.':'Shared project: your guests can see it.',
 'Export téléchargé.':'Export downloaded.','Export impossible pour le moment.':'Can’t export right now.','Adresse e-mail invalide.':'Invalid email address.',
@@ -344,4 +344,44 @@ I18N.add('en',{
 'Jamais':'Never','Chaque jour':'Every day','Chaque semaine':'Every week','Chaque mois':'Every month','Répéter':'Repeat','Carte récurrente':'Recurring card','Carte récurrente créée':'Recurring card created',
 'Carte récurrente : la suivante est prévue le {0}.':'Recurring card: the next one is due on {0}.','Ajoute une échéance : la prochaine carte partira de cette date.':'Add a due date: the next card will start from that date.',
 'Répétition : chaque jour':'Repeat: every day','Répétition : chaque semaine':'Repeat: every week','Répétition : chaque mois':'Repeat: every month','Répétition retirée':'Repeat removed'
+});
+
+/* --- inbox (messagerie) et bazar --- */
+I18N.add('en',{
+'Tout ce que tu notes en vrac, à ranger plus tard dans un projet. Visible par toi seul.':'Everything you jot down in a jumble, to file into a project later. Only you can see this.',
+'Tes messages avec les autres personnes sur On Stride.':'Your messages with other people on On Stride.','Nouveau message':'New message','Conversations':'Conversations',
+'Reçus':'Received','Envoyés':'Sent','Chargement…':'Loading…','Aucun message envoyé':'No sent messages','Aucun message reçu':'No messages received',
+'Les messages que tu envoies apparaîtront ici.':'The messages you send will show up here.','Quand quelqu’un t’écrit sur On Stride, son message arrive ici.':'When someone writes to you on On Stride, their message lands here.',
+'Choisis une conversation':'Pick a conversation','Ou écris à quelqu’un avec son adresse e-mail.':'Or write to someone using their email address.',
+'La messagerie n’est pas encore activée : relance le fichier supabase/schema.sql dans Supabase (SQL Editor), puis recharge la page.':'Messaging is not enabled yet: run the supabase/schema.sql file again in Supabase (SQL Editor), then reload the page.',
+'Les messages ne se chargent pas pour le moment. Recharge la page.':'Messages are not loading right now. Reload the page.',
+'À :':'To:','Non lu':'Unread','(sans objet)':'(no subject)','Toi :':'You:','Toi':'You','Lu':'Read','Retour':'Back','À':'To','Objet':'Subject',
+'De quoi s’agit-il ?':'What is it about?','Écris ton message…':'Write your message…','La personne lit ton message en se connectant à On Stride avec cette adresse.':'The person reads your message by signing in to On Stride with this address.',
+'Envoi…':'Sending…','Envoyer':'Send','Répondre':'Reply','Répondre à {0}…':'Reply to {0}…','Ctrl + Entrée pour envoyer':'Ctrl + Enter to send',
+'Créer une tâche dans le Bazar à partir de ce message':'Create a task in the Bazaar from this message','Mettre au Bazar':'Send to Bazaar','Supprimer la conversation':'Delete conversation',
+'Nouveau message de {0}':'New message from {0}','Message envoyé à {0}.':'Message sent to {0}.','Message de {0} :':'Message from {0}:',
+'C’est ta propre adresse : écris à quelqu’un d’autre.':'That is your own address: write to someone else.','Écris ton message avant de l’envoyer.':'Write your message before sending it.',
+'Message trop long : 10 000 caractères au maximum.':'Message too long: 10,000 characters at most.',
+'La messagerie n’est pas encore activée : relance le fichier supabase/schema.sql dans Supabase.':'Messaging is not enabled yet: run the supabase/schema.sql file again in Supabase.',
+'Envoi refusé : ta formule ne permet pas d’envoyer ce message pour le moment.':'Sending refused: your plan does not allow sending this message right now.','Envoi impossible pour le moment. Réessaie dans un instant.':'Could not send right now. Try again in a moment.',
+'Conversation supprimée.':'Conversation deleted.','Tâche créée dans le Bazar.':'Task created in the Bazaar.'
+});
+
+/* --- inbox selon la formule, recherche, mon rythme, dupliquer un projet --- */
+I18N.add('en',{
+'Écrire des messages est réservé aux formules Premium (20 par heure) et Pro (100 par heure). En Gratuit, tu peux lire ceux que tu reçois.':'Writing messages is reserved for the Premium (20 per hour) and Pro (100 per hour) plans. On Free, you can read the ones you receive.',
+'Tu as atteint ton nombre de messages pour cette heure. La formule Pro en permet 100 par heure.':'You have reached your number of messages for this hour. The Pro plan allows 100 per hour.',
+'Dupliquer un projet demande une place libre : tu as atteint 5 projets actifs, la limite de la formule Gratuite.':'Duplicating a project needs a free slot: you have reached 5 active projects, the Free plan limit.',
+'Inbox : écrire, {0} messages par heure':'Inbox: write, {0} messages per hour','Inbox : lire les messages reçus':'Inbox: read received messages',
+'Tu as atteint {0} messages cette heure. Réessaie un peu plus tard.':'You have reached {0} messages this hour. Try again a little later.',
+'Nombre de messages que ta formule permet d’envoyer par heure':'Number of messages your plan lets you send per hour',
+'{0} messages restants cette heure':'{0} messages left this hour','{0} message restant cette heure':'{0} message left this hour','Quota de l’heure atteint':'Hourly quota reached',
+'Répondre est réservé aux formules Premium et Pro.':'Replying is reserved for the Premium and Pro plans.','Voir les formules':'See plans',
+'Chercher dans les messages':'Search messages','Aucun message trouvé':'No message found','Essaie un autre mot, un nom ou une adresse.':'Try another word, a name or an address.',
+'Lui écrire dans l’Inbox':'Write to them in the Inbox',
+'Mon rythme':'My pace','Termine une carte pour voir ton rythme ici.':'Finish a card to see your pace here.','{0} de plus que les 7 jours d’avant.':'{0} more than the 7 days before.','Une de plus que les 7 jours d’avant.':'One more than the 7 days before.',
+'{0} de moins que les 7 jours d’avant.':'{0} fewer than the 7 days before.','Une de moins que les 7 jours d’avant.':'One fewer than the 7 days before.','Autant que les 7 jours d’avant.':'Same as the 7 days before.',
+'cartes terminées en 7 jours':'cards done in 7 days','carte terminée en 7 jours':'card done in 7 days','Cartes terminées par jour : {0}':'Cards done per day: {0}',
+'Copie les colonnes, les labels, les cartes et le tableau blanc. Les cartes repartent de la première colonne.':'Copies the columns, labels, cards and whiteboard. Cards start again from the first column.','Dupliquer le projet':'Duplicate project',
+'Projet dupliqué : {0} copiées, à refaire depuis la première colonne.':'Project duplicated: {0} copied, to redo from the first column.','carte':'card','cartes':'cards'
 });

@@ -3,7 +3,9 @@
 -- Peut être relancé sans risque : il ne supprime aucune donnée.
 --
 -- Qui voit quoi :
---   * chaque personne a son propre espace (espaces, projets, Inbox, clients, montants, réglages) ;
+--   * chaque personne a son propre espace (espaces, projets, Bazar, clients, montants, réglages) ;
+--   * les messages de l'Inbox ne sont visibles que par la personne qui écrit et celle qui reçoit ;
+--     tout le monde peut les lire, écrire est réservé aux formules Premium et Pro ;
 --   * un projet peut être partagé à une adresse e-mail en « editor » (éditeur) ou « viewer » (lecteur) ;
 --   * les clients, les montants et les notes privées ne sont jamais visibles par les invités.
 
@@ -22,7 +24,7 @@ create table if not exists public.projects (
 create table if not exists public.tasks (
   id uuid primary key default gen_random_uuid(),
   owner uuid not null default auth.uid() references auth.users(id) on delete cascade,
-  project_id uuid references public.projects(id) on delete cascade,  -- vide = tâche de l'Inbox
+  project_id uuid references public.projects(id) on delete cascade,  -- vide = tâche du Bazar
   data jsonb not null default '{}'::jsonb,
   updated_at timestamptz not null default now()
 );
@@ -172,7 +174,7 @@ drop policy if exists projects_delete on public.projects;
 create policy projects_delete on public.projects for delete to authenticated
   using (owner = auth.uid());
 
--- tâches : celles de l'Inbox sont à leur auteur ; celles d'un projet suivent le rôle sur le projet
+-- tâches : celles du Bazar sont à leur auteur ; celles d'un projet suivent le rôle sur le projet
 drop policy if exists tasks_read on public.tasks;
 create policy tasks_read on public.tasks for select to authenticated
   using ((project_id is null and owner = auth.uid())
@@ -257,12 +259,76 @@ drop policy if exists premium_admin on public.premium;
 create policy premium_admin on public.premium for all to authenticated
   using (public.is_admin()) with check (public.is_admin());
 
+-- ---------- messagerie interne (Inbox) ----------
+-- On écrit à une adresse e-mail ; la personne lit le message en se connectant avec cette adresse.
+create table if not exists public.messages (
+  id uuid primary key default gen_random_uuid(),
+  thread uuid not null,                                   -- conversation : identifiant de son premier message
+  from_id uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  from_email text not null check (from_email = lower(from_email)),
+  from_name text not null default '' check (char_length(from_name) <= 80),
+  to_email text not null check (to_email = lower(to_email) and position('@' in to_email) > 1),
+  subject text not null default '' check (char_length(subject) <= 200),
+  body text not null check (char_length(body) between 1 and 10000),
+  created_at timestamptz not null default now(),
+  read_at timestamptz,                                    -- lu par le destinataire
+  del_from boolean not null default false,                -- supprimé chez l'expéditeur
+  del_to boolean not null default false                   -- supprimé chez le destinataire
+);
+create index if not exists messages_to_idx on public.messages(to_email, created_at desc);
+create index if not exists messages_from_idx on public.messages(from_id, created_at desc);
+create index if not exists messages_thread_idx on public.messages(thread);
+
+-- nombre de messages envoyés par la personne connectée depuis une heure
+create or replace function public.my_recent_messages() returns int
+language sql stable security definer set search_path = public as $$
+  select count(*)::int from public.messages where from_id = auth.uid() and created_at > now() - interval '1 hour'
+$$;
+-- messages par heure selon la formule : Gratuit 0 (lecture seule), Premium 20, Pro 100
+create or replace function public.my_mail_quota() returns int
+language sql stable security definer set search_path = public as $$
+  select case public.my_plan() when 'pro' then 100 when 'premium' then 20 else 0 end
+$$;
+-- chacun ne modifie que ce qui le concerne : le destinataire « lu » et sa corbeille, l'expéditeur sa corbeille
+create or replace function public.messages_guard() returns trigger
+language plpgsql as $$
+begin
+  if auth.uid() is not null then
+    if auth.uid() is distinct from old.from_id then new.del_from := old.del_from; end if;
+    if public.my_email() is distinct from old.to_email then new.read_at := old.read_at; new.del_to := old.del_to; end if;
+  end if;
+  return new;
+end $$;
+drop trigger if exists guard on public.messages;
+create trigger guard before update on public.messages for each row execute function public.messages_guard();
+
+alter table public.messages enable row level security;
+revoke all on public.messages from anon;
+revoke all on public.messages from authenticated;
+grant select, insert on public.messages to authenticated;
+grant update (read_at, del_from, del_to) on public.messages to authenticated;
+grant execute on function public.my_recent_messages(), public.my_mail_quota() to authenticated;
+
+drop policy if exists messages_read on public.messages;
+create policy messages_read on public.messages for select to authenticated
+  using (from_id = auth.uid() or (public.my_email() <> '' and to_email = public.my_email()));
+drop policy if exists messages_insert on public.messages;
+-- on n'écrit qu'en son propre nom, pas à soi-même, et dans la limite de sa formule
+create policy messages_insert on public.messages for insert to authenticated
+  with check (from_id = auth.uid() and from_email = public.my_email() and to_email <> public.my_email()
+      and read_at is null and not del_from and not del_to
+      and public.my_recent_messages() < public.my_mail_quota());
+drop policy if exists messages_update on public.messages;
+create policy messages_update on public.messages for update to authenticated
+  using (from_id = auth.uid() or (public.my_email() <> '' and to_email = public.my_email()))
+  with check (from_id = auth.uid() or (public.my_email() <> '' and to_email = public.my_email()));
+
 -- mises à jour en direct (ignoré si déjà activé)
 do $$
 declare t text;
 begin
   if exists (select 1 from pg_publication where pubname = 'supabase_realtime') then
-    foreach t in array array['spaces','projects','tasks','clients','meta','settings','members'] loop
+    foreach t in array array['spaces','projects','tasks','clients','meta','settings','members','messages'] loop
       begin
         execute format('alter publication supabase_realtime add table public.%I', t);
       exception when duplicate_object then null;

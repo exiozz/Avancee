@@ -42,7 +42,7 @@ function zenHtml(by){
   }
   var t=x.t, e=x.e, id=esc(t.id), r=timerOn(), on=r&&r.task===t.id;
   h+='<div class="zen-b"><p class="zen-why">'+nt(escRaw(x.why))+'</p><h2 id="zen-t">'+esc(t.title||T('Sans titre'))+'</h2>'
-    +'<p class="zen-p">'+(e?'<span class="picon">'+picon(e.p)+'</span><span>'+esc(e.p.name)+'</span><span class="cnt">/ '+esc(colName(e,t._col))+'</span>':ic('inbox')+'<span>Inbox</span>')+'</p>'
+    +'<p class="zen-p">'+(e?'<span class="picon">'+picon(e.p)+'</span><span>'+esc(e.p.name)+'</span><span class="cnt">/ '+esc(colName(e,t._col))+'</span>':ic('box')+'<span>Bazar</span>')+'</p>'
     +badges(t,e)+(t.notes?'<p class="zen-n">'+esc(String(t.notes).slice(0,260))+(String(t.notes).length>260?'…':'')+'</p>':'')+'</div>';
   h+='<footer><button class="btn primary" data-act="zen-done" data-id="'+id+'">'+ic('check')+'C’est fait</button>'
     +(e&&e.own?(on?'<button class="btn" data-act="timer-stop">'+ic('stop')+'Arrêter le chrono</button>':'<button class="btn" data-act="zen-go" data-id="'+id+'">'+ic('play')+'Je m’y mets</button>'):'')
@@ -122,6 +122,56 @@ function repProp(t,ed){
   return t.rep&&REP[t.rep]?prop(ic('repeat')+'Répéter','<span class="val">'+REP[t.rep]+'</span>'):'';
 }
 
+/* =====================================================================
+   4. MON RYTHME : cartes terminées sur les 7 derniers jours, comparées aux 7 d'avant
+   ===================================================================== */
+function paceWidget(by){
+  var days=[], n=0, prev=0, now=new Date(), start=new Date(now.getFullYear(),now.getMonth(),now.getDate()-6).getTime(), before=start-7*86400000, mx=1;
+  for(var i=6;i>=0;i--){var d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-i);days.push({k:ds(d),d:d,n:0});}
+  var idx={}; days.forEach(function(x){idx[x.k]=x;});
+  liveTasks(by).filter(function(t){return isDone(t,by[t.projectId]);}).concat(inboxTasks().filter(function(t){return t.done;})).forEach(function(t){
+    var at=Number(t.doneAt)||0; if(!at)return;
+    if(at>=start){var x=idx[ds(new Date(at))];if(x){x.n++;n++;}}
+    else if(at>=before)prev++;
+  });
+  days.forEach(function(x){mx=Math.max(mx,x.n);});
+  var diff=n-prev, msg=!n&&!prev?'Termine une carte pour voir ton rythme ici.':diff>0?tf(diff>1?'{0} de plus que les 7 jours d’avant.':'Une de plus que les 7 jours d’avant.',diff):diff<0?tf(diff<-1?'{0} de moins que les 7 jours d’avant.':'Une de moins que les 7 jours d’avant.',-diff):'Autant que les 7 jours d’avant.';
+  var h='<div class="pace"><p class="pace-n"><b>'+n+'</b> <span>'+(n>1?'cartes terminées en 7 jours':'carte terminée en 7 jours')+'</span></p>';
+  h+='<div class="pace-bars" role="img" aria-label="'+tf('Cartes terminées par jour : {0}',days.map(function(x){return unmark(nt(x.d.toLocaleDateString(LOCALE(),{weekday:'short'})))+' '+x.n;}).join(', '))+'">'+days.map(function(x,i){
+    return '<span class="pace-c'+(i===6?' today':'')+'" aria-hidden="true"><i class="pace-v">'+(x.n||'')+'</i><i class="pace-b'+(x.n?'':' zero')+'" style="height:'+(x.n?Math.max(10,Math.round(x.n/mx*100)):0)+'%"></i><i class="pace-d">'+nt(escRaw(x.d.toLocaleDateString(LOCALE(),{weekday:'narrow'})))+'</i></span>';
+  }).join('')+'</div><p class="wfoot">'+msg+'</p></div>';
+  return h;
+}
+
+/* =====================================================================
+   5. DUPLIQUER UN PROJET : s'en servir comme modèle pour le suivant
+   ===================================================================== */
+function dupProject(e){
+  if(S.planReady&&!canAddProject()){upsell('dup');return;}
+  var p=e.p, ref=S.db.collection((p._priv?PRIV:'')+'projects').doc(), map={}, first=e.cols[0].id, now=Date.now();
+  var doc=clean(p);
+  doc.name=(p.name||'')+T(' (copie)');doc.status='active';doc.createdAt=now;doc.fav=false;delete doc.start;delete doc.deadline;delete doc.demo;
+  var tasks=e.tasks.slice().sort(function(a,b){var ia=e.cols.findIndex(function(c){return c.id===a._col;}), ib=e.cols.findIndex(function(c){return c.id===b._col;});return (ia-ib)||cmpPos(a,b);}).map(function(t,i){
+    var tref=S.db.collection(realm(p.id)+'tasks').doc(), d=clean(t); map[t.id]=tref.id;
+    d.projectId=ref.id;d.columnId=first;d.pos=now+i;d.createdAt=now;d.doneAt=null;d.due='';
+    d.act=[{t:'Carte créée',at:now}];delete d.photos;delete d.files;delete d.log;
+    if(d.check)d.check=d.check.map(function(c){return {id:rnd(),t:c.t,d:false};});
+    return {ref:tref,d:d};
+  });
+  if(doc.wb){
+    var keep={}; doc.wb.n=(doc.wb.n||[]).filter(function(n){if(!n.task)return true;if(map[n.task]){n.task=map[n.task];return true;}keep[n.id]=1;return false;});
+    doc.wb.l=(doc.wb.l||[]).filter(function(l){return !keep[l.a]&&!keep[l.b];});
+  }
+  var cid=metaOf(p.id).clientId;
+  S.view=ref.id;S.pending=ref.id;S.task=null;S.confirm=null;persist();
+  toast(tf('Projet dupliqué : {0} copiées, à refaire depuis la première colonne.',pl(tasks.length,T('carte'),T('cartes'))));
+  return run(function(){
+    var chain=ref.set(doc);
+    tasks.forEach(function(x){chain=chain.then(function(){return x.ref.set(x.d);});});
+    return chain.then(function(){if(cid)return S.db.doc(PRIV+'meta/'+ref.id).set({clientId:cid});});
+  });
+}
+
 /* ---------- branchements (appelés depuis js/extras.js) ---------- */
 function moreClick(act,id,b){
   if(act==='zen'){closeOverlays();S.zen={skip:{}};render();return true;}
@@ -134,6 +184,7 @@ function moreClick(act,id,b){
     if(act==='zen-go'&&t){timerStart(t);closeOverlays();openTask(t.id);render();return true;}
     render();return true;
   }
+  if(act==='dup-project'){var de=index()[id];if(de&&de.own&&S.canEdit)dupProject(de);render();return true;}
   if(act==='pay-remind'){
     var e=index()[id];
     if(e&&e.own){closeOverlays();S.report=id;S.repKind='pay';S.focus='rep-txt';}

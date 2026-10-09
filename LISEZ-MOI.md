@@ -66,6 +66,27 @@ Dans les deux cas, l'adresse de retour à donner est :
 
 Puis remets dans `config.js` : `providers: ['google', 'discord']`, et redépose le dossier sur Netlify.
 
+## Inbox : la messagerie
+
+L'**Inbox** est une boîte de messages entre personnes qui ont un compte sur ton site. On écrit à une adresse e-mail ; la personne lit le message en se connectant avec cette adresse (si elle n'a pas encore de compte, le message l'attend).
+Le **Bazar** est l'ancien Inbox : les tâches notées en vrac, à ranger plus tard dans un projet.
+
+**À faire une fois** : dans Supabase > **SQL Editor**, recolle tout le fichier `supabase/schema.sql` et clique **Run**. Il crée la table des messages et ne supprime rien. Tant que ce n'est pas fait, l'Inbox affiche un message qui te le rappelle.
+
+Règles imposées par le serveur : un message n'est visible que par la personne qui l'écrit et celle qui le reçoit ; on ne peut pas écrire au nom de quelqu'un d'autre.
+
+### Qui peut écrire
+
+Tout le monde peut **lire** les messages qu'il reçoit. **Écrire et répondre** est réservé aux formules payantes, avec un nombre de messages par heure :
+
+- Gratuit : lecture seule ;
+- Premium : 20 messages par heure ;
+- Pro : 100 messages par heure.
+
+Ces limites sont imposées par le serveur (fonction `my_mail_quota` dans `schema.sql`) ; pour les changer, modifie les chiffres à cet endroit et dans `js/plans.js`, puis relance le fichier SQL.
+
+Aucun vrai e-mail n'est envoyé : la personne est prévenue par une notification dans l'appli (et sur son écran si elle a activé les notifications de bureau dans Réglages), tant que le site est ouvert chez elle.
+
 ## Partager un projet
 
 Ouvre un projet > **Partager** > entre l'adresse e-mail de la personne et choisis :
@@ -78,7 +99,7 @@ Si un client avec une adresse e-mail est relié au projet, le site propose de l'
 La personne se connecte au site **avec cette adresse** et retrouve le projet dans « Partagés avec moi ».
 Aucun e-mail n'est envoyé automatiquement : envoie-lui le lien avec « Copier le lien du projet ».
 
-Ce que les invités ne voient jamais, même en éditeur : ton Inbox, tes autres projets, tes clients, les montants et les notes privées. C'est le serveur qui l'impose, pas seulement l'affichage.
+Ce que les invités ne voient jamais, même en éditeur : ton Bazar, tes messages, tes autres projets, tes clients, les montants et les notes privées. C'est le serveur qui l'impose, pas seulement l'affichage.
 
 ## Installer comme une appli
 
