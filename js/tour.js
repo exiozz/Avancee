@@ -16,7 +16,7 @@ var TOUR=[
   {t:'Ajouter une tâche',view:'home',sel:'#top [data-act="qa"]',selS:'#tabbar .tab-plus',
    x:'Ce bouton note une tâche en deux secondes, depuis n’importe quelle page. Tu peux écrire « demain » ou « priorité haute » : l’appli comprend toute seule.'},
   {t:'Le Bazar',view:'home',sel:'#side [data-id="inbox"]',selS:'#tabbar [data-id="inbox"]',
-   x:'Une tâche sans projet arrive dans le Bazar. Tu notes vite sur le moment, tu ranges dans un projet plus tard. L’Inbox, elle, sert à échanger des messages.'},
+   x:'Une tâche sans projet arrive dans le Bazar. Tu notes vite sur le moment, tu ranges dans un projet plus tard. Mail, lui, sert à échanger des messages.'},
   {t:'Ton accueil',view:'home',sel:'#main .stats',
    x:'L’accueil résume tout : ce qui est prévu aujourd’hui, ce qui est en retard et où en sont tes projets. Touche un chiffre pour voir le détail.'},
   {t:'C’est parti !',end:true,

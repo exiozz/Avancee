@@ -145,8 +145,8 @@ function palItems(by){
     });
   }
   if(ed){
-    add('Actions','plus','Nouvelle tâche','qa','',{k:'N',kw:'creer ajouter tache carte'});
-    add('Actions','folder','Nouveau projet','new-project','',{k:'Maj P',kw:'creer'});
+    add('Actions','plus','Nouvelle tâche','qa','',{k:keyHint('qa'),kw:'creer ajouter tache carte'});
+    add('Actions','folder','Nouveau projet','new-project','',{k:keyHint('newproj'),kw:'creer'});
     add('Actions','users','Nouveau client','new-client','',{kw:'creer'});
   }
   var keys={home:'G H',inbox:'G I',tasks:'G T',calendar:'G C',projects:'G P'};
@@ -156,7 +156,7 @@ function palItems(by){
   add('Apparence','sun','Thème clair','pref','light',{attrs:' data-k="theme"',kw:'theme mode'});
   add('Apparence','moon','Thème sombre','pref','dark',{attrs:' data-k="theme"',kw:'theme mode nuit'});
   add('Apparence','monitor','Thème du système','pref','system',{attrs:' data-k="theme"',kw:'theme automatique'});
-  add('Apparence','sidebar','Afficher ou masquer le menu','sb','toggle',{k:'Ctrl B',kw:'sidebar barre laterale'});
+  add('Apparence','sidebar','Afficher ou masquer le menu','sb','toggle',{k:keyHint('sb'),kw:'sidebar barre laterale'});
   add('Langue','settings','Français','lang','fr',{kw:'langue language french'});
   add('Langue','settings','English','lang','en',{kw:'langue language anglais'});
   add('Aide','bolt','Revoir le tutoriel','tour-start','',{kw:'aide tuto tutorial help guide visite'});

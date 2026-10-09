@@ -425,10 +425,10 @@ root.addEventListener('keydown',function(ev){
     if(key==='Enter'&&el.id==='lg-pw'){ev.preventDefault();var lq=document.querySelector('[data-act="login-pw"]');if(lq)lq.click();}
     return;
   }
+  if(KEYS.rec){keysRecord(ev);return;}   /* on attend la nouvelle combinaison d'un raccourci */
   if(tourKey(ev))return;
   if(extraKey(ev))return;
-  if(mod&&key&&key.toLowerCase()==='k'){ev.preventDefault();if(S.db){if(S.pal){closeOverlays();}else openPal();render();}return;}
-  if(mod&&key&&key.toLowerCase()==='b'){ev.preventDefault();cycleSb('toggle');render();return;}
+  if(keysHandle(ev))return;   /* raccourcis modifiables : js/keys.js */
   if(key==='Escape'){
     if(S.upsell||S.photo||S.pal||S.qa||S.sheet||S.ctx){closeOverlays();render();return;}
     if(S.comp||S.addSpace||S.addIn||S.ren||S.smenu||S.menu||S.iconPick){S.comp=null;S.addSpace=false;S.addIn=null;S.ren=null;S.smenu=null;S.menu=null;S.iconPick=false;render();return;}
@@ -451,16 +451,6 @@ root.addEventListener('keydown',function(ev){
   }
   if(S.qa&&key==='Enter'&&el.id==='qat'){ev.preventDefault();var okb=document.querySelector('[data-act="qa-ok"]');if(okb)okb.click();return;}
   if(!typing(el)&&!mod&&!ev.altKey&&S.db){
-    var k=key&&key.length===1?key.toLowerCase():key;
-    if(S.gAt&&Date.now()-S.gAt<1200){
-      var map={h:'home',i:'mail',b:'inbox',t:'tasks',c:'calendar',p:'projects',s:'settings'};
-      S.gAt=0;
-      if(map[k]){ev.preventDefault();S.view=map[k];var by=index();if(!validView(by))S.view='home';go(S.view);render();return;}
-    }
-    if(k==='g'){S.gAt=Date.now();return;}
-    if(k==='/'){ev.preventDefault();openPal();render();return;}
-    if(S.canEdit&&k==='n'&&!ev.shiftKey){ev.preventDefault();openQa();render();return;}
-    if(S.canEdit&&k==='p'&&ev.shiftKey){ev.preventDefault();go('projects');S.pf='active';S.focus='npp';render();return;}
     if((key==='Enter'||key===' ')&&el.dataset&&(el.dataset.act==='open'||el.dataset.act==='view')&&el.tagName!=='BUTTON'){ev.preventDefault();el.click();return;}
   }
   if(key!=='Enter'||ev.isComposing)return;

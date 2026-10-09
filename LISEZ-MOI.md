@@ -66,12 +66,12 @@ Dans les deux cas, l'adresse de retour à donner est :
 
 Puis remets dans `config.js` : `providers: ['google', 'discord']`, et redépose le dossier sur Netlify.
 
-## Inbox : la messagerie
+## Mail : la messagerie
 
-L'**Inbox** est une boîte de messages entre personnes qui ont un compte sur ton site. On écrit à une adresse e-mail ; la personne lit le message en se connectant avec cette adresse (si elle n'a pas encore de compte, le message l'attend).
-Le **Bazar** est l'ancien Inbox : les tâches notées en vrac, à ranger plus tard dans un projet.
+**Mail** est une boîte de messages entre personnes qui ont un compte sur ton site. On écrit à une adresse e-mail ; la personne lit le message en se connectant avec cette adresse (si elle n'a pas encore de compte, le message l'attend).
+Le **Bazar** : les tâches notées en vrac, à ranger plus tard dans un projet.
 
-**À faire une fois** : dans Supabase > **SQL Editor**, recolle tout le fichier `supabase/schema.sql` et clique **Run**. Il crée la table des messages et ne supprime rien. Tant que ce n'est pas fait, l'Inbox affiche un message qui te le rappelle.
+**À faire une fois** : dans Supabase > **SQL Editor**, recolle tout le fichier `supabase/schema.sql` et clique **Run**. Il crée la table des messages et ne supprime rien. Tant que ce n'est pas fait, Mail affiche un message qui te le rappelle.
 
 Règles imposées par le serveur : un message n'est visible que par la personne qui l'écrit et celle qui le reçoit ; on ne peut pas écrire au nom de quelqu'un d'autre.
 

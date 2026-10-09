@@ -172,7 +172,7 @@ I18N.add('en',{
 'Tes projets':'Your projects','Un projet, c’est un client, un site, une idée… Écris son nom ici puis appuie sur Entrée pour le créer. Dedans, chaque tâche est une carte que tu fais avancer : À faire, En cours, Terminé.':'A project is a client, a website, an idea… Type its name here and press Enter to create it. Inside, each task is a card you move forward: To do, In progress, Done.',
 'Partager un projet':'Share a project','Dans un projet, le bouton « Partager » invite quelqu’un avec son adresse e-mail. En lecteur, il regarde ton avancée. En éditeur, il peut aussi modifier les cartes.':'In a project, the “Share” button invites someone by email address. As a viewer, they follow your progress. As an editor, they can also change the cards.',
 'Ce bouton note une tâche en deux secondes, depuis n’importe quelle page. Tu peux écrire « demain » ou « priorité haute » : l’appli comprend toute seule.':'This button captures a task in two seconds, from any page. You can type “tomorrow” or “high priority”: the app works it out.',
-'Le Bazar':'The Bazaar','Une tâche sans projet arrive dans le Bazar. Tu notes vite sur le moment, tu ranges dans un projet plus tard. L’Inbox, elle, sert à échanger des messages.':'A task with no project lands in the Bazaar. Jot it down now, file it into a project later. The Inbox is for exchanging messages.',
+'Le Bazar':'The Bazaar','Une tâche sans projet arrive dans le Bazar. Tu notes vite sur le moment, tu ranges dans un projet plus tard. Mail, lui, sert à échanger des messages.':'A task with no project lands in the Bazaar. Jot it down now, file it into a project later. Mail is for exchanging messages.',
 'Ton accueil':'Your home page','L’accueil résume tout : ce qui est prévu aujourd’hui, ce qui est en retard et où en sont tes projets. Touche un chiffre pour voir le détail.':'The home page sums it all up: what’s due today, what’s overdue and how your projects are going. Tap a number to see the details.',
 'C’est parti !':'Off you go!','Le mieux pour commencer : créer ton premier projet. Tu peux revoir ce tutoriel quand tu veux dans Réglages.':'The best way to start: create your first project. You can replay this tutorial any time in Settings.',
 'Passer le tutoriel':'Skip the tutorial','Précédent':'Back','Suivant':'Next','Commencer':'Start','Créer mon premier projet':'Create my first project',
@@ -372,13 +372,13 @@ I18N.add('en',{
 'Écrire des messages est réservé aux formules Premium (20 par heure) et Pro (100 par heure). En Gratuit, tu peux lire ceux que tu reçois.':'Writing messages is reserved for the Premium (20 per hour) and Pro (100 per hour) plans. On Free, you can read the ones you receive.',
 'Tu as atteint ton nombre de messages pour cette heure. La formule Pro en permet 100 par heure.':'You have reached your number of messages for this hour. The Pro plan allows 100 per hour.',
 'Dupliquer un projet demande une place libre : tu as atteint 5 projets actifs, la limite de la formule Gratuite.':'Duplicating a project needs a free slot: you have reached 5 active projects, the Free plan limit.',
-'Inbox : écrire, {0} messages par heure':'Inbox: write, {0} messages per hour','Inbox : lire les messages reçus':'Inbox: read received messages',
+'Mail : écrire, {0} messages par heure':'Mail: write, {0} messages per hour','Mail : lire les messages reçus':'Mail: read received messages',
 'Tu as atteint {0} messages cette heure. Réessaie un peu plus tard.':'You have reached {0} messages this hour. Try again a little later.',
 'Nombre de messages que ta formule permet d’envoyer par heure':'Number of messages your plan lets you send per hour',
 '{0} messages restants cette heure':'{0} messages left this hour','{0} message restant cette heure':'{0} message left this hour','Quota de l’heure atteint':'Hourly quota reached',
 'Répondre est réservé aux formules Premium et Pro.':'Replying is reserved for the Premium and Pro plans.','Voir les formules':'See plans',
 'Chercher dans les messages':'Search messages','Aucun message trouvé':'No message found','Essaie un autre mot, un nom ou une adresse.':'Try another word, a name or an address.',
-'Lui écrire dans l’Inbox':'Write to them in the Inbox',
+'Lui écrire par Mail':'Write to them in Mail',
 'Mon rythme':'My pace','Termine une carte pour voir ton rythme ici.':'Finish a card to see your pace here.','{0} de plus que les 7 jours d’avant.':'{0} more than the 7 days before.','Une de plus que les 7 jours d’avant.':'One more than the 7 days before.',
 '{0} de moins que les 7 jours d’avant.':'{0} fewer than the 7 days before.','Une de moins que les 7 jours d’avant.':'One fewer than the 7 days before.','Autant que les 7 jours d’avant.':'Same as the 7 days before.',
 'cartes terminées en 7 jours':'cards done in 7 days','carte terminée en 7 jours':'card done in 7 days','Cartes terminées par jour : {0}':'Cards done per day: {0}',
@@ -398,4 +398,23 @@ I18N.add('en',{
 'Thèmes à effets avec fond animé':'Effect themes with animated background','Thèmes à effets : Sakura, Aurore, Océan':'Effect themes: Sakura, Aurora, Ocean',
 'Tu es chef de projet':'You are project manager','La personne qui a créé le projet':'The person who created the project','(toi · chef de projet)':'(you · project manager)',
 'C’est ton adresse : tu as déjà accès à ce projet.':'That is your address: you already have access to this project.'
+});
+
+/* --- Mail, raccourcis modifiables --- */
+I18N.add('en',{
+'Mail':'Mail','Ctrl':'Ctrl','Espace':'Space','Entrée':'Enter','Retour arrière':'Backspace','Suppr':'Del',
+'Général':'General','Créer':'Create','Aller à':'Go to','Dans un projet':'In a project','Ouvrir un projet':'Open a project',
+'Passer du thème clair au thème sombre':'Switch between light and dark theme','Nouveau client':'New client','Ouvrir le mode Focus':'Open Focus mode',
+'Aller à l’accueil':'Go to Home','Aller à Mail':'Go to Mail','Aller au Bazar':'Go to the Bazaar','Aller à Mes tâches':'Go to My tasks','Aller au calendrier':'Go to the calendar','Aller aux clients':'Go to clients','Aller aux projets':'Go to projects','Aller aux formules':'Go to plans','Aller aux réglages':'Go to settings',
+'Ouvrir le projet « {0} »':'Open project “{0}”','Ouvrir un projet (supprimé)':'Open a project (deleted)',
+'Clique sur un raccourci pour le changer, puis tape la nouvelle combinaison. Une lettre seule, deux touches à la suite (« G puis H »), ou avec Ctrl, Alt ou Maj. Tes raccourcis te suivent sur tous tes appareils.':'Click a shortcut to change it, then press the new combination. A single letter, two keys in a row (“G then H”), or with Ctrl, Alt or Shift. Your shortcuts follow you on all your devices.',
+'Tape la combinaison…':'Press the combination…','puis…':'then…','Annuler':'Cancel','Changer ce raccourci':'Change this shortcut','Changer le raccourci :':'Change shortcut:','Supprimer ce raccourci':'Delete this shortcut',
+'Aucun raccourci. Ajoutes-en un ci-dessous.':'No shortcuts. Add one below.','Action du nouveau raccourci':'Action for the new shortcut','Ajouter un raccourci':'Add a shortcut',
+'Échap ferme toujours la fenêtre ouverte ; ce raccourci ne se change pas.':'Esc always closes the open window; that shortcut cannot be changed.','Remettre les raccourcis d’origine':'Restore the default shortcuts',
+'Raccourci supprimé.':'Shortcut deleted.','Raccourcis d’origine remis.':'Default shortcuts restored.',
+'Impossible : {0} se mélange avec le raccourci de « {1} ».':'Not possible: {0} clashes with the shortcut for “{1}”.','Ce raccourci était utilisé par « {0} » : il lui a été retiré.':'This shortcut was used by “{0}”: it has been removed from it.',
+'{0} est réservé par le navigateur. Choisis une autre combinaison.':'{0} is reserved by the browser. Pick another combination.',
+'Cette touche sert déjà à écrire ou à se déplacer. Ajoute Ctrl ou Alt, ou choisis une lettre.':'That key is already used for typing or moving around. Add Ctrl or Alt, or pick a letter.',
+'La deuxième touche doit être une touche seule, sans Ctrl ni Alt.':'The second key must be a single key, without Ctrl or Alt.',
+'Vue Kanban du projet ouvert':'Kanban view of the open project','Vue Liste du projet ouvert':'List view of the open project','Vue Table du projet ouvert':'Table view of the open project','Vue Calendrier du projet ouvert':'Calendar view of the open project','Vue Notes du projet ouvert':'Notes view of the open project','Vue Tableau blanc du projet ouvert':'Whiteboard view of the open project'
 });
