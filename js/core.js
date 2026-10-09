@@ -146,7 +146,7 @@ function rwProjects(by){by=by||index();return S.projects.filter(function(p){retu
 function index(){
   var by={};
   S.projects.forEach(function(p){
-    var cols=colsOf(p), own=!S.me||!p._owner||p._owner===S.me.id, e={p:p,own:own,rw:own||S.roles[p.id]==='editor',cols:cols,tasks:[],by:{},doneIds:{},total:0,done:0,pct:0};
+    var cols=colsOf(p), own=!S.me||!p._owner||p._owner===S.me.id, e={p:p,own:own,mgr:own||(!!S.admin&&!!S.roles[p.id]),rw:own||S.roles[p.id]==='editor'||(!!S.admin&&!!S.roles[p.id]),cols:cols,tasks:[],by:{},doneIds:{},total:0,done:0,pct:0};
     cols.forEach(function(c){e.by[c.id]=[];if(c.done)e.doneIds[c.id]=1;});
     by[p.id]=e;
   });
@@ -598,7 +598,7 @@ function validEmail(s){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);}
 function addMember(pid,email,role){
   email=String(email||'').trim().toLowerCase();
   if(!validEmail(email)){toast('Adresse e-mail invalide.',{bad:true});return false;}
-  if(S.me&&email===S.me.email){toast('C’est ton adresse : tu es déjà propriétaire.',{bad:true});return false;}
+  if(S.me&&email===S.me.email){var mp=projById(pid);toast(mp&&mp._owner&&mp._owner!==S.me.id?'C’est ton adresse : tu as déjà accès à ce projet.':'C’est ton adresse : tu es déjà propriétaire.',{bad:true});return false;}
   var ex=membersOf(pid).find(function(m){return m.email===email;});
   if(ex){if(ex.role!==role)setMemberRole(ex.id,role);else toast('Cette personne a déjà accès.');return true;}
   run(function(){return S.db.collection('members').doc().set({projectId:pid,email:email,role:role==='editor'?'editor':'viewer'});});

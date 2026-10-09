@@ -159,6 +159,7 @@ function dupProject(e){
     return {ref:tref,d:d};
   });
   if(doc.wb){
+    delete doc.wb.h;
     var keep={}; doc.wb.n=(doc.wb.n||[]).filter(function(n){if(!n.task)return true;if(map[n.task]){n.task=map[n.task];return true;}keep[n.id]=1;return false;});
     doc.wb.l=(doc.wb.l||[]).filter(function(l){return !keep[l.a]&&!keep[l.b];});
   }

@@ -306,7 +306,7 @@ I18N.add('en',{
 'En attente de « {0} »':'Waiting for “{0}”','En attente de « {0} » et {1} de plus':'Waiting for “{0}” and {1} more','Ouvrir la carte':'Open card','Poser une carte…':'Place a card…','−15 min':'−15 min','+15 min':'+15 min','Poser une carte existante':'Place an existing card',
 'Sans titre':'Untitled','Couleur du bloc':'Block colour','Transformer ce bloc en carte du Kanban':'Turn this block into a Kanban card','En faire une carte':'Make it a card','Retirer le bloc':'Remove block','Supprimer le lien':'Delete link',
 'Dézoomer':'Zoom out','Zoomer':'Zoom in','Recentrer':'Fit to view','Un tableau blanc pour y voir clair':'A whiteboard to see things clearly',
-'Double-clique dans le vide pour poser un bloc. Tire depuis le point à droite d’un bloc pour le relier à un autre. Pose aussi tes cartes : un lien entre deux cartes indique laquelle doit être finie d’abord.':'Double-click an empty spot to add a block. Drag from the dot on the right of a block to link it to another. Place your cards too: a link between two cards shows which one has to be finished first.',
+'Double-clique dans le vide pour poser un bloc. Tire depuis le point à droite d’un bloc pour le relier à un autre. Tes cartes à faire s’affichent ici toutes seules : un lien entre deux cartes indique laquelle doit être finie d’abord.':'Double-click an empty spot to add a block. Drag from the dot on the right of a block to link it to another. Your to-do cards show up here on their own: a link between two cards shows which one has to be finished first.',
 'Ce projet n’a pas encore de tableau blanc.':'This project has no whiteboard yet.',
 'Double-clic : nouveau bloc · Glisser le fond : se déplacer · Molette : zoom · Suppr : effacer la sélection':'Double-click: new block · Drag the background: move around · Wheel: zoom · Del: delete selection',
 'Bloc retiré du tableau blanc.':'Block removed from the whiteboard.','Lien supprimé.':'Link deleted.','Nouvelle carte':'New card','Carte créée dans « {q} ».':'Card created in “{q}”.',
@@ -384,4 +384,18 @@ I18N.add('en',{
 'cartes terminées en 7 jours':'cards done in 7 days','carte terminée en 7 jours':'card done in 7 days','Cartes terminées par jour : {0}':'Cards done per day: {0}',
 'Copie les colonnes, les labels, les cartes et le tableau blanc. Les cartes repartent de la première colonne.':'Copies the columns, labels, cards and whiteboard. Cards start again from the first column.','Dupliquer le projet':'Duplicate project',
 'Projet dupliqué : {0} copiées, à refaire depuis la première colonne.':'Project duplicated: {0} copied, to redo from the first column.','carte':'card','cartes':'cards'
+});
+
+/* --- thèmes à effets, chef de projet --- */
+I18N.add('en',{
+'Aucun':'None','Sakura':'Sakura','Aurore':'Aurora','Océan':'Ocean','Thème à effets':'Effect theme',
+'Change les couleurs, le fond et ajoute un effet à chaque clic.':'Changes the colours and background, and adds an effect on every click.',
+'Sakura, Aurore, Océan : réservés aux formules Premium et Pro.':'Sakura, Aurora, Ocean: reserved for the Premium and Pro plans.',
+'Effet au clic':'Click effect','Quelques pétales, étincelles ou bulles là où tu cliques.':'A few petals, sparkles or bubbles where you click.','Oui':'Yes','Non':'No',
+'Fond animé':'Animated background','Le fond bouge doucement. Coupé automatiquement si ton appareil demande moins d’animations.':'The background moves gently. Turned off automatically if your device asks for less motion.',
+'Avec la formule Pro, le fond s’anime : pétales qui tombent, aurore qui ondule, bulles qui montent.':'With the Pro plan the background comes alive: falling petals, a rippling aurora, rising bubbles.','Passer à Pro':'Upgrade to Pro',
+'Les thèmes à effets (Sakura, Aurore, Océan) sont réservés aux formules Premium et Pro.':'Effect themes (Sakura, Aurora, Ocean) are reserved for the Premium and Pro plans.','Le fond animé des thèmes fait partie de la formule Pro.':'The animated theme background is part of the Pro plan.',
+'Thèmes à effets avec fond animé':'Effect themes with animated background','Thèmes à effets : Sakura, Aurore, Océan':'Effect themes: Sakura, Aurora, Ocean',
+'Tu es chef de projet':'You are project manager','La personne qui a créé le projet':'The person who created the project','(toi · chef de projet)':'(you · project manager)',
+'C’est ton adresse : tu as déjà accès à ce projet.':'That is your address: you already have access to this project.'
 });
