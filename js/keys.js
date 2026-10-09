@@ -172,7 +172,7 @@ function keysCard(){
 function keysClick(act,id){
   if(act.indexOf('key-')!==0)return false;
   if(act==='key-rec'){keyRecStart(parseInt(id,10));render();var f=document.activeElement;if(f&&f.blur)f.blur();return true;}
-  if(act==='key-new'){var s=document.getElementById('key-act');KEYS.pick=s?s.value:'';keyRecStart('new');render();var g=document.activeElement;if(g&&g.blur)g.blur();return true;}
+  if(act==='key-new'){if(S.planReady&&!plan().keys){upsell('keys');return true;}var s=document.getElementById('key-act');KEYS.pick=s?s.value:'';keyRecStart('new');render();var g=document.activeElement;if(g&&g.blur)g.blur();return true;}
   if(act==='key-cancel'){keyRecStop();render();return true;}
   if(act==='key-del'){
     var list=keyList().map(function(b){return {a:b.a,k:b.k};}), i=parseInt(id,10), old=list.slice();

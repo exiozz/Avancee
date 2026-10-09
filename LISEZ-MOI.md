@@ -80,12 +80,27 @@ Règles imposées par le serveur : un message n'est visible que par la personne 
 Tout le monde peut **lire** les messages qu'il reçoit. **Écrire et répondre** est réservé aux formules payantes, avec un nombre de messages par heure :
 
 - Gratuit : lecture seule ;
-- Premium : 20 messages par heure ;
-- Pro : 100 messages par heure.
+- Premium : 15 messages par heure ;
+- Pro : 150 messages par heure.
 
 Ces limites sont imposées par le serveur (fonction `my_mail_quota` dans `schema.sql`) ; pour les changer, modifie les chiffres à cet endroit et dans `js/plans.js`, puis relance le fichier SQL.
 
 Aucun vrai e-mail n'est envoyé : la personne est prévenue par une notification dans l'appli (et sur son écran si elle a activé les notifications de bureau dans Réglages), tant que le site est ouvert chez elle.
+
+## Formules : ce que chacune permet
+
+| | Gratuit | Premium | Pro |
+|---|---|---|---|
+| Projets actifs | 3 | 15 | illimités |
+| Photos par tâche | 2 | 6 | 15 |
+| Fichiers par tâche | 2 (5 Mo) | 8 (20 Mo) | 20 (50 Mo) |
+| Mail | lecture | 15 messages par heure | 150 messages par heure |
+| Cartes récurrentes, dupliquer un projet, point client, relances, créer des raccourcis, thèmes à effets | non | oui | oui |
+| Fond animé, taux horaire réel, export tableur | non | non | oui |
+
+Tout est réglé dans `js/plans.js` (objet `PLANS`). Le nombre de projets et de messages est aussi imposé par le serveur : si tu changes ces deux chiffres, change-les aussi dans `supabase/schema.sql` (fonctions `my_project_quota` et `my_mail_quota`) et relance le fichier.
+
+Une personne qui dépasse une limite après un changement (par exemple 5 projets actifs en Gratuit) garde tout ce qu'elle a : elle ne peut simplement plus en créer tant qu'elle n'est pas repassée sous la limite.
 
 ## Partager un projet
 

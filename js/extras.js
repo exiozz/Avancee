@@ -347,7 +347,7 @@ function timerHtml(t,e){
 function timeProps(e,m){
   var ms=projectTime(e), amount=Number(m.amount)||0, hrs=ms/3600000;
   var h=prop('Temps passé','<span class="val" data-ptick="'+esc(e.p.id)+'">'+nt(fmtDur(ms))+'</span>');
-  h+=prop('Taux horaire réel','<span class="val">'+(amount&&hrs>=.05?nt(eur(amount/hrs)+' / h'):'<span class="mut">—</span>')+'</span>');
+  h+=prop('Taux horaire réel',plan().rate?'<span class="val">'+(amount&&hrs>=.05?nt(eur(amount/hrs)+' / h'):'<span class="mut">—</span>')+'</span>':'<span class="val"><button class="pbadge" data-act="upsell" data-id="rate" title="Voir ce que ce projet te rapporte vraiment par heure">'+ic('lock')+'Pro</button></span>');
   return h;
 }
 function timerChip(){
@@ -447,7 +447,7 @@ function extraClick(act,id,b){
   if(act==='timer-start'){var t=taskById(id);if(t&&S.canEdit)timerStart(t);render();return true;}
   if(act==='timer-stop'){timerStop();render();return true;}
   if(act==='timer-adj'){var t2=taskById(id);if(t2&&S.canEdit)timerAdjust(t2,(parseInt(b.dataset.v,10)||0)*60000);render();return true;}
-  if(act==='report'){var ce=curE();if(ce&&ce.own){closeOverlays();S.report=ce.p.id;S.repKind='';S.focus='rep-txt';}render();return true;}
+  if(act==='report'){var ce=curE();if(ce&&ce.own&&S.planReady&&!plan().msgs){upsell('msgs');return true;}if(ce&&ce.own){closeOverlays();S.report=ce.p.id;S.repKind='';S.focus='rep-txt';}render();return true;}
   if(act==='report-copy'||act==='report-mail'){
     var ta=document.getElementById('rep-txt'), txt=ta?ta.value:'', pid=S.report, pr=projById(pid), pay=S.repKind==='pay';
     if(!pr)return true;

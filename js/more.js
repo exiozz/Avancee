@@ -147,7 +147,7 @@ function paceWidget(by){
    5. DUPLIQUER UN PROJET : s'en servir comme modèle pour le suivant
    ===================================================================== */
 function dupProject(e){
-  if(S.planReady&&!canAddProject()){upsell('dup');return;}
+  if(S.planReady&&(!plan().dup||!canAddProject())){upsell('dup');return;}
   var p=e.p, ref=S.db.collection((p._priv?PRIV:'')+'projects').doc(), map={}, first=e.cols[0].id, now=Date.now();
   var doc=clean(p);
   doc.name=(p.name||'')+T(' (copie)');doc.status='active';doc.createdAt=now;doc.fav=false;delete doc.start;delete doc.deadline;delete doc.demo;
@@ -188,6 +188,7 @@ function moreClick(act,id,b){
   if(act==='dup-project'){var de=index()[id];if(de&&de.own&&S.canEdit)dupProject(de);render();return true;}
   if(act==='pay-remind'){
     var e=index()[id];
+    if(e&&e.own&&S.planReady&&!plan().msgs){upsell('msgs');return true;}
     if(e&&e.own){closeOverlays();S.report=id;S.repKind='pay';S.focus='rep-txt';}
     render();return true;
   }
@@ -197,6 +198,7 @@ function moreChange(k,id,v){
   if(k==='trep'){
     var t=taskById(id); if(!t)return true;
     v=REP[v]?v:'';
+    if(v&&S.planReady&&!plan().repeat){upsell('repeat');return true;}   /* une carte déjà récurrente continue de se répéter */
     run(function(){return tdoc(id).update({rep:v,act:actOf(t,v?'Répétition : '+REP[v].toLowerCase():'Répétition retirée')});});
     if(v&&!t.due)toast('Ajoute une échéance : la prochaine carte partira de cette date.');
     return true;

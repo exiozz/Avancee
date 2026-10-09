@@ -67,7 +67,7 @@ function renderPanel(by){
       h+='</ul>';
     }
     if(ed&&fls.length+fup.length<plan().files)h+='<button class="addfile" data-act="file-add" data-id="'+id+'">'+ic('clip')+'Joindre un fichier</button><p class="hint">'+tf('PDF, devis, documents, archives… jusqu’à {0} chacun.',fmtSize(plan().size))+'</p>';
-    else if(ed&&!isPaid())h+='<button class="addfile up" data-act="upsell" data-id="files">'+ic('star')+'Plus de fichiers avec Premium</button>';
+    else if(ed&&myPlan()!=='pro')h+='<button class="addfile up" data-act="upsell" data-id="files">'+ic('star')+tf('Plus de fichiers avec {0}',PLANS[nextPlan()].n)+'</button>';
     h+='</section>';
   }
   /* photos */
@@ -79,7 +79,7 @@ function renderPanel(by){
     });
     for(var u=0;u<upl;u++)h+='<div class="ph up" role="status" aria-label="Envoi de la photo…"><i class="spin"></i></div>';
     if(ed&&phs.length+upl<plan().photos)h+='<button class="ph add" data-act="photo-add" data-id="'+id+'">'+ic('image')+'<span>Ajouter des photos</span></button>';
-    else if(ed&&!isPaid())h+='<button class="ph add up" data-act="upsell" data-id="photos">'+ic('star')+'<span>Plus de photos avec Premium</span></button>';
+    else if(ed&&myPlan()!=='pro')h+='<button class="ph add up" data-act="upsell" data-id="photos">'+ic('star')+'<span>'+tf('Plus de photos avec {0}',PLANS[nextPlan()].n)+'</span></button>';
     h+='</div></section>';
   }
   /* checklist */

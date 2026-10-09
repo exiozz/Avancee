@@ -113,6 +113,11 @@ language sql stable security definer set search_path = public as $$
     else coalesce((select p.plan from public.premium p
                    where p.email = public.my_email() and public.my_email() <> '' and (p.until is null or p.until > now())), 'free') end
 $$;
+-- projets actifs permis par la formule : Gratuit 3, Premium 15, Pro sans limite
+create or replace function public.my_project_quota() returns int
+language sql stable security definer set search_path = public as $$
+  select case public.my_plan() when 'pro' then 1000000 when 'premium' then 15 else 3 end
+$$;
 create or replace function public.my_active_projects() returns int
 language sql stable security definer set search_path = public as $$
   select count(*)::int from public.projects
@@ -151,7 +156,7 @@ revoke update on public.spaces, public.projects, public.tasks, public.clients, p
 grant update (data) on public.spaces, public.projects, public.clients, public.meta, public.settings to authenticated;
 grant update (data, project_id) on public.tasks to authenticated;
 grant update (role) on public.members to authenticated;
-grant execute on function public.my_email(), public.project_role(uuid), public.is_admin(), public.my_plan(), public.my_active_projects() to authenticated;
+grant execute on function public.my_email(), public.project_role(uuid), public.is_admin(), public.my_plan(), public.my_active_projects(), public.my_project_quota() to authenticated;
 revoke all on public.admins, public.premium from anon;
 revoke all on public.admins from authenticated;
 grant select, insert, update, delete on public.premium to authenticated;
@@ -176,9 +181,9 @@ drop policy if exists projects_read on public.projects;
 create policy projects_read on public.projects for select to authenticated
   using (owner = auth.uid() or public.project_role(id) is not null);
 drop policy if exists projects_insert on public.projects;
--- formule Gratuite : 5 projets actifs au plus
+-- nombre de projets actifs selon la formule : voir my_project_quota
 create policy projects_insert on public.projects for insert to authenticated
-  with check (owner = auth.uid() and (public.my_plan() <> 'free' or public.my_active_projects() < 5));
+  with check (owner = auth.uid() and public.my_active_projects() < public.my_project_quota());
 drop policy if exists projects_update on public.projects;
 create policy projects_update on public.projects for update to authenticated
   using (public.project_role(id) in ('owner','manager','editor'))
@@ -297,10 +302,10 @@ create or replace function public.my_recent_messages() returns int
 language sql stable security definer set search_path = public as $$
   select count(*)::int from public.messages where from_id = auth.uid() and created_at > now() - interval '1 hour'
 $$;
--- messages par heure selon la formule : Gratuit 0 (lecture seule), Premium 20, Pro 100
+-- messages par heure selon la formule : Gratuit 0 (lecture seule), Premium 15, Pro 150
 create or replace function public.my_mail_quota() returns int
 language sql stable security definer set search_path = public as $$
-  select case public.my_plan() when 'pro' then 100 when 'premium' then 20 else 0 end
+  select case public.my_plan() when 'pro' then 150 when 'premium' then 15 else 0 end
 $$;
 -- chacun ne modifie que ce qui le concerne : le destinataire « lu » et sa corbeille, l'expéditeur sa corbeille
 create or replace function public.messages_guard() returns trigger
