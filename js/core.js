@@ -521,7 +521,7 @@ function addPhotos(id,files){
   var list=[].slice.call(files||[]).filter(function(f){return /^image\//.test(f.type||'');});
   var lim=plan().photos, room=lim-(t.photos||[]).length-(S.upl[id]||0);
   if(!list.length){toast('Choisis une image : photo, capture d’écran…',{bad:true});return Promise.resolve();}
-  if(room<=0){if(!isPaid())upsell('photos');else toast(tf('Maximum {0} photos par tâche.',lim),{bad:true});return Promise.resolve();}
+  if(room<=0){if(myPlan()!=='pro')upsell('photos');else toast(tf('Maximum {0} photos par tâche.',lim),{bad:true});return Promise.resolve();}
   if(list.length>room){list=list.slice(0,room);toast(tf('Maximum {0} photos par tâche : les suivantes n’ont pas été ajoutées.',lim));}
   S.upl[id]=(S.upl[id]||0)+list.length;render();
   var added=[], unread=0, failed=0, nobucket=false, chain=Promise.resolve();
@@ -565,9 +565,9 @@ function addFiles(id,files){
   var t=taskById(id); if(!t)return Promise.resolve();
   var pl=plan(), list=[].slice.call(files||[]), room=pl.files-(t.files||[]).length-(S.fupl[id]||[]).length;
   if(!list.length)return Promise.resolve();
-  if(room<=0){if(!isPaid())upsell('files');else toast(tf('Maximum {0} fichiers par tâche.',pl.files),{bad:true});return Promise.resolve();}
+  if(room<=0){if(myPlan()!=='pro')upsell('files');else toast(tf('Maximum {0} fichiers par tâche.',pl.files),{bad:true});return Promise.resolve();}
   var big=list.filter(function(f){return f.size>pl.size;});
-  if(big.length){if(myPlan()!=='pro')upsell(isPaid()?'size':'files');else toast(tf(big.length>1?'{0} fichiers trop lourds ({1} maximum).':'« {0} » est trop lourd ({1} maximum).',big.length>1?big.length:big[0].name,fmtSize(pl.size)),{bad:true});}
+  if(big.length){if(myPlan()!=='pro')upsell('size');else toast(tf(big.length>1?'{0} fichiers trop lourds ({1} maximum).':'« {0} » est trop lourd ({1} maximum).',big.length>1?big.length:big[0].name,fmtSize(pl.size)),{bad:true});}
   list=list.filter(function(f){return f.size<=pl.size;});
   if(list.length>room){list=list.slice(0,room);toast(tf('Maximum {0} fichiers par tâche : les suivants n’ont pas été ajoutés.',pl.files));}
   if(!list.length)return Promise.resolve();
