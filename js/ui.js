@@ -153,7 +153,7 @@ function pcard(p,by){
   var e=by[p.id], st=pstat(p), c=e.own?clientOf(p):null;
   var late=p.deadline&&st!=='done'&&st!=='archived'&&p.deadline<todayStr();
   return '<button class="pcard" data-act="view" data-id="'+esc(p.id)+'" style="--c:'+hue(p)+'">'
-    +'<span class="pc-top"><span class="pc-ic">'+picon(p)+'</span><span class="pc-name">'+esc(p.name)+'</span>'+(p.fav?ic('star','fav'):'')+(isShared(p)?ic('users','mut'):'')+'</span>'
+    +'<span class="pc-top"><span class="pc-ic">'+picon(p)+'</span><span class="pc-name">'+esc(p.name)+'</span>'+(isFav(p)?ic('star','fav'):'')+(isShared(p)?ic('users','mut'):'')+'</span>'
     +(p.desc?'<span class="pc-desc">'+esc(p.desc)+'</span>':'')
     +'<span class="pc-prog">'+bar(e.pct,hue(p))+'<b>'+e.pct+' %</b></span>'
     +'<span class="pc-meta">'+chip(PST[st],PSTC[st])+'<span class="cnt">'+e.done+'/'+e.total+'</span>'+(p.deadline?'<span class="bd due'+(late?' late':'')+'">'+ic('clock')+fmtDate(p.deadline)+'</span>':'')+(c?'<span class="bd who">'+esc(c.name)+'</span>':'')+'</span></button>';
