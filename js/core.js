@@ -34,10 +34,10 @@ var ACCENTS={
   nuit:{n:'Nuit',l:'#1E3A8A',d:'#9DB4FF',p:true}
 };
 var WIDGETS={
-  today:{t:'Aujourd’hui'},week:{t:'Cette semaine'},projects:{t:'Projets récents'},progress:{t:'Progression'},
+  today:{t:'Aujourd’hui'},week:{t:'Cette semaine'},pay:{t:'À encaisser',owner:true},projects:{t:'Projets récents'},progress:{t:'Progression'},
   activity:{t:'Activité récente'},clients:{t:'Clients',owner:true},notes:{t:'Notes rapides',owner:true}
 };
-var WORDER=['today','week','projects','progress','activity','clients','notes'];
+var WORDER=['today','week','projects','progress','activity','clients','pay','notes'];
 
 /* préférences locales (par appareil) */
 var LS={
@@ -384,12 +384,15 @@ function fileTask(id,pid){
 function moveTask(e,id,colId,pos){
   var t=taskById(id), patch={columnId:colId,pos:pos,doneAt:e.doneIds[colId]?Date.now():null};
   if(t&&t._col!==colId)patch.act=actOf(t,'Déplacée vers « '+colName(e,colId)+' »');
+  if(t&&e.doneIds[colId]&&!e.doneIds[t._col]&&repeatTask(t,e))patch.rep='';   /* la répétition passe à la carte suivante */
   return run(function(){return tdoc(id).update(patch);});
 }
 function toggleTask(t,e){
   if(!e){
     var nd=!t.done;
-    return run(function(){return tdoc(t.id).update({done:nd,doneAt:nd?Date.now():null,act:actOf(t,nd?'Marquée comme terminée':'Rouverte')});});
+    var ip={done:nd,doneAt:nd?Date.now():null,act:actOf(t,nd?'Marquée comme terminée':'Rouverte')};
+    if(nd&&repeatTask(t,null))ip.rep='';
+    return run(function(){return tdoc(t.id).update(ip);});
   }
   var done=isDone(t,e), target=done?e.cols.find(function(c){return !c.done;}):e.cols.find(function(c){return c.done;});
   if(!target)return;

@@ -151,6 +151,7 @@ function widgetBody(k,d,by){
     var rest=0, rows=cs.slice(0,5).map(function(c){var s=clientStats(c,by);rest+=Math.max(0,s.rest);return '<button class="mini" data-act="view" data-id="c:'+esc(c.id)+'"><span class="picon">'+ic('user')+'</span><span class="mini-t">'+esc(c.name)+'</span><span class="cnt">'+(s.rest>0?'reste '+eur(s.rest):pl(s.ps.length,'projet','projets'))+'</span></button>';}).join('');
     return rows+(rest>0?'<p class="wfoot">Reste à encaisser : <b>'+eur(rest)+'</b></p>':'');
   }
+  if(k==='pay')return payWidget(by);
   if(k==='notes')return '<label class="sr" for="qn">Notes rapides</label><textarea class="wnotes" id="qn" data-draft data-change="cfgnotes" placeholder="Une idée, un numéro, un pense-bête… Visible par toi seul.">'+esc(S.cfg.notes||'')+'</textarea>';
   return '';
 }
@@ -168,7 +169,7 @@ function vHome(by){
   if(d.week.length)parts.push(unmark(tf('{0} cette semaine',d.week.length)));
   var lead=parts.length?nt(parts.join(', ')+'.'):(d.all.length?'Rien d’urgent : aucune échéance proche.':'Ton espace est prêt.');
   var h='<header class="hero"><div><p class="eyebrow">'+esc(now.toLocaleDateString(LOCALE(),{weekday:'long',day:'numeric',month:'long'}))+'</p><h1>'+greet+(name?', '+esc(name):'')+'</h1><p class="lead">'+lead+'</p></div>';
-  if(ed)h+='<div class="hero-acts"><button class="btn primary" data-act="qa">'+ic('plus')+'Nouvelle tâche</button><button class="btn" data-act="dash-edit" aria-pressed="'+(S.dashEdit?'true':'false')+'">'+ic('settings')+(S.dashEdit?'Terminer':'Personnaliser')+'</button></div>';
+  if(ed)h+='<div class="hero-acts"><button class="btn primary" data-act="qa">'+ic('plus')+'Nouvelle tâche</button><button class="btn" data-act="zen" title="Une seule tâche à l’écran : la plus utile à faire maintenant">'+ic('bolt')+'Focus</button><button class="btn" data-act="dash-edit" aria-pressed="'+(S.dashEdit?'true':'false')+'">'+ic('settings')+(S.dashEdit?'Terminer':'Personnaliser')+'</button></div>';
   h+='</header>';
   var demo=ed&&(S.projects.some(function(p){return p.demo;})||S.clients.some(function(c){return c.demo;}));
   if(demo){
@@ -515,7 +516,7 @@ function vProject(e,by){
       +prop('Encaissé (€)','<input class="pv" type="number" min="0" step="1" inputmode="decimal" id="pp-'+id+'" value="'+(m.paid!=null&&m.paid!==''?esc(m.paid):'')+'" data-draft data-change="ppaid" data-id="'+id+'" placeholder="0">','pp-'+id)
       +prop('Reste','<span class="val">'+eur(amount-paid)+'</span>')
       +timeProps(e,m)
-      +'</div><label class="sr" for="pno-'+id+'">Notes privées</label><textarea class="area sm" id="pno-'+id+'" data-draft data-change="pnotes" data-id="'+id+'" placeholder="Notes privées : tarif, conditions, contacts, tout ce qui ne se partage pas.">'+esc(m.pnotes||'')+'</textarea></section>';
+      +'</div><label class="sr" for="pno-'+id+'">Notes privées</label><textarea class="area sm" id="pno-'+id+'" data-draft data-change="pnotes" data-id="'+id+'" placeholder="Notes privées : tarif, conditions, contacts, tout ce qui ne se partage pas.">'+esc(m.pnotes||'')+'</textarea>'+payRow(e,m)+'</section>';
     if(S.confirm==='p:'+p.id)h+='<div class="row-btns"><span class="cnt">Supprimer ce projet et ses '+pl(e.total,'carte','cartes')+' ?</span><button class="btn danger" data-act="del-project" data-id="'+id+'">Supprimer</button><button class="btn" data-act="cancel">Annuler</button></div>';
     else h+='<div class="row-btns"><button class="btn quiet sm" data-act="del-project" data-id="'+id+'">'+ic('trash')+'Supprimer le projet</button></div>';
     h+='</div>';

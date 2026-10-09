@@ -378,6 +378,10 @@ function reportText(e){
 function reportHtml(by){
   var e=by[S.report]; if(!e){S.report=null;return '';}
   var cl=clientOf(e.p), m=metaOf(e.p.id), mail=cl&&validEmail(String(cl.email||'').trim())?String(cl.email).trim():'';
+  if(S.repKind==='pay')return '<div class="ov top" data-act="ov-bg"><div class="rep" role="dialog" aria-labelledby="rep-t"><header><h2 id="rep-t">Relance de paiement</h2><button class="ib" data-act="ov-close" aria-label="Fermer">'+ic('x')+'</button></header>'
+    +'<p class="hint">'+(m.remindAt?tf('Dernière relance {0}.',T(ago(Number(m.remindAt))))+' ':'')+'Un message poli à partir du montant et de l’encaissé du projet. Relis-le avant de l’envoyer.</p>'
+    +'<label class="sr" for="rep-txt">Message</label><textarea class="area rep-x" id="rep-txt" data-draft>'+esc(payText(e))+'</textarea>'
+    +'<footer>'+(mail?'<button class="btn" data-act="report-mail" data-id="'+esc(mail)+'">'+ic('msg')+'Ouvrir dans ma messagerie</button>':'<span class="hint grow">Ajoute l’e-mail du client dans sa fiche pour l’envoyer en un clic.</span>')+'<span class="grow"></span><button class="btn primary" data-act="report-copy">'+ic('copy')+'Copier</button></footer></div></div>';
   return '<div class="ov top" data-act="ov-bg"><div class="rep" role="dialog" aria-labelledby="rep-t"><header><h2 id="rep-t">Point client</h2><button class="ib" data-act="ov-close" aria-label="Fermer">'+ic('x')+'</button></header>'
     +'<p class="hint">'+(m.reportAt?tf('Dernier point envoyé {0}. Ce message reprend ce qui a bougé depuis.',T(ago(Number(m.reportAt)))):'Un message écrit à partir de tes cartes. Relis-le, ajuste-le, puis envoie-le.')+'</p>'
     +'<label class="sr" for="rep-txt">Message</label><textarea class="area rep-x" id="rep-txt" data-draft>'+esc(reportText(e))+'</textarea>'
@@ -388,6 +392,7 @@ function reportHtml(by){
    Branchements : clics, saisie, clavier, après chaque rendu
    ===================================================================== */
 function extraClick(act,id,b){
+  if(moreClick(act,id,b))return true;
   if(act.indexOf('wb-')===0){
     var e=curE(); if(!e)return true;
     if(act==='wb-zoom'){
@@ -420,23 +425,24 @@ function extraClick(act,id,b){
   if(act==='timer-start'){var t=taskById(id);if(t&&S.canEdit)timerStart(t);render();return true;}
   if(act==='timer-stop'){timerStop();render();return true;}
   if(act==='timer-adj'){var t2=taskById(id);if(t2&&S.canEdit)timerAdjust(t2,(parseInt(b.dataset.v,10)||0)*60000);render();return true;}
-  if(act==='report'){var ce=curE();if(ce&&ce.own){closeOverlays();S.report=ce.p.id;S.focus='rep-txt';}render();return true;}
+  if(act==='report'){var ce=curE();if(ce&&ce.own){closeOverlays();S.report=ce.p.id;S.repKind='';S.focus='rep-txt';}render();return true;}
   if(act==='report-copy'||act==='report-mail'){
-    var ta=document.getElementById('rep-txt'), txt=ta?ta.value:'', pid=S.report, pr=projById(pid);
+    var ta=document.getElementById('rep-txt'), txt=ta?ta.value:'', pid=S.report, pr=projById(pid), pay=S.repKind==='pay';
     if(!pr)return true;
     if(act==='report-mail'){
-      var subj=unmark(tf('Point d’avancement : {0}',pr.name));
+      var subj=unmark(tf(pay?'Règlement : {0}':'Point d’avancement : {0}',pr.name));
       try{window.location.href='mailto:'+encodeURIComponent(id)+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(txt);}catch(_){}
     }else{
-      var ok=function(){toast('Point copié. Colle-le dans ton e-mail ou ta messagerie.');}, ko=function(){toast('Copie impossible : sélectionne le texte et copie-le à la main.',{bad:true});};
+      var ok=function(){toast(pay?'Relance copiée. Colle-la dans ton e-mail ou ta messagerie.':'Point copié. Colle-le dans ton e-mail ou ta messagerie.');}, ko=function(){toast('Copie impossible : sélectionne le texte et copie-le à la main.',{bad:true});};
       try{navigator.clipboard.writeText(txt).then(ok,ko);}catch(_){try{ta.select();document.execCommand('copy')?ok():ko();}catch(__){ko();}}
     }
     delete S.dirty['rep-txt'];
-    closeOverlays();setMeta(pid,{reportAt:Date.now()});render();return true;
+    closeOverlays();setMeta(pid,pay?{remindAt:Date.now()}:{reportAt:Date.now()});render();return true;
   }
   return false;
 }
 function extraChange(k,id,v,el){
+  if(moreChange(k,id,v))return true;
   var e=curE();
   if(k==='wbpick'){if(e&&canW(e)&&v&&taskById(v))wbAddTaskNode(e,v);render();return true;}
   if(k==='wbt'||k==='wbb'||k==='wbk'){
@@ -452,7 +458,7 @@ function extraChange(k,id,v,el){
 }
 function extraKey(ev){
   var key=ev.key;
-  if(key==='Escape'&&S.report){closeOverlays();render();return true;}
+  if(key==='Escape'&&(S.report||S.zen)){closeOverlays();render();return true;}
   if(!document.getElementById('wb')||typing(ev.target)||S.task||S.pal||S.qa)return false;
   var e=curE(); if(!e)return false;
   if((key==='Delete'||key==='Backspace')&&WB.sel&&canW(e)){ev.preventDefault();wbRemoveSel(e);render();return true;}

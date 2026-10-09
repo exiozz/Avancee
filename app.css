@@ -874,3 +874,24 @@ body.gated .tchip{display:none}
   .rep{padding:14px}
   .rep-x{min-height:240px}
 }
+
+/* ---------- mode focus ---------- */
+.zen{width:100%;max-width:560px;background:var(--bg);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow-2);padding:16px 20px 16px;display:flex;flex-direction:column;gap:14px;animation:rise .2s ease both}
+.zen header{display:flex;align-items:center;gap:8px}
+.zen-k{display:inline-flex;align-items:center;gap:6px;font:600 12px/1 var(--f-body);letter-spacing:.07em;text-transform:uppercase;color:var(--accent)}
+.zen-k .ic{width:14px;height:14px}
+.zen-b{display:flex;flex-direction:column;gap:10px;padding:6px 0 4px}
+.zen-why{margin:0;font-size:.9em;font-weight:600;color:var(--warn)}
+.zen h2{margin:0;font:600 1.7em/1.2 var(--f-display);letter-spacing:-.015em;overflow-wrap:anywhere}
+.zen-p{margin:0;display:flex;align-items:center;gap:7px;color:var(--ink-2);font-size:.93em}
+.zen-p .ic{width:15px;height:15px;color:var(--muted)}
+.zen-n{margin:0;color:var(--ink-2);white-space:pre-wrap;overflow-wrap:anywhere;font-size:.93em;border-left:3px solid var(--line-2);padding-left:10px}
+.zen footer{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding-top:12px;border-top:1px solid var(--line)}
+.zen footer .btn.quiet .ic{width:14px;height:14px}
+.zen-c{margin:0;font-size:12.5px;color:var(--muted)}
+.noanim .zen{animation:none}
+/* ---------- à encaisser ---------- */
+.payrow{display:flex;align-items:center;gap:6px}
+.payrow .mini{min-width:0}
+.payrow .btn,.payrow .pill{flex:none}
+@media (max-width:699px){.zen{padding:14px}.zen h2{font-size:1.4em}}

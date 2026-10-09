@@ -323,3 +323,25 @@ I18N.add('en',{
 'À noter : {0} points ont pris du retard, je m’en occupe en priorité.':'Please note: {0} items are running late, I am dealing with them first.','À noter : un point a pris du retard, je m’en occupe en priorité.':'Please note: one item is running late, I am dealing with it first.',
 'Rien de nouveau à signaler pour le moment.':'Nothing new to report for now.','N’hésite pas si tu as des questions.':'Let me know if you have any questions.','Bonne journée,':'Have a good day,'
 });
+
+/* --- mode focus, relances de paiement, cartes récurrentes --- */
+I18N.add('en',{
+'Focus':'Focus','Focus : quoi faire maintenant':'Focus: what to do now','Une seule tâche à l’écran : la plus utile à faire maintenant':'One task on screen: the most useful one to do now',
+'En retard de {0} jours':'{0} days late','En retard depuis hier':'Late since yesterday','À rendre aujourd’hui':'Due today','À rendre le {0}':'Due on {0}','Priorité haute':'High priority',
+'Déjà commencée : autant la finir':'Already started: might as well finish it','La plus ancienne de ta liste':'The oldest on your list',
+'Plus rien à proposer':'Nothing left to suggest','Rien à faire pour l’instant':'Nothing to do right now','Tu as passé toutes les tâches restantes.':'You skipped all the remaining tasks.','Aucune tâche ouverte ne t’attend. Profites-en.':'No open task is waiting for you. Enjoy it.',
+'Revoir les tâches passées':'Go back to skipped tasks','C’est fait':'Done','Je m’y mets':'Start working','Arrêter le chrono':'Stop the timer','Ouvrir':'Open','Passer':'Skip',
+'Encore {0} tâches après celle-ci.':'{0} more tasks after this one.','Encore une tâche après celle-ci.':'One more task after this one.','C’est la dernière de ta liste.':'This is the last one on your list.',
+'À encaisser':'To collect','Rien à encaisser':'Nothing to collect','Renseigne le montant et l’encaissé d’un projet pour suivre ce qu’on te doit.':'Fill in a project’s amount and what you received to track what you are owed.',
+'Relancer':'Remind','Le projet n’est pas encore livré':'The project is not delivered yet','En cours':'In progress','relancé {0} ·':'reminded {0} ·',
+'{0} projets livrés attendent un règlement.':'{0} delivered projects are awaiting payment.','Un projet livré attend un règlement.':'One delivered project is awaiting payment.','Total à encaisser :':'Total to collect:',
+'Relancer le paiement':'Send a payment reminder','Dernière relance {0}':'Last reminder {0}','Dernière relance {0}.':'Last reminder {0}.','Relance de paiement':'Payment reminder',
+'Un message poli à partir du montant et de l’encaissé du projet. Relis-le avant de l’envoyer.':'A polite message based on the project’s amount and what you received. Read it over before sending.',
+'Je me permets de revenir vers toi au sujet du règlement de « {0} ».':'I am following up again about the payment for “{0}”.','J’espère que tu vas bien. Je reviens vers toi au sujet du règlement de « {0} ».':'I hope you are well. I am getting in touch about the payment for “{0}”.',
+'Sauf erreur de ma part, il reste {0} à régler sur un total de {1} (déjà reçu : {2}).':'Unless I am mistaken, {0} is still outstanding out of a total of {1} (already received: {2}).','Sauf erreur de ma part, le montant de {0} n’a pas encore été réglé.':'Unless I am mistaken, the amount of {0} has not been paid yet.',
+'Peux-tu me dire quand le règlement est prévu ? Je te renvoie la facture si besoin.':'Could you let me know when payment is planned? I can send the invoice again if needed.','Merci d’avance,':'Thanks in advance,',
+'Règlement : {0}':'Payment: {0}','Relance copiée. Colle-la dans ton e-mail ou ta messagerie.':'Reminder copied. Paste it into your email or chat.',
+'Jamais':'Never','Chaque jour':'Every day','Chaque semaine':'Every week','Chaque mois':'Every month','Répéter':'Repeat','Carte récurrente':'Recurring card','Carte récurrente créée':'Recurring card created',
+'Carte récurrente : la suivante est prévue le {0}.':'Recurring card: the next one is due on {0}.','Ajoute une échéance : la prochaine carte partira de cette date.':'Add a due date: the next card will start from that date.',
+'Répétition : chaque jour':'Repeat: every day','Répétition : chaque semaine':'Repeat: every week','Répétition : chaque mois':'Repeat: every month','Répétition retirée':'Repeat removed'
+});
