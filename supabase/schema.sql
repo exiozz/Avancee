@@ -1,4 +1,4 @@
--- Onward : base de données Supabase.
+-- On Stride : base de données Supabase.
 -- À coller une seule fois dans Supabase > SQL Editor > New query, puis « Run ».
 -- Peut être relancé sans risque : il ne supprime aucune donnée.
 --

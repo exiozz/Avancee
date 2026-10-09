@@ -1,4 +1,4 @@
-# Onward
+# On Stride
 
 L’espace de travail simple pour organiser tes projets, tes clients et ton travail.
 

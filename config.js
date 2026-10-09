@@ -1,4 +1,4 @@
-/* Onward — configuration du site. C'est le SEUL fichier à modifier avant la mise en ligne.
+/* On Stride — configuration du site. C'est le SEUL fichier à modifier avant la mise en ligne.
    Ces deux valeurs se trouvent dans Supabase : bouton « Connect », ou Settings > API Keys.
    La clé « publishable » (sb_publishable_...) est faite pour être publique : aucun risque à la laisser ici.
    Ne mets JAMAIS ici une clé « secret » (sb_secret_...) ni « service_role ». */

@@ -1,12 +1,12 @@
-/* Onward — tutoriel guidé : une suite de bulles qui montrent chaque endroit de l'appli.
+/* On Stride — tutoriel guidé : une suite de bulles qui montrent chaque endroit de l'appli.
    S.tour = numéro de l'étape en cours, ou null. Il se lance tout seul à la première connexion,
    peut être passé à tout moment, et se relance depuis Réglages. */
 'use strict';
 
 /* sel : ce qu'on met en lumière (ordinateur) ; selS : même chose sur téléphone ; view : page à ouvrir avant */
 var TOUR=[
-  {t:'Bienvenue dans Onward',
-   x:'Onward sert à ranger ton travail en projets, à suivre tes tâches et à montrer où tu en es à tes clients ou à tes potes. Je te montre l’essentiel en une minute.'},
+  {t:'Bienvenue dans On Stride',
+   x:'On Stride sert à ranger ton travail en projets, à suivre tes tâches et à montrer où tu en es à tes clients ou à tes potes. Je te montre l’essentiel en une minute.'},
   {t:'Le menu',view:'home',sel:'#side .navs',selS:'#tabbar',
    x:'Tout part d’ici. Accueil : la vue d’ensemble. Mes tâches : ce que tu as à faire. Projets : ton travail, bien rangé.'},
   {t:'Tes projets',view:'projects',sel:'#main .qadd',

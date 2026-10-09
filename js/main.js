@@ -1,4 +1,4 @@
-/* Onward — boucle de rendu, événements, raccourcis, glisser-déposer, démarrage. */
+/* On Stride — boucle de rendu, événements, raccourcis, glisser-déposer, démarrage. */
 'use strict';
 
 var root=document.body, appEl=document.getElementById('app'), mainEl=document.getElementById('main');

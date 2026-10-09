@@ -1,10 +1,10 @@
-/* Onward — anglais. Clé = texte français tel qu'il est écrit dans le code ; valeur = traduction.
+/* On Stride — anglais. Clé = texte français tel qu'il est écrit dans le code ; valeur = traduction.
    {n} remplace un nombre, {q} un nom entre « », {0} {1} des valeurs passées par le code.
    Pour ajouter une langue : copier ce fichier, traduire les valeurs, l'ajouter dans index.html et dans I18N.langs (js/i18n.js). */
 'use strict';
 I18N.add('en',{
 /* --- mots identiques dans les deux langues --- */
-'Onward':'Onward','Inbox':'Inbox','Kanban':'Kanban','Table':'Table','Notes':'Notes','Clients':'Clients','Client':'Client',
+'On Stride':'On Stride','Inbox':'Inbox','Kanban':'Kanban','Table':'Table','Notes':'Notes','Clients':'Clients','Client':'Client',
 'Brief':'Brief','Prospect':'Lead','Cyan':'Cyan','Orange':'Orange','Total':'Total','Description':'Description','Checklist':'Checklist',
 'Labels':'Labels','Menu':'Menu','Navigation':'Navigation','Agenda':'Agenda','Actions':'Actions','Cobalt':'Cobalt',
 'Google':'Google','Discord':'Discord','GitHub':'GitHub','Apple':'Apple','Microsoft':'Microsoft','GitLab':'GitLab','Twitch':'Twitch',
@@ -54,7 +54,7 @@ I18N.add('en',{
 'Nouvelle tâche':'New task','Terminer':'Done','Personnaliser':'Customise',
 'Ce sont des exemples.':'These are examples.','Ils montrent ce que l’appli sait faire. Supprime-les quand tu veux.':'They show what the app can do. Delete them whenever you like.',
 'Confirmer':'Confirm','Supprimer les exemples':'Delete the examples',
-'Bienvenue dans Onward':'Welcome to Onward','Trois étapes pour être chez toi.':'Three steps to make it yours.',
+'Bienvenue dans On Stride':'Welcome to On Stride','Trois étapes pour être chez toi.':'Three steps to make it yours.',
 'Dis-moi ton prénom':'Tell me your first name','Ton prénom':'Your first name','Crée ton premier projet':'Create your first project',
 'Ajoute une première tâche':'Add a first task','Ajouter':'Add','Masquer':'Hide',
 'Projets actifs':'Active projects','En retard':'Overdue','Terminées':'Done','Clients actifs':'Active clients',
@@ -166,8 +166,8 @@ I18N.add('en',{
 'Ouvrir':'Open','Déplacer vers':'Move to',
 
 /* --- tutoriel --- */
-'Bienvenue dans Onward':'Welcome to Onward',
-'Onward sert à ranger ton travail en projets, à suivre tes tâches et à montrer où tu en es à tes clients ou à tes potes. Je te montre l’essentiel en une minute.':'Onward helps you organise your work into projects, keep track of your tasks and show your clients or friends where you’re at. Here’s the essentials in one minute.',
+'Bienvenue dans On Stride':'Welcome to On Stride',
+'On Stride sert à ranger ton travail en projets, à suivre tes tâches et à montrer où tu en es à tes clients ou à tes potes. Je te montre l’essentiel en une minute.':'On Stride helps you organise your work into projects, keep track of your tasks and show your clients or friends where you’re at. Here’s the essentials in one minute.',
 'Le menu':'The menu','Tout part d’ici. Accueil : la vue d’ensemble. Mes tâches : ce que tu as à faire. Projets : ton travail, bien rangé.':'Everything starts here. Home: the big picture. My tasks: what you have to do. Projects: your work, neatly organised.',
 'Tes projets':'Your projects','Un projet, c’est un client, un site, une idée… Écris son nom ici puis appuie sur Entrée pour le créer. Dedans, chaque tâche est une carte que tu fais avancer : À faire, En cours, Terminé.':'A project is a client, a website, an idea… Type its name here and press Enter to create it. Inside, each task is a card you move forward: To do, In progress, Done.',
 'Partager un projet':'Share a project','Dans un projet, le bouton « Partager » invite quelqu’un avec son adresse e-mail. En lecteur, il regarde ton avancée. En éditeur, il peut aussi modifier les cartes.':'In a project, the “Share” button invites someone by email address. As a viewer, they follow your progress. As an editor, they can also change the cards.',
@@ -221,8 +221,8 @@ I18N.add('en',{
 'Notifications de bureau':'Desktop notifications','Activer les notifications':'Turn on notifications','Rappel des tâches du jour':'Reminder of today’s tasks',
 'Activité sur les projets partagés':'Activity on shared projects','Quelles notifications':'Which notifications','Envoyer un test':'Send a test','Désactiver':'Turn off',
 'Reçois un petit message sur ton écran pour les tâches du jour et quand quelqu’un avance sur un projet partagé.':'Get a small message on your screen for today’s tasks and when someone makes progress on a shared project.',
-'Elles arrivent tant qu’Onward est ouverte sur cet appareil, même dans un onglet en arrière-plan ou une fenêtre réduite. Quand tu regardes déjà l’appli, un petit message s’affiche en bas à la place.':'They arrive as long as Onward is open on this device, even in a background tab or a minimised window. When you’re already looking at the app, a small message shows at the bottom instead.',
-'Ce navigateur ne sait pas afficher de notifications. Sur iPhone : ajoute d’abord Onward à l’écran d’accueil (bouton Partager, puis « Sur l’écran d’accueil »), ouvre-la depuis l’icône, puis reviens ici.':'This browser can’t show notifications. On iPhone: first add Onward to your home screen (Share button, then “Add to Home Screen”), open it from the icon, then come back here.',
+'Elles arrivent tant qu’On Stride est ouverte sur cet appareil, même dans un onglet en arrière-plan ou une fenêtre réduite. Quand tu regardes déjà l’appli, un petit message s’affiche en bas à la place.':'They arrive as long as On Stride is open on this device, even in a background tab or a minimised window. When you’re already looking at the app, a small message shows at the bottom instead.',
+'Ce navigateur ne sait pas afficher de notifications. Sur iPhone : ajoute d’abord On Stride à l’écran d’accueil (bouton Partager, puis « Sur l’écran d’accueil »), ouvre-la depuis l’icône, puis reviens ici.':'This browser can’t show notifications. On iPhone: first add On Stride to your home screen (Share button, then “Add to Home Screen”), open it from the icon, then come back here.',
 'Les notifications sont bloquées pour ce site. Pour les autoriser : clique sur le cadenas à gauche de l’adresse du site, mets « Notifications » sur « Autoriser », puis recharge la page.':'Notifications are blocked for this site. To allow them: click the padlock left of the site address, set “Notifications” to “Allow”, then reload the page.',
 'Notifications activées sur cet appareil.':'Notifications turned on for this device.','Notifications désactivées sur cet appareil.':'Notifications turned off for this device.',
 'Notifications bloquées par le navigateur.':'Notifications blocked by the browser.','Les notifications sont activées. Tu seras prévenu ici.':'Notifications are on. You’ll be alerted here.',
@@ -249,7 +249,7 @@ I18N.add('en',{
 'Couleurs en plus et badge':'Extra colours and a badge','Couleurs de base':'Standard colours','Export des tâches en tableur (Excel)':'Export tasks to a spreadsheet (Excel)','Aide prioritaire':'Priority help',
 'Partage, tâches, calendrier, clients, notifications':'Sharing, tasks, calendar, clients, notifications','Ta formule actuelle':'Your current plan','Contacter pour {0}':'Contact me for {0}','Bientôt disponible':'Coming soon',
 'Le paiement en ligne arrive bientôt. En attendant, envoie un message : ta formule est activée à la main, avec l’adresse e-mail de ton compte.':'Online payment is coming soon. Until then, send a message: your plan is switched on by hand, using your account’s email address.',
-'au mois':'monthly','à l’année':'yearly','Onward {0} ({1})':'Onward {0} ({1})','Bonjour, je voudrais passer à la formule {0} ({1}) pour le compte {2}. Merci !':'Hello, I’d like to switch to the {0} plan ({1}) for the account {2}. Thanks!',
+'au mois':'monthly','à l’année':'yearly','On Stride {0} ({1})':'On Stride {0} ({1})','Bonjour, je voudrais passer à la formule {0} ({1}) pour le compte {2}. Merci !':'Hello, I’d like to switch to the {0} plan ({1}) for the account {2}. Thanks!',
 'Tu es admin : tout est débloqué.':'You’re an admin: everything is unlocked.','Tu as la formule {0} jusqu’au {1}.':'You have the {0} plan until {1}.','Tu as la formule {0}.':'You have the {0} plan.',
 'Admin : tout est débloqué.':'Admin: everything is unlocked.','5 projets actifs, 3 photos et 3 fichiers par tâche.':'5 active projects, 3 photos and 3 files per task.','Jusqu’au {0}.':'Until {0}.','Sans date de fin.':'No end date.',
 'Passer à Premium':'Upgrade to Premium','Voir les formules':'See the plans','Passe à Premium':'Upgrade to Premium','Exporter en tableur (Excel)':'Export to a spreadsheet (Excel)',
