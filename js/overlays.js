@@ -222,7 +222,7 @@ function renderOverlay(by){
     if(S.sheet==='plus')items=[['zen','','bolt','Focus : quoi faire maintenant'],['qa','','tasks','Nouvelle tâche'],['new-project','','folder','Nouveau projet'],['new-client','','users','Nouveau client']];
     else{
       items=[['pal','','search','Rechercher']];
-      if(S.canEdit)items.push(['view','calendar','calendar','Calendrier'],['view','clients','users','Clients']);
+      if(S.canEdit)items.push(['view','tasks','tasks','Mes tâches'],['view','calendar','calendar','Calendrier'],['view','clients','users','Clients']);
       items.push(['view','plans','star','Formules']);
       if(S.admin)items.push(['view','admin','bolt','Admin']);
       items.push(['view','settings','settings','Réglages']);
