@@ -1,4 +1,4 @@
-/* Avancée — serveur : connexion (Supabase Auth) et données (tables Supabase).
+/* On Stride — serveur : connexion (Supabase Auth) et données (tables Supabase).
    Expose à l'appli une petite API « documents » : db.collection(nom).onSnapshot / .doc(id).set / update / delete.
    Les écritures sont appliquées tout de suite à l'écran, puis envoyées ; si le serveur refuse, on recharge. */
 'use strict';

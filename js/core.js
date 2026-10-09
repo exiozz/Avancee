@@ -1,4 +1,4 @@
-/* Avancée — socle : constantes, état, utilitaires, données, écritures.
+/* On Stride — socle : constantes, état, utilitaires, données, écritures.
    Les fichiers se chargent dans l'ordre core → ui → views → overlays → main et partagent ces fonctions globales. */
 'use strict';
 
@@ -17,7 +17,7 @@ var CSTC={lead:3,active:2,pause:-1,done:0};
 var PRIO={0:'Aucune',1:'Basse',2:'Moyenne',3:'Haute'};
 var COLORS=['Bleu','Rose','Vert','Orange','Violet','Cyan'];
 var DAYS=['lun.','mar.','mer.','jeu.','ven.','sam.','dim.'];
-var MODES=[['board','Kanban','board'],['list','Liste','list'],['table','Table','table'],['cal','Calendrier','calendar'],['doc','Notes','note']];
+var MODES=[['board','Kanban','board'],['list','Liste','list'],['table','Table','table'],['cal','Calendrier','calendar'],['doc','Notes','note'],['wb','Tableau blanc','nodes']];
 var EMOJIS=['📌','🚀','💡','🎯','📅','📝','🛠️','🎨','📦','💼','🧪','📚','🏠','💬','🔥','⭐','✅','🌱','🎮','💣','📈','🧩','🔧','🧠'];
 var ACCENTS={
   cobalt:{n:'Cobalt',l:'#2F5BEA',d:'#7C9BFF'},
@@ -34,10 +34,10 @@ var ACCENTS={
   nuit:{n:'Nuit',l:'#1E3A8A',d:'#9DB4FF',p:true}
 };
 var WIDGETS={
-  today:{t:'Aujourd’hui'},week:{t:'Cette semaine'},projects:{t:'Projets récents'},progress:{t:'Progression'},
+  today:{t:'Aujourd’hui'},week:{t:'Cette semaine'},pay:{t:'À encaisser',owner:true},projects:{t:'Projets récents'},progress:{t:'Progression'},
   activity:{t:'Activité récente'},clients:{t:'Clients',owner:true},notes:{t:'Notes rapides',owner:true}
 };
-var WORDER=['today','week','projects','progress','activity','clients','notes'];
+var WORDER=['today','week','projects','progress','activity','clients','pay','notes'];
 
 /* préférences locales (par appareil) */
 var LS={
@@ -384,12 +384,15 @@ function fileTask(id,pid){
 function moveTask(e,id,colId,pos){
   var t=taskById(id), patch={columnId:colId,pos:pos,doneAt:e.doneIds[colId]?Date.now():null};
   if(t&&t._col!==colId)patch.act=actOf(t,'Déplacée vers « '+colName(e,colId)+' »');
+  if(t&&e.doneIds[colId]&&!e.doneIds[t._col]&&repeatTask(t,e))patch.rep='';   /* la répétition passe à la carte suivante */
   return run(function(){return tdoc(id).update(patch);});
 }
 function toggleTask(t,e){
   if(!e){
     var nd=!t.done;
-    return run(function(){return tdoc(t.id).update({done:nd,doneAt:nd?Date.now():null,act:actOf(t,nd?'Marquée comme terminée':'Rouverte')});});
+    var ip={done:nd,doneAt:nd?Date.now():null,act:actOf(t,nd?'Marquée comme terminée':'Rouverte')};
+    if(nd&&repeatTask(t,null))ip.rep='';
+    return run(function(){return tdoc(t.id).update(ip);});
   }
   var done=isDone(t,e), target=done?e.cols.find(function(c){return !c.done;}):e.cols.find(function(c){return c.done;});
   if(!target)return;
@@ -456,10 +459,10 @@ function setPrivate(e,priv){
   }).then(release,release);
 }
 function exportData(){
-  var data={app:'Avancée',exportedAt:new Date().toISOString(),spaces:S.spaces,projects:S.projects.map(clean_keep),tasks:S.tasks.map(clean_keep),clients:S.clients,meta:S.raw.m,settings:S.cfg};
+  var data={app:'On Stride',exportedAt:new Date().toISOString(),spaces:S.spaces,projects:S.projects.map(clean_keep),tasks:S.tasks.map(clean_keep),clients:S.clients,meta:S.raw.m,settings:S.cfg};
   try{
     var url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
-    var a=document.createElement('a');a.href=url;a.download='avancee-'+todayStr()+'.json';document.body.appendChild(a);a.click();
+    var a=document.createElement('a');a.href=url;a.download='onstride-'+todayStr()+'.json';document.body.appendChild(a);a.click();
     setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},500);
     toast('Export téléchargé.');
   }catch(_){toast('Export impossible pour le moment.',{bad:true});}

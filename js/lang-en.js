@@ -1,10 +1,10 @@
-/* Avancée — anglais. Clé = texte français tel qu'il est écrit dans le code ; valeur = traduction.
+/* On Stride — anglais. Clé = texte français tel qu'il est écrit dans le code ; valeur = traduction.
    {n} remplace un nombre, {q} un nom entre « », {0} {1} des valeurs passées par le code.
    Pour ajouter une langue : copier ce fichier, traduire les valeurs, l'ajouter dans index.html et dans I18N.langs (js/i18n.js). */
 'use strict';
 I18N.add('en',{
 /* --- mots identiques dans les deux langues --- */
-'Avancée':'Avancée','Inbox':'Inbox','Kanban':'Kanban','Table':'Table','Notes':'Notes','Clients':'Clients','Client':'Client',
+'On Stride':'On Stride','Inbox':'Inbox','Kanban':'Kanban','Table':'Table','Notes':'Notes','Clients':'Clients','Client':'Client',
 'Brief':'Brief','Prospect':'Lead','Cyan':'Cyan','Orange':'Orange','Total':'Total','Description':'Description','Checklist':'Checklist',
 'Labels':'Labels','Menu':'Menu','Navigation':'Navigation','Agenda':'Agenda','Actions':'Actions','Cobalt':'Cobalt',
 'Google':'Google','Discord':'Discord','GitHub':'GitHub','Apple':'Apple','Microsoft':'Microsoft','GitLab':'GitLab','Twitch':'Twitch',
@@ -54,7 +54,7 @@ I18N.add('en',{
 'Nouvelle tâche':'New task','Terminer':'Done','Personnaliser':'Customise',
 'Ce sont des exemples.':'These are examples.','Ils montrent ce que l’appli sait faire. Supprime-les quand tu veux.':'They show what the app can do. Delete them whenever you like.',
 'Confirmer':'Confirm','Supprimer les exemples':'Delete the examples',
-'Bienvenue dans Avancée':'Welcome to Avancée','Trois étapes pour être chez toi.':'Three steps to make it yours.',
+'Bienvenue dans On Stride':'Welcome to On Stride','Trois étapes pour être chez toi.':'Three steps to make it yours.',
 'Dis-moi ton prénom':'Tell me your first name','Ton prénom':'Your first name','Crée ton premier projet':'Create your first project',
 'Ajoute une première tâche':'Add a first task','Ajouter':'Add','Masquer':'Hide',
 'Projets actifs':'Active projects','En retard':'Overdue','Terminées':'Done','Clients actifs':'Active clients',
@@ -166,8 +166,8 @@ I18N.add('en',{
 'Ouvrir':'Open','Déplacer vers':'Move to',
 
 /* --- tutoriel --- */
-'Bienvenue dans Avancée':'Welcome to Avancée',
-'Avancée sert à ranger ton travail en projets, à suivre tes tâches et à montrer où tu en es à tes clients ou à tes potes. Je te montre l’essentiel en une minute.':'Avancée helps you organise your work into projects, keep track of your tasks and show your clients or friends where you’re at. Here’s the essentials in one minute.',
+'Bienvenue dans On Stride':'Welcome to On Stride',
+'On Stride sert à ranger ton travail en projets, à suivre tes tâches et à montrer où tu en es à tes clients ou à tes potes. Je te montre l’essentiel en une minute.':'On Stride helps you organise your work into projects, keep track of your tasks and show your clients or friends where you’re at. Here’s the essentials in one minute.',
 'Le menu':'The menu','Tout part d’ici. Accueil : la vue d’ensemble. Mes tâches : ce que tu as à faire. Projets : ton travail, bien rangé.':'Everything starts here. Home: the big picture. My tasks: what you have to do. Projects: your work, neatly organised.',
 'Tes projets':'Your projects','Un projet, c’est un client, un site, une idée… Écris son nom ici puis appuie sur Entrée pour le créer. Dedans, chaque tâche est une carte que tu fais avancer : À faire, En cours, Terminé.':'A project is a client, a website, an idea… Type its name here and press Enter to create it. Inside, each task is a card you move forward: To do, In progress, Done.',
 'Partager un projet':'Share a project','Dans un projet, le bouton « Partager » invite quelqu’un avec son adresse e-mail. En lecteur, il regarde ton avancée. En éditeur, il peut aussi modifier les cartes.':'In a project, the “Share” button invites someone by email address. As a viewer, they follow your progress. As an editor, they can also change the cards.',
@@ -221,8 +221,8 @@ I18N.add('en',{
 'Notifications de bureau':'Desktop notifications','Activer les notifications':'Turn on notifications','Rappel des tâches du jour':'Reminder of today’s tasks',
 'Activité sur les projets partagés':'Activity on shared projects','Quelles notifications':'Which notifications','Envoyer un test':'Send a test','Désactiver':'Turn off',
 'Reçois un petit message sur ton écran pour les tâches du jour et quand quelqu’un avance sur un projet partagé.':'Get a small message on your screen for today’s tasks and when someone makes progress on a shared project.',
-'Elles arrivent tant qu’Avancée est ouverte sur cet appareil, même dans un onglet en arrière-plan ou une fenêtre réduite. Quand tu regardes déjà l’appli, un petit message s’affiche en bas à la place.':'They arrive as long as Avancée is open on this device, even in a background tab or a minimised window. When you’re already looking at the app, a small message shows at the bottom instead.',
-'Ce navigateur ne sait pas afficher de notifications. Sur iPhone : ajoute d’abord Avancée à l’écran d’accueil (bouton Partager, puis « Sur l’écran d’accueil »), ouvre-la depuis l’icône, puis reviens ici.':'This browser can’t show notifications. On iPhone: first add Avancée to your home screen (Share button, then “Add to Home Screen”), open it from the icon, then come back here.',
+'Elles arrivent tant qu’On Stride est ouverte sur cet appareil, même dans un onglet en arrière-plan ou une fenêtre réduite. Quand tu regardes déjà l’appli, un petit message s’affiche en bas à la place.':'They arrive as long as On Stride is open on this device, even in a background tab or a minimised window. When you’re already looking at the app, a small message shows at the bottom instead.',
+'Ce navigateur ne sait pas afficher de notifications. Sur iPhone : ajoute d’abord On Stride à l’écran d’accueil (bouton Partager, puis « Sur l’écran d’accueil »), ouvre-la depuis l’icône, puis reviens ici.':'This browser can’t show notifications. On iPhone: first add On Stride to your home screen (Share button, then “Add to Home Screen”), open it from the icon, then come back here.',
 'Les notifications sont bloquées pour ce site. Pour les autoriser : clique sur le cadenas à gauche de l’adresse du site, mets « Notifications » sur « Autoriser », puis recharge la page.':'Notifications are blocked for this site. To allow them: click the padlock left of the site address, set “Notifications” to “Allow”, then reload the page.',
 'Notifications activées sur cet appareil.':'Notifications turned on for this device.','Notifications désactivées sur cet appareil.':'Notifications turned off for this device.',
 'Notifications bloquées par le navigateur.':'Notifications blocked by the browser.','Les notifications sont activées. Tu seras prévenu ici.':'Notifications are on. You’ll be alerted here.',
@@ -249,7 +249,7 @@ I18N.add('en',{
 'Couleurs en plus et badge':'Extra colours and a badge','Couleurs de base':'Standard colours','Export des tâches en tableur (Excel)':'Export tasks to a spreadsheet (Excel)','Aide prioritaire':'Priority help',
 'Partage, tâches, calendrier, clients, notifications':'Sharing, tasks, calendar, clients, notifications','Ta formule actuelle':'Your current plan','Contacter pour {0}':'Contact me for {0}','Bientôt disponible':'Coming soon',
 'Le paiement en ligne arrive bientôt. En attendant, envoie un message : ta formule est activée à la main, avec l’adresse e-mail de ton compte.':'Online payment is coming soon. Until then, send a message: your plan is switched on by hand, using your account’s email address.',
-'au mois':'monthly','à l’année':'yearly','Avancée {0} ({1})':'Avancée {0} ({1})','Bonjour, je voudrais passer à la formule {0} ({1}) pour le compte {2}. Merci !':'Hello, I’d like to switch to the {0} plan ({1}) for the account {2}. Thanks!',
+'au mois':'monthly','à l’année':'yearly','On Stride {0} ({1})':'On Stride {0} ({1})','Bonjour, je voudrais passer à la formule {0} ({1}) pour le compte {2}. Merci !':'Hello, I’d like to switch to the {0} plan ({1}) for the account {2}. Thanks!',
 'Tu es admin : tout est débloqué.':'You’re an admin: everything is unlocked.','Tu as la formule {0} jusqu’au {1}.':'You have the {0} plan until {1}.','Tu as la formule {0}.':'You have the {0} plan.',
 'Admin : tout est débloqué.':'Admin: everything is unlocked.','5 projets actifs, 3 photos et 3 fichiers par tâche.':'5 active projects, 3 photos and 3 files per task.','Jusqu’au {0}.':'Until {0}.','Sans date de fin.':'No end date.',
 'Passer à Premium':'Upgrade to Premium','Voir les formules':'See the plans','Passe à Premium':'Upgrade to Premium','Exporter en tableur (Excel)':'Export to a spreadsheet (Excel)',
@@ -298,3 +298,50 @@ I18N.add('en',{
   [/^Icône (.+)$/,'Icon $1'],
   [/^(\d{1,2} [A-Za-zéû]{3,9}\.?)$/,'$1']
 ]);
+
+/* --- tableau blanc, chrono, point client --- */
+I18N.add('en',{
+'Tableau blanc':'Whiteboard','Vue Tableau blanc':'Whiteboard view','Bloc':'Block','Carte':'Card','Relier ce bloc à un autre':'Link this block to another','Tire vers un autre bloc pour les relier':'Drag to another block to link them',
+'Carte supprimée':'Card deleted','Titre de la carte':'Card title','Titre du bloc':'Block title','Texte du bloc':'Block text','Titre':'Title','Écris une idée, une étape, une question…':'Write an idea, a step, a question…',
+'En attente de « {0} »':'Waiting for “{0}”','En attente de « {0} » et {1} de plus':'Waiting for “{0}” and {1} more','Ouvrir la carte':'Open card','Poser une carte…':'Place a card…','−15 min':'−15 min','+15 min':'+15 min','Poser une carte existante':'Place an existing card',
+'Sans titre':'Untitled','Couleur du bloc':'Block colour','Transformer ce bloc en carte du Kanban':'Turn this block into a Kanban card','En faire une carte':'Make it a card','Retirer le bloc':'Remove block','Supprimer le lien':'Delete link',
+'Dézoomer':'Zoom out','Zoomer':'Zoom in','Recentrer':'Fit to view','Un tableau blanc pour y voir clair':'A whiteboard to see things clearly',
+'Double-clique dans le vide pour poser un bloc. Tire depuis le point à droite d’un bloc pour le relier à un autre. Pose aussi tes cartes : un lien entre deux cartes indique laquelle doit être finie d’abord.':'Double-click an empty spot to add a block. Drag from the dot on the right of a block to link it to another. Place your cards too: a link between two cards shows which one has to be finished first.',
+'Ce projet n’a pas encore de tableau blanc.':'This project has no whiteboard yet.',
+'Double-clic : nouveau bloc · Glisser le fond : se déplacer · Molette : zoom · Suppr : effacer la sélection':'Double-click: new block · Drag the background: move around · Wheel: zoom · Del: delete selection',
+'Bloc retiré du tableau blanc.':'Block removed from the whiteboard.','Lien supprimé.':'Link deleted.','Nouvelle carte':'New card','Carte créée dans « {q} ».':'Card created in “{q}”.',
+'Temps passé':'Time spent','Visible par toi seul':'Only visible to you','Arrêter':'Stop','Démarrer':'Start','Retirer 15 minutes':'Remove 15 minutes','Ajouter 15 minutes':'Add 15 minutes','Taux horaire réel':'Actual hourly rate',
+'Arrêter le chrono':'Stop the timer','Chrono resté ouvert longtemps : compté 12 h au maximum. Ajuste si besoin.':'The timer was left running for a long time: counted 12 h at most. Adjust if needed.',
+'Point client':'Client update','Préparer un message d’avancement pour ton client':'Prepare a progress message for your client','Message':'Message',
+'Dernier point envoyé {0}. Ce message reprend ce qui a bougé depuis.':'Last update sent {0}. This message covers what has moved since.',
+'Un message écrit à partir de tes cartes. Relis-le, ajuste-le, puis envoie-le.':'A message written from your cards. Read it over, adjust it, then send it.',
+'Ouvrir dans ma messagerie':'Open in my mail app','Ajoute l’e-mail du client dans sa fiche pour l’envoyer en un clic.':'Add the client’s email to their record to send it in one click.','Copier':'Copy',
+'Point copié. Colle-le dans ton e-mail ou ta messagerie.':'Update copied. Paste it into your email or chat.','Copie impossible : sélectionne le texte et copie-le à la main.':'Could not copy: select the text and copy it by hand.',
+'Point d’avancement : {0}':'Progress update: {0}','Bonjour {0},':'Hello {0},','Bonjour,':'Hello,',
+'Voici où en est « {0} » : {1} % terminé ({2} sur {3}).':'Here is where “{0}” stands: {1}% done ({2} of {3}).','Échéance prévue : {0}.':'Planned deadline: {0}.',
+'Terminé depuis le dernier point :':'Done since the last update:','Terminé ces deux dernières semaines :':'Done over the last two weeks:','En cours :':'In progress:','Prochaines étapes :':'Next steps:',
+'À noter : {0} points ont pris du retard, je m’en occupe en priorité.':'Please note: {0} items are running late, I am dealing with them first.','À noter : un point a pris du retard, je m’en occupe en priorité.':'Please note: one item is running late, I am dealing with it first.',
+'Rien de nouveau à signaler pour le moment.':'Nothing new to report for now.','N’hésite pas si tu as des questions.':'Let me know if you have any questions.','Bonne journée,':'Have a good day,'
+});
+
+/* --- mode focus, relances de paiement, cartes récurrentes --- */
+I18N.add('en',{
+'Focus':'Focus','Focus : quoi faire maintenant':'Focus: what to do now','Une seule tâche à l’écran : la plus utile à faire maintenant':'One task on screen: the most useful one to do now',
+'En retard de {0} jours':'{0} days late','En retard depuis hier':'Late since yesterday','À rendre aujourd’hui':'Due today','À rendre le {0}':'Due on {0}','Priorité haute':'High priority',
+'Déjà commencée : autant la finir':'Already started: might as well finish it','La plus ancienne de ta liste':'The oldest on your list',
+'Plus rien à proposer':'Nothing left to suggest','Rien à faire pour l’instant':'Nothing to do right now','Tu as passé toutes les tâches restantes.':'You skipped all the remaining tasks.','Aucune tâche ouverte ne t’attend. Profites-en.':'No open task is waiting for you. Enjoy it.',
+'Revoir les tâches passées':'Go back to skipped tasks','C’est fait':'Done','Je m’y mets':'Start working','Arrêter le chrono':'Stop the timer','Ouvrir':'Open','Passer':'Skip',
+'Encore {0} tâches après celle-ci.':'{0} more tasks after this one.','Encore une tâche après celle-ci.':'One more task after this one.','C’est la dernière de ta liste.':'This is the last one on your list.',
+'À encaisser':'To collect','Rien à encaisser':'Nothing to collect','Renseigne le montant et l’encaissé d’un projet pour suivre ce qu’on te doit.':'Fill in a project’s amount and what you received to track what you are owed.',
+'Relancer':'Remind','Le projet n’est pas encore livré':'The project is not delivered yet','En cours':'In progress','relancé {0} ·':'reminded {0} ·',
+'{0} projets livrés attendent un règlement.':'{0} delivered projects are awaiting payment.','Un projet livré attend un règlement.':'One delivered project is awaiting payment.','Total à encaisser :':'Total to collect:',
+'Relancer le paiement':'Send a payment reminder','Dernière relance {0}':'Last reminder {0}','Dernière relance {0}.':'Last reminder {0}.','Relance de paiement':'Payment reminder',
+'Un message poli à partir du montant et de l’encaissé du projet. Relis-le avant de l’envoyer.':'A polite message based on the project’s amount and what you received. Read it over before sending.',
+'Je me permets de revenir vers toi au sujet du règlement de « {0} ».':'I am following up again about the payment for “{0}”.','J’espère que tu vas bien. Je reviens vers toi au sujet du règlement de « {0} ».':'I hope you are well. I am getting in touch about the payment for “{0}”.',
+'Sauf erreur de ma part, il reste {0} à régler sur un total de {1} (déjà reçu : {2}).':'Unless I am mistaken, {0} is still outstanding out of a total of {1} (already received: {2}).','Sauf erreur de ma part, le montant de {0} n’a pas encore été réglé.':'Unless I am mistaken, the amount of {0} has not been paid yet.',
+'Peux-tu me dire quand le règlement est prévu ? Je te renvoie la facture si besoin.':'Could you let me know when payment is planned? I can send the invoice again if needed.','Merci d’avance,':'Thanks in advance,',
+'Règlement : {0}':'Payment: {0}','Relance copiée. Colle-la dans ton e-mail ou ta messagerie.':'Reminder copied. Paste it into your email or chat.',
+'Jamais':'Never','Chaque jour':'Every day','Chaque semaine':'Every week','Chaque mois':'Every month','Répéter':'Repeat','Carte récurrente':'Recurring card','Carte récurrente créée':'Recurring card created',
+'Carte récurrente : la suivante est prévue le {0}.':'Recurring card: the next one is due on {0}.','Ajoute une échéance : la prochaine carte partira de cette date.':'Add a due date: the next card will start from that date.',
+'Répétition : chaque jour':'Repeat: every day','Répétition : chaque semaine':'Repeat: every week','Répétition : chaque mois':'Repeat: every month','Répétition retirée':'Repeat removed'
+});

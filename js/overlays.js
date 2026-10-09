@@ -1,4 +1,4 @@
-/* Avancée — surcouches : panneau de tâche, palette de commandes, ajout rapide, feuilles mobiles, menu contextuel. */
+/* On Stride — surcouches : panneau de tâche, palette de commandes, ajout rapide, feuilles mobiles, menu contextuel. */
 'use strict';
 
 /* ---------- panneau de tâche ---------- */
@@ -21,11 +21,13 @@ function renderPanel(by){
     h+=prop(ic('flag')+'Priorité',selH('mp-'+id,'tprio',id,L(PRIO),pr),'mp-'+id);
     h+=prop(ic('user')+'Assigné à','<input class="pv" id="mw-'+id+'" value="'+esc(t.who||'')+'" data-draft data-change="twho" data-id="'+id+'" placeholder="Personne" autocomplete="off">','mw-'+id);
     h+=prop(ic('clock')+'Échéance','<input class="pv" type="date" id="md-'+id+'" value="'+esc(t.due||'')+'" data-change="tdue" data-id="'+id+'">','md-'+id);
+    h+=repProp(t,true);
   }else{
     if(e)h+=prop(ic('board')+'Colonne','<span class="val"><span class="pill'+(done?' ok':'')+'">'+esc(colName(e,t._col))+'</span></span>');
     if(pr)h+=prop(ic('flag')+'Priorité','<span class="val"><span class="bd p'+pr+'">'+PRIO[pr]+'</span></span>');
     if(t.who)h+=prop(ic('user')+'Assigné à','<span class="val"><span class="bd who">'+esc(t.who)+'</span></span>');
     if(t.due)h+=prop(ic('clock')+'Échéance','<span class="val">'+fmtDate(t.due)+'</span>');
+    h+=repProp(t,false);
   }
   if(p){
     var lab='<div class="lrow">';
@@ -45,6 +47,7 @@ function renderPanel(by){
     if(ed||sel.length)h+=prop(ic('star')+'Labels',lab);
   }
   h+='</div>';
+  h+=timerHtml(t,e);
   /* description */
   h+='<section class="tp-s"><h4>Description</h4>'+(ed?'<label class="sr" for="mn-'+id+'">Description</label><textarea class="area" id="mn-'+id+'" data-draft data-change="tdesc" data-id="'+id+'" placeholder="Détails, liens, idées…">'+esc(t.notes||'')+'</textarea>':(t.notes?'<p class="rd">'+esc(t.notes)+'</p>':'<span class="mut">Pas de description.</span>'))+'</section>';
   /* fichiers */
@@ -199,6 +202,8 @@ function renderOverlay(by){
   var pt=S.photo?taskById(S.photo.id):null, pl=pt?(pt.photos||[]):[];
   if(S.photo&&!pl.length)S.photo=null;
   if(S.upsell){h=upsellHtml();}
+  else if(S.report){h=reportHtml(by);}
+  else if(S.zen){h=zenHtml(by);}
   else if(S.photo){
     var pi=Math.max(0,Math.min(pl.length-1,S.photo.i));S.photo.i=pi;
     h='<div class="ov lb" data-act="ov-bg"><div class="lbx" role="dialog" aria-label="Photo">'+photoImg(pl[pi],'Photo '+(pi+1))+'</div>'
@@ -214,7 +219,7 @@ function renderOverlay(by){
       +'<footer><label class="sr" for="qap">Projet</label>'+selH('qap','qapid','',popts,S.qa.pid||'','in sm')+'<span class="grow"></span><button class="btn" data-act="ov-close">Annuler</button><button class="btn primary" data-act="qa-ok">Créer '+kbd('↵')+'</button></footer></div></div>';
   }else if(S.sheet){
     var items=[];
-    if(S.sheet==='plus')items=[['qa','','tasks','Nouvelle tâche'],['new-project','','folder','Nouveau projet'],['new-client','','users','Nouveau client']];
+    if(S.sheet==='plus')items=[['zen','','bolt','Focus : quoi faire maintenant'],['qa','','tasks','Nouvelle tâche'],['new-project','','folder','Nouveau projet'],['new-client','','users','Nouveau client']];
     else{
       items=[['pal','','search','Rechercher']];
       if(S.canEdit)items.push(['view','calendar','calendar','Calendrier'],['view','clients','users','Clients']);
@@ -234,7 +239,7 @@ function renderOverlay(by){
     }
   }
   el.innerHTML=tr(h);
-  still(el,!h?'':S.photo?'photo':S.pal?'pal':S.qa?'qa':S.sheet?'sheet'+S.sheet:'ctx'+(S.ctx?S.ctx.id+S.ctx.x:''));
+  still(el,!h?'':S.report?'report':S.zen?'zen':S.photo?'photo':S.pal?'pal':S.qa?'qa':S.sheet?'sheet'+S.sheet:'ctx'+(S.ctx?S.ctx.id+S.ctx.x:''));
   if(!h)el._k=null;
   if(S.ctx){
     var c=document.getElementById('ctx');
@@ -245,6 +250,6 @@ function renderOverlay(by){
     }
   }
 }
-function closeOverlays(){S.upsell=null;S.photo=null;S.pal=false;S.pq='';S.pi=0;S.qa=null;S.sheet=null;S.ctx=null;}
+function closeOverlays(){S.report=null;S.repKind='';S.zen=null;S.upsell=null;S.photo=null;S.pal=false;S.pq='';S.pi=0;S.qa=null;S.sheet=null;S.ctx=null;}
 function openPal(){closeOverlays();S.pal=true;S.focus='pq';}
 function openQa(o){closeOverlays();var cur=index()[S.view];S.qa=Object.assign({text:'',due:'',pid:(cur&&cur.rw?S.view:'')},o||{});S.focus='qat';}

@@ -1,4 +1,4 @@
-/* Avancée — écrans : menu latéral, barre du haut, barre du bas, pages. */
+/* On Stride — écrans : menu latéral, barre du haut, barre du bas, pages. */
 'use strict';
 
 /* ---------- navigation ---------- */
@@ -25,7 +25,7 @@ function projRow(p,by){
   return '<button class="nav ch'+(S.view===p.id?' on':'')+'" data-act="view" data-id="'+esc(p.id)+'" title="'+esc(p.name)+'"><span class="picon">'+picon(p)+'</span><span class="lbl nm grow">'+esc(p.name)+'</span>'+(isShared(p)?ic('users','mut lbl'):'')+'<span class="cnt lbl">'+e.done+'/'+e.total+'</span></button>';
 }
 function renderSide(by,ready){
-  var ed=S.canEdit, h='<div class="side-in"><div class="ws">'+LOGO+'<span class="ws-name lbl grow">Avancée</span><button class="ib lbl" data-act="sb" data-id="rail" aria-label="Réduire le menu" title="Réduire le menu (Ctrl B)">'+ic('sidebar')+'</button></div>';
+  var ed=S.canEdit, h='<div class="side-in"><div class="ws">'+LOGO+'<span class="ws-name lbl grow">On Stride</span><button class="ib lbl" data-act="sb" data-id="rail" aria-label="Réduire le menu" title="Réduire le menu (Ctrl B)">'+ic('sidebar')+'</button></div>';
   h+='<button class="nav srch" data-act="pal" title="Rechercher">'+ic('search')+'<span class="lbl grow">Rechercher</span><span class="lbl">'+kbd('Ctrl K')+'</span></button>';
   if(!ready){document.getElementById('side').innerHTML=tr(h+'<div class="sk sk-l w80"></div><div class="sk sk-l w60"></div><div class="sk sk-l w80"></div></div>');return;}
   h+='<nav class="navs" aria-label="Navigation">';
@@ -151,6 +151,7 @@ function widgetBody(k,d,by){
     var rest=0, rows=cs.slice(0,5).map(function(c){var s=clientStats(c,by);rest+=Math.max(0,s.rest);return '<button class="mini" data-act="view" data-id="c:'+esc(c.id)+'"><span class="picon">'+ic('user')+'</span><span class="mini-t">'+esc(c.name)+'</span><span class="cnt">'+(s.rest>0?'reste '+eur(s.rest):pl(s.ps.length,'projet','projets'))+'</span></button>';}).join('');
     return rows+(rest>0?'<p class="wfoot">Reste à encaisser : <b>'+eur(rest)+'</b></p>':'');
   }
+  if(k==='pay')return payWidget(by);
   if(k==='notes')return '<label class="sr" for="qn">Notes rapides</label><textarea class="wnotes" id="qn" data-draft data-change="cfgnotes" placeholder="Une idée, un numéro, un pense-bête… Visible par toi seul.">'+esc(S.cfg.notes||'')+'</textarea>';
   return '';
 }
@@ -168,7 +169,7 @@ function vHome(by){
   if(d.week.length)parts.push(unmark(tf('{0} cette semaine',d.week.length)));
   var lead=parts.length?nt(parts.join(', ')+'.'):(d.all.length?'Rien d’urgent : aucune échéance proche.':'Ton espace est prêt.');
   var h='<header class="hero"><div><p class="eyebrow">'+esc(now.toLocaleDateString(LOCALE(),{weekday:'long',day:'numeric',month:'long'}))+'</p><h1>'+greet+(name?', '+esc(name):'')+'</h1><p class="lead">'+lead+'</p></div>';
-  if(ed)h+='<div class="hero-acts"><button class="btn primary" data-act="qa">'+ic('plus')+'Nouvelle tâche</button><button class="btn" data-act="dash-edit" aria-pressed="'+(S.dashEdit?'true':'false')+'">'+ic('settings')+(S.dashEdit?'Terminer':'Personnaliser')+'</button></div>';
+  if(ed)h+='<div class="hero-acts"><button class="btn primary" data-act="qa">'+ic('plus')+'Nouvelle tâche</button><button class="btn" data-act="zen" title="Une seule tâche à l’écran : la plus utile à faire maintenant">'+ic('bolt')+'Focus</button><button class="btn" data-act="dash-edit" aria-pressed="'+(S.dashEdit?'true':'false')+'">'+ic('settings')+(S.dashEdit?'Terminer':'Personnaliser')+'</button></div>';
   h+='</header>';
   var demo=ed&&(S.projects.some(function(p){return p.demo;})||S.clients.some(function(c){return c.demo;}));
   if(demo){
@@ -181,7 +182,7 @@ function vHome(by){
   if(ed&&!S.cfg.onboarded){
     var hasP=S.projects.some(function(p){return !p.demo;}), hasT=S.tasks.some(function(t){var p=projById(t.projectId);return !p||!p.demo;});
     function step(ok,label,cta){return '<li class="ob-s'+(ok?' ok':'')+'"><span class="chk sm'+(ok?' on':'')+'">'+CHECK+'</span><span class="grow">'+label+'</span>'+(ok?'':cta)+'</li>';}
-    h+='<section class="onb"><div><h2>Bienvenue dans Avancée</h2><p>Trois étapes pour être chez toi.</p></div><ul>'
+    h+='<section class="onb"><div><h2>Bienvenue dans On Stride</h2><p>Trois étapes pour être chez toi.</p></div><ul>'
       +step(!!name,'Dis-moi ton prénom','<span class="ob-in"><label class="sr" for="ob-name">Ton prénom</label><input class="in sm" id="ob-name" data-draft data-change="cfgname" placeholder="Ton prénom" autocomplete="off"></span>')
       +step(hasP,'Crée ton premier projet','<button class="btn sm" data-act="new-project">Créer</button>')
       +step(hasT,'Ajoute une première tâche','<button class="btn sm" data-act="qa">Ajouter</button>')
@@ -496,7 +497,7 @@ function vProject(e,by){
   h+='<div class="sumrow">'+chip(PST[st],PSTC[st])+'<span class="sum-prog">'+bar(e.pct,hue(p))+'<b>'+e.pct+' %</b><span class="cnt">'+e.done+'/'+e.total+'</span></span>'
     +(p.deadline?'<span class="bd due'+(late?' late':'')+'">'+ic('clock')+fmtDate(p.deadline)+'</span>':'')
     +(own?(mbs.length?'<span class="bd shared">'+ic('users')+'Partagé · '+mbs.length+'</span>':'<span class="bd">'+ic('lock')+'Privé</span>'):'<span class="bd shared">'+ic('users')+(e.rw?'Tu es éditeur':'Tu es lecteur')+'</span>')+(cl?'<span class="bd who">'+esc(cl.name)+'</span>':'')
-    +(own?'<button class="btn sm" data-act="share">'+ic('users')+'Partager</button><button class="btn sm" data-act="det" aria-expanded="'+(open?'true':'false')+'">'+ic('settings')+(open?'Masquer':'Détails')+'</button>':'')+'</div>';
+    +(own?'<button class="btn sm" data-act="report" title="Préparer un message d’avancement pour ton client">'+ic('msg')+'Point client</button><button class="btn sm" data-act="share">'+ic('users')+'Partager</button><button class="btn sm" data-act="det" aria-expanded="'+(open?'true':'false')+'">'+ic('settings')+(open?'Masquer':'Détails')+'</button>':'')+'</div>';
   if(own&&open){
     var dv={}; MODES.forEach(function(x){dv[x[0]]=x[1];});
     h+='<div class="details"><div class="props">'
@@ -514,13 +515,14 @@ function vProject(e,by){
       +prop('Montant (€)','<input class="pv" type="number" min="0" step="1" inputmode="decimal" id="pa-'+id+'" value="'+(m.amount!=null&&m.amount!==''?esc(m.amount):'')+'" data-draft data-change="pamount" data-id="'+id+'" placeholder="0">','pa-'+id)
       +prop('Encaissé (€)','<input class="pv" type="number" min="0" step="1" inputmode="decimal" id="pp-'+id+'" value="'+(m.paid!=null&&m.paid!==''?esc(m.paid):'')+'" data-draft data-change="ppaid" data-id="'+id+'" placeholder="0">','pp-'+id)
       +prop('Reste','<span class="val">'+eur(amount-paid)+'</span>')
-      +'</div><label class="sr" for="pno-'+id+'">Notes privées</label><textarea class="area sm" id="pno-'+id+'" data-draft data-change="pnotes" data-id="'+id+'" placeholder="Notes privées : tarif, conditions, contacts, tout ce qui ne se partage pas.">'+esc(m.pnotes||'')+'</textarea></section>';
+      +timeProps(e,m)
+      +'</div><label class="sr" for="pno-'+id+'">Notes privées</label><textarea class="area sm" id="pno-'+id+'" data-draft data-change="pnotes" data-id="'+id+'" placeholder="Notes privées : tarif, conditions, contacts, tout ce qui ne se partage pas.">'+esc(m.pnotes||'')+'</textarea>'+payRow(e,m)+'</section>';
     if(S.confirm==='p:'+p.id)h+='<div class="row-btns"><span class="cnt">Supprimer ce projet et ses '+pl(e.total,'carte','cartes')+' ?</span><button class="btn danger" data-act="del-project" data-id="'+id+'">Supprimer</button><button class="btn" data-act="cancel">Annuler</button></div>';
     else h+='<div class="row-btns"><button class="btn quiet sm" data-act="del-project" data-id="'+id+'">'+ic('trash')+'Supprimer le projet</button></div>';
     h+='</div>';
   }else if(!ed&&p.start){h+='<p class="hint">Début : '+fmtDate(p.start)+'</p>';}
-  h+='</div><div class="toolbar"><div class="tabs" role="group" aria-label="Affichage">'+MODES.map(function(x){return '<button data-act="mode" data-id="'+x[0]+'" aria-pressed="'+(mode===x[0])+'">'+ic(x[2])+x[1]+'</button>';}).join('')+'</div>'+(mode!=='doc'&&mode!=='cal'?filterBar(e):'')+'</div>';
-  var body=mode==='list'?vList(e,by):mode==='table'?vTable(e):mode==='cal'?calBlock(e.tasks.filter(pass),by,p.id):mode==='doc'?vDoc(e):vBoard(e);
+  h+='</div><div class="toolbar"><div class="tabs" role="group" aria-label="Affichage">'+MODES.map(function(x){return '<button data-act="mode" data-id="'+x[0]+'" aria-pressed="'+(mode===x[0])+'">'+ic(x[2])+x[1]+'</button>';}).join('')+'</div>'+(mode!=='doc'&&mode!=='cal'&&mode!=='wb'?filterBar(e):'')+'</div>';
+  var body=mode==='list'?vList(e,by):mode==='table'?vTable(e):mode==='cal'?calBlock(e.tasks.filter(pass),by,p.id):mode==='doc'?vDoc(e):mode==='wb'?vWb(e):vBoard(e);
   return h+body;
 }
 
@@ -566,7 +568,7 @@ function renderGate(){
   document.body.classList.add('gated');
   if(S.auth==='boot'){g.innerHTML='<div class="gate"><div class="gate-card boot">'+LOGO+'<div class="sk sk-l w60"></div><div class="sk sk-l w40"></div></div></div>';g._h=null;return;}
   var langs='<span class="seg sm gate-lang" role="group" aria-label="Langue">'+Object.keys(I18N.langs).map(function(k){return '<button data-act="lang" data-id="'+k+'" aria-pressed="'+(LANG===k)+'" title="'+nt(I18N.langs[k])+'">'+nt(k.toUpperCase())+'</button>';}).join('')+'</span>';
-  var h='<div class="gate"><div class="gate-card"><div class="gate-top">'+LOGO+langs+'</div><h1>Avancée</h1><p class="lead">L’espace de travail simple pour organiser tes projets, tes clients et ton travail.</p>';
+  var h='<div class="gate"><div class="gate-card"><div class="gate-top">'+LOGO+langs+'</div><h1>On Stride</h1><p class="lead">L’espace de travail simple pour organiser tes projets, tes clients et ton travail.</p>';
   if(S.auth==='setup'){
     h+='<div class="note warn"><p><strong>Le site n’est pas encore relié à sa base de données.</strong> Ouvre le fichier <code>config.js</code> et colle l’adresse de ton projet Supabase et sa clé « publishable », puis remets le site en ligne. Le guide <code>LISEZ-MOI.md</code> détaille chaque étape.</p></div>';
   }else if(S.auth==='reset'){

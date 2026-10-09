@@ -1,4 +1,4 @@
-/* Avancée — formules (Gratuit, Premium, Pro) et espace admin.
+/* On Stride — formules (Gratuit, Premium, Pro) et espace admin.
    Pas encore de paiement en ligne : on contacte, puis l'admin active la formule avec l'adresse e-mail de la personne.
    La formule de chaque personne est rangée dans la table « premium » ; seuls les admins (table « admins ») peuvent la modifier. */
 'use strict';
@@ -68,7 +68,7 @@ function featList(k){
 function contactUrl(k){
   var cfg=window.AVANCEE_CONFIG||{}, to=cfg.contact||'', per=S.planPer==='year'?T('à l’année'):T('au mois');
   if(!to)return '';
-  var subj=unmark(tf('Avancée {0} ({1})',PLANS[k].n,per)), body=unmark(tf('Bonjour, je voudrais passer à la formule {0} ({1}) pour le compte {2}. Merci !',PLANS[k].n,per,S.me?S.me.email:''));
+  var subj=unmark(tf('On Stride {0} ({1})',PLANS[k].n,per)), body=unmark(tf('Bonjour, je voudrais passer à la formule {0} ({1}) pour le compte {2}. Merci !',PLANS[k].n,per,S.me?S.me.email:''));
   if(/^https?:/.test(to))return to;
   return 'mailto:'+to.replace(/^mailto:/,'')+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);
 }
@@ -165,7 +165,7 @@ function exportCsv(){
   var csv='﻿'+rows.map(function(r){return r.map(cell).join(sep);}).join('\r\n');
   try{
     var url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
-    var a=document.createElement('a');a.href=url;a.download='avancee-taches-'+todayStr()+'.csv';document.body.appendChild(a);a.click();
+    var a=document.createElement('a');a.href=url;a.download='onstride-tasks-'+todayStr()+'.csv';document.body.appendChild(a);a.click();
     setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},500);
     toast('Export téléchargé.');
   }catch(_){toast('Export impossible pour le moment.',{bad:true});}
