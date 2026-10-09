@@ -35,7 +35,7 @@ function renderSide(by,ready){
     h+='<button class="nav'+(navOn(n[0])?' on':'')+'" data-act="view" data-id="'+n[0]+'" title="'+n[2]+'">'+ic(n[1])+'<span class="lbl grow">'+n[2]+'</span>'+(c?'<span class="pillc">'+c+'</span>':'')+'</button>';
   });
   h+='</nav>';
-  var favs=S.projects.filter(function(p){return p.fav&&pstat(p)!=='archived';});
+  var favs=S.projects.filter(function(p){return isFav(p)&&pstat(p)!=='archived';});
   if(favs.length){
     h+='<div class="sech"><span class="sech-t lbl">Favoris</span></div><div class="tree">'+favs.map(function(p){return projRow(p,by);}).join('')+'</div>';
   }
@@ -329,7 +329,7 @@ function vProjects(by){
   var list=S.projects.filter(function(p){
     var a=pstat(p)==='archived';
     if(f==='archived')return a;
-    if(f==='fav')return p.fav&&!a;
+    if(f==='fav')return isFav(p)&&!a;
     return !a;
   });
   if(!list.length){
@@ -493,7 +493,8 @@ function vProject(e,by){
   if(ed&&S.iconPick)h+='<div class="pop iconpop">'+EMOJIS.map(function(x){return '<button data-act="seticon" data-id="'+x+'" aria-label="Icône '+x+'">'+x+'</button>';}).join('')+'<button class="rm" data-act="seticon" data-id="">Utiliser la pastille de couleur</button></div>';
   h+='</div>';
   h+=ed?'<label class="sr" for="pn-'+id+'">Nom du projet</label><input class="h1in grow" id="pn-'+id+'" value="'+esc(p.name)+'" data-draft data-change="pname" data-id="'+id+'" autocomplete="off">':'<h1 class="grow">'+esc(p.name)+'</h1>';
-  if(own)h+='<button class="ib'+(p.fav?' favon':'')+'" data-act="fav" aria-pressed="'+(p.fav?'true':'false')+'" aria-label="'+(p.fav?'Retirer des favoris':'Ajouter aux favoris')+'" title="Favori">'+ic('star')+'</button>';
+  var fav=isFav(p);
+  if(S.canEdit)h+='<button class="ib'+(fav?' favon':'')+'" data-act="fav" aria-pressed="'+(fav?'true':'false')+'" aria-label="'+(fav?'Retirer des favoris':'Ajouter aux favoris')+'" title="Favori">'+ic('star')+'</button>';
   h+='</div>';
   if(ed)h+='<label class="sr" for="pd-'+id+'">Description</label><textarea class="desc" id="pd-'+id+'" rows="1" data-draft data-change="pdesc" data-id="'+id+'" placeholder="Ajoute une description (objectif, contexte…)">'+esc(p.desc||'')+'</textarea>';
   else if(p.desc)h+='<p class="desc">'+esc(p.desc)+'</p>';

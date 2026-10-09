@@ -298,7 +298,7 @@ root.addEventListener('click',function(ev){
       try{navigator.clipboard.writeText(link).then(function(){toast('Lien copié.');},function(){toast(link);});}catch(_){toast(link);}
       return;
     }
-    if(act==='fav'){run(function(){return pdoc(e.p.id).update({fav:!e.p.fav});});return;}
+    if(act==='fav'){toggleFav(e.p);render();return;}
     if(act==='tpl'&&TPL[id]){saveCols(e.p.id,tplCols(id));return;}
     if(act==='comp-open'){S.comp=id;S.focus='cmp-'+id;render();return;}
     if(act==='comp-close'){S.comp=null;render();return;}

@@ -95,6 +95,16 @@ function prioOf(t){return t.prio!=null?(Number(t.prio)||0):(t.urgent?3:0);}
 function pstat(p){return PST[p.status]?p.status:'active';}
 function spaceName(p){if(S.me&&p._owner&&p._owner!==S.me.id)return T('Partagés avec moi');var s=S.spaces.find(function(x){return x.id===p.spaceId;});return s?s.name:T('Mes projets');}
 function metaOf(pid){return S.meta[pid]||{};}
+/* favori : sur mes projets, c'est noté dans le projet ; sur un projet partagé avec moi, c'est noté dans mes réglages
+   (chacun ses favoris, et on n'a pas besoin de pouvoir modifier le projet) */
+function isMine(p){return !S.me||!p._owner||p._owner===S.me.id;}
+function isFav(p){return isMine(p)?!!p.fav:(S.cfg.favs||[]).indexOf(p.id)>=0;}
+function toggleFav(p){
+  if(isMine(p))return run(function(){return pdoc(p.id).update({fav:!p.fav});});
+  var l=(S.cfg.favs||[]).filter(function(x){return x!==p.id&&projById(x);});
+  if(!isFav(p))l.push(p.id);
+  return saveCfg({favs:l});
+}
 function clientOf(p){var id=metaOf(p.id).clientId;return id?S.clients.find(function(c){return c.id===id;}):null;}
 function clean(o){var n=JSON.parse(JSON.stringify(o));delete n.id;delete n._priv;delete n._col;delete n._owner;return n;}
 function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');}
