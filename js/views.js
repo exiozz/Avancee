@@ -94,7 +94,7 @@ function renderTop(by){
   document.getElementById('top').innerHTML=tr(h);
 }
 function renderTabbar(by){
-  var defs=S.canEdit?[['home','home','Accueil'],['mail','inbox','Inbox'],['inbox','box','Bazar'],null,['tasks','tasks','Tâches'],['projects','grid','Projets']]
+  var defs=S.canEdit?[['home','home','Accueil'],['mail','inbox','Inbox'],null,['inbox','box','Bazar'],['projects','grid','Projets']]   /* deux onglets de chaque côté : le bouton + reste au centre */
                     :[['home','home','Accueil'],['projects','grid','Projets'],['calendar','calendar','Calendrier'],['settings','settings','Réglages']];
   var h='';
   defs.forEach(function(n){
