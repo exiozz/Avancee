@@ -5,9 +5,9 @@
 
 var MB=1024*1024;
 var PLANS={
-  free:{n:'Gratuit',projects:5,photos:3,files:3,size:5*MB,accents:false,csv:false,mail:0},
-  premium:{n:'Premium',month:4.99,year:49,projects:Infinity,photos:8,files:10,size:25*MB,accents:true,csv:false,mail:20},
-  pro:{n:'Pro',month:9.99,year:99,projects:Infinity,photos:8,files:10,size:50*MB,accents:true,csv:true,mail:100}
+  free:{n:'Gratuit',projects:5,photos:3,files:3,size:5*MB,accents:false,csv:false,mail:0,skins:false,skinAnim:false},
+  premium:{n:'Premium',month:4.99,year:49,projects:Infinity,photos:8,files:10,size:25*MB,accents:true,csv:false,mail:20,skins:true,skinAnim:false},
+  pro:{n:'Pro',month:9.99,year:99,projects:Infinity,photos:8,files:10,size:50*MB,accents:true,csv:true,mail:100,skins:true,skinAnim:true}
 };
 var PLAN_ORDER=['free','premium','pro'];
 var PERIODS={month:'1 mois',year:'1 an',gift:'Sans fin (offert)'};
@@ -49,6 +49,8 @@ var UPSELL={
   csv:'L’export en tableur fait partie de la formule Pro.',
   mail:'Écrire des messages est réservé aux formules Premium (20 par heure) et Pro (100 par heure). En Gratuit, tu peux lire ceux que tu reçois.',
   mailmax:'Tu as atteint ton nombre de messages pour cette heure. La formule Pro en permet 100 par heure.',
+  skins:'Les thèmes à effets (Sakura, Aurore, Océan) sont réservés aux formules Premium et Pro.',
+  skinpro:'Le fond animé des thèmes fait partie de la formule Pro.',
   dup:'Dupliquer un projet demande une place libre : tu as atteint 5 projets actifs, la limite de la formule Gratuite.'
 };
 function upsell(why){closeOverlays();S.upsell=why||'projects';render();}
@@ -65,6 +67,7 @@ function featList(k){
   L.push(tf('{0} fichiers par tâche, {1} chacun',p.files,fmtSize(p.size)));
   L.push(p.mail?tf('Inbox : écrire, {0} messages par heure',p.mail):'Inbox : lire les messages reçus');
   L.push(p.accents?'Couleurs en plus et badge':'Couleurs de base');
+  if(p.skins)L.push(p.skinAnim?'Thèmes à effets avec fond animé':'Thèmes à effets : Sakura, Aurore, Océan');
   if(k==='pro'){L.push('Export des tâches en tableur (Excel)');L.push('Aide prioritaire');}
   L.push('Partage, tâches, calendrier, clients, notifications');
   return L;

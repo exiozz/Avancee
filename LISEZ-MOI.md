@@ -94,6 +94,8 @@ Ouvre un projet > **Partager** > entre l'adresse e-mail de la personne et choisi
 - **Lecteur** : voit le projet et ses cartes, ne modifie rien ;
 - **Éditeur** : peut créer, déplacer et modifier les cartes, les colonnes et les labels.
 
+**Chef de projet** : si quelqu'un invite un admin du site (toi) sur son projet, en lecteur ou en éditeur, l'admin y agit en chef de projet. Il peut modifier les cartes et inviter ou retirer des personnes, comme le propriétaire. Il ne voit pas le client, les montants ni les notes privées, et ne peut pas supprimer le projet. Cette règle est dans `supabase/schema.sql` : relance le fichier une fois pour l'activer.
+
 Si un client avec une adresse e-mail est relié au projet, le site propose de l'inviter en un clic.
 
 La personne se connecte au site **avec cette adresse** et retrouve le projet dans « Partagés avec moi ».

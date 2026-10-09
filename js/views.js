@@ -471,10 +471,11 @@ function filterBar(e){
 function shareBox(e,mbs,cl){
   var p=e.p, id=esc(p.id), roles={viewer:'Lecteur · voit tout, ne modifie rien',editor:'Éditeur · peut modifier les cartes'};
   var h='<section class="sharebox" id="share"><h4>'+ic('users')+'Partage du projet</h4><ul class="mlist">';
-  h+='<li class="mrow">'+avatar(S.me)+'<span class="grow nm">'+esc(S.me?(S.me.name||S.me.email):T('Toi'))+' <span class="mut">(toi)</span></span><span class="pill">Propriétaire</span></li>';
+  if(e.own)h+='<li class="mrow">'+avatar(S.me)+'<span class="grow nm">'+esc(S.me?(S.me.name||S.me.email):T('Toi'))+' <span class="mut">(toi)</span></span><span class="pill">Propriétaire</span></li>';
+  else h+='<li class="mrow"><span class="av" aria-hidden="true">'+ic('user')+'</span><span class="grow nm">La personne qui a créé le projet</span><span class="pill">Propriétaire</span></li>';
   mbs.forEach(function(m){
     var mid=esc(m.id);
-    h+='<li class="mrow">'+avatar({email:m.email})+'<span class="grow nm">'+esc(m.email)+'</span><label class="sr" for="mr-'+mid+'">Rôle de '+esc(m.email)+'</label>'+selH('mr-'+mid,'mrole',mid,L({viewer:'Lecteur',editor:'Éditeur'}),m.role,'in sm')+'<button class="ib sm dng" data-act="m-del" data-id="'+mid+'" aria-label="Retirer l’accès de '+esc(m.email)+'" title="Retirer l’accès">'+ic('x')+'</button></li>';
+    h+='<li class="mrow">'+avatar({email:m.email})+'<span class="grow nm">'+esc(m.email)+(S.me&&m.email===S.me.email?' <span class="mut">(toi · chef de projet)</span>':'')+'</span><label class="sr" for="mr-'+mid+'">Rôle de '+esc(m.email)+'</label>'+selH('mr-'+mid,'mrole',mid,L({viewer:'Lecteur',editor:'Éditeur'}),m.role,'in sm')+'<button class="ib sm dng" data-act="m-del" data-id="'+mid+'" aria-label="Retirer l’accès de '+esc(m.email)+'" title="Retirer l’accès">'+ic('x')+'</button></li>';
   });
   h+='</ul>';
   if(cl&&cl.email&&validEmail(String(cl.email).trim())&&!mbs.some(function(m){return m.email===String(cl.email).trim().toLowerCase();})){
@@ -485,7 +486,7 @@ function shareBox(e,mbs,cl){
   return h;
 }
 function vProject(e,by){
-  var p=e.p, ed=canW(e), own=S.canEdit&&e.own, id=esc(p.id), st=pstat(p), m=metaOf(p.id), mode=modeOf(p), mbs=membersOf(p.id);
+  var p=e.p, ed=canW(e), own=S.canEdit&&e.own, mgr=S.canEdit&&!e.own&&e.mgr, id=esc(p.id), st=pstat(p), m=metaOf(p.id), mode=modeOf(p), mbs=membersOf(p.id);
   var late=p.deadline&&st!=='done'&&st!=='archived'&&p.deadline<todayStr();
   var h='<div class="phead" style="--c:'+hue(p)+'"><div class="ptitle"><div class="iconrow">';
   h+=ed?'<button class="bigicon" data-act="iconpick" aria-label="Changer l’icône" aria-expanded="'+(S.iconPick?'true':'false')+'">'+picon(p)+'</button>':'<span class="bigicon">'+picon(p)+'</span>';
@@ -496,12 +497,13 @@ function vProject(e,by){
   h+='</div>';
   if(ed)h+='<label class="sr" for="pd-'+id+'">Description</label><textarea class="desc" id="pd-'+id+'" rows="1" data-draft data-change="pdesc" data-id="'+id+'" placeholder="Ajoute une description (objectif, contexte…)">'+esc(p.desc||'')+'</textarea>';
   else if(p.desc)h+='<p class="desc">'+esc(p.desc)+'</p>';
-  var open=own?S.det:true, cl=own?clientOf(p):null;
+  var open=(own||mgr)?S.det:true, cl=own?clientOf(p):null;
   h+='<div class="sumrow">'+chip(PST[st],PSTC[st])+'<span class="sum-prog">'+bar(e.pct,hue(p))+'<b>'+e.pct+' %</b><span class="cnt">'+e.done+'/'+e.total+'</span></span>'
     +(p.deadline?'<span class="bd due'+(late?' late':'')+'">'+ic('clock')+fmtDate(p.deadline)+'</span>':'')
-    +(own?(mbs.length?'<span class="bd shared">'+ic('users')+'Partagé · '+mbs.length+'</span>':'<span class="bd">'+ic('lock')+'Privé</span>'):'<span class="bd shared">'+ic('users')+(e.rw?'Tu es éditeur':'Tu es lecteur')+'</span>')+(cl?'<span class="bd who">'+esc(cl.name)+'</span>':'')
-    +(own?'<button class="btn sm" data-act="report" title="Préparer un message d’avancement pour ton client">'+ic('msg')+'Point client</button><button class="btn sm" data-act="share">'+ic('users')+'Partager</button><button class="btn sm" data-act="det" aria-expanded="'+(open?'true':'false')+'">'+ic('settings')+(open?'Masquer':'Détails')+'</button>':'')+'</div>';
-  if(own&&open){
+    +(own?(mbs.length?'<span class="bd shared">'+ic('users')+'Partagé · '+mbs.length+'</span>':'<span class="bd">'+ic('lock')+'Privé</span>'):'<span class="bd shared">'+ic('users')+(mgr?'Tu es chef de projet':e.rw?'Tu es éditeur':'Tu es lecteur')+'</span>')+(cl?'<span class="bd who">'+esc(cl.name)+'</span>':'')
+    +(own?'<button class="btn sm" data-act="report" title="Préparer un message d’avancement pour ton client">'+ic('msg')+'Point client</button><button class="btn sm" data-act="share">'+ic('users')+'Partager</button><button class="btn sm" data-act="det" aria-expanded="'+(open?'true':'false')+'">'+ic('settings')+(open?'Masquer':'Détails')+'</button>':'')
+    +(mgr?'<button class="btn sm" data-act="share">'+ic('users')+'Partager</button><button class="btn sm" data-act="det" aria-expanded="'+(open?'true':'false')+'">'+ic('settings')+(open?'Masquer':'Détails')+'</button>':'')+'</div>';
+  if((own||mgr)&&open){
     var dv={}; MODES.forEach(function(x){dv[x[0]]=x[1];});
     h+='<div class="details"><div class="props">'
       +prop('Statut',selH('ps-'+id,'pstatus',id,L(PST),st),'ps-'+id)
@@ -511,6 +513,7 @@ function vProject(e,by){
       +prop('Couleur','<span class="swatches" role="group" aria-label="Couleur du projet">'+[0,1,2,3,4,5].map(function(i){return '<button class="sw" style="--sc:var(--h'+i+')" data-act="color" data-id="'+i+'" aria-pressed="'+(((p.hue||0)%6)===i?'true':'false')+'" aria-label="'+COLORS[i]+'"></button>';}).join('')+'</span>')
       +'</div>';
     h+=shareBox(e,mbs,cl);
+    if(own){   /* client, montants, notes privées, suppression : uniquement le propriétaire */
     var copts={'':T('Aucun')}; S.clients.forEach(function(c){copts[c.id]=c.name;});
     var amount=Number(m.amount)||0, paid=Number(m.paid)||0;
     h+='<section class="privbox"><h4>'+ic('lock')+'Privé · visible par toi seul</h4><div class="props">'
@@ -522,6 +525,7 @@ function vProject(e,by){
       +'</div><label class="sr" for="pno-'+id+'">Notes privées</label><textarea class="area sm" id="pno-'+id+'" data-draft data-change="pnotes" data-id="'+id+'" placeholder="Notes privées : tarif, conditions, contacts, tout ce qui ne se partage pas.">'+esc(m.pnotes||'')+'</textarea>'+payRow(e,m)+'</section>';
     if(S.confirm==='p:'+p.id)h+='<div class="row-btns"><span class="cnt">Supprimer ce projet et ses '+pl(e.total,'carte','cartes')+' ?</span><button class="btn danger" data-act="del-project" data-id="'+id+'">Supprimer</button><button class="btn" data-act="cancel">Annuler</button></div>';
     else h+='<div class="row-btns"><button class="btn quiet sm" data-act="dup-project" data-id="'+id+'" title="Copie les colonnes, les labels, les cartes et le tableau blanc. Les cartes repartent de la première colonne.">'+ic('copy')+'Dupliquer le projet</button><button class="btn quiet sm" data-act="del-project" data-id="'+id+'">'+ic('trash')+'Supprimer le projet</button></div>';
+    }
     h+='</div>';
   }else if(!ed&&p.start){h+='<p class="hint">Début : '+fmtDate(p.start)+'</p>';}
   h+='</div><div class="toolbar"><div class="tabs" role="group" aria-label="Affichage">'+MODES.map(function(x){return '<button data-act="mode" data-id="'+x[0]+'" aria-pressed="'+(mode===x[0])+'">'+ic(x[2])+x[1]+'</button>';}).join('')+'</div>'+(mode!=='doc'&&mode!=='cal'&&mode!=='wb'?filterBar(e):'')+'</div>';
@@ -545,6 +549,7 @@ function vSettings(by){
     +'<div class="srow"><span>Langue</span><span class="seg" role="group" aria-label="Langue">'+Object.keys(I18N.langs).map(function(k){return '<button data-act="lang" data-id="'+k+'" aria-pressed="'+(LANG===k)+'">'+nt(I18N.langs[k])+'</button>';}).join('')+'</span></div>'
     +'<div class="srow"><span>Thème</span>'+segPref('theme',[['system','Système','monitor'],['light','Clair','sun'],['dark','Sombre','moon']])+'</div>'
     +'<div class="srow"><span>Couleur d’accent</span><span class="swatches" role="group" aria-label="Couleur d’accent">'+Object.keys(ACCENTS).map(function(k){var a=ACCENTS[k], lock=a.p&&!plan().accents;return '<button class="sw lg'+(lock?' lock':'')+'" style="--sc:'+(isDark()?a.d:a.l)+'" '+(lock?'data-act="upsell" data-id="accents"':'data-act="pref" data-k="accent" data-id="'+k+'"')+' aria-pressed="'+(P.accent===k&&!lock)+'" aria-label="'+nt(T(a.n)+(lock?' (Premium)':''))+'" title="'+nt(T(a.n)+(lock?' (Premium)':''))+'">'+(lock?ic('lock'):'')+'</button>';}).join('')+'</span></div>'
+    +skinRows()
     +'<div class="srow"><span>Densité</span>'+segPref('density',[['compact','Compacte'],['normal','Normale'],['comfy','Confortable']])+'</div>'
     +'<div class="srow"><span>Taille du texte</span>'+segPref('size',[['s','Petite'],['m','Moyenne'],['l','Grande']])+'</div></section>';
   if(S.me)h+=notifCard();

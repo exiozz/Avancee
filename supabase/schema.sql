@@ -65,7 +65,7 @@ language sql stable as $$
   select lower(coalesce(auth.jwt() ->> 'email', ''))
 $$;
 
--- rôle de la personne connectée sur un projet : 'owner', 'editor', 'viewer' ou rien
+-- rôle de la personne connectée sur un projet : 'owner', 'editor', 'viewer' ou rien (complété plus bas par 'manager')
 create or replace function public.project_role(pid uuid) returns text
 language sql stable security definer set search_path = public as $$
   select case
@@ -119,6 +119,19 @@ language sql stable security definer set search_path = public as $$
   where owner = auth.uid() and coalesce(data->>'status', 'active') <> 'archived'
 $$;
 
+-- ---------- chef de projet ----------
+-- Un admin du site invité sur un projet (en lecteur ou en éditeur) y agit en chef de projet :
+-- il modifie le contenu et gère les invités, comme le propriétaire. Il ne voit toujours pas
+-- les infos privées (client, montants, notes privées) et ne peut pas supprimer le projet.
+create or replace function public.project_role(pid uuid) returns text
+language sql stable security definer set search_path = public as $$
+  select case
+    when exists (select 1 from public.projects p where p.id = pid and p.owner = auth.uid()) then 'owner'
+    else (select case when public.is_admin() then 'manager' else m.role end from public.members m
+          where m.project_id = pid and m.email = public.my_email() and public.my_email() <> '' limit 1)
+  end
+$$;
+
 -- ---------- droits ----------
 alter table public.spaces   enable row level security;
 alter table public.projects enable row level security;
@@ -168,8 +181,8 @@ create policy projects_insert on public.projects for insert to authenticated
   with check (owner = auth.uid() and (public.my_plan() <> 'free' or public.my_active_projects() < 5));
 drop policy if exists projects_update on public.projects;
 create policy projects_update on public.projects for update to authenticated
-  using (public.project_role(id) in ('owner','editor'))
-  with check (public.project_role(id) in ('owner','editor'));
+  using (public.project_role(id) in ('owner','manager','editor'))
+  with check (public.project_role(id) in ('owner','manager','editor'));
 drop policy if exists projects_delete on public.projects;
 create policy projects_delete on public.projects for delete to authenticated
   using (owner = auth.uid());
@@ -182,32 +195,32 @@ create policy tasks_read on public.tasks for select to authenticated
 drop policy if exists tasks_insert on public.tasks;
 create policy tasks_insert on public.tasks for insert to authenticated
   with check (owner = auth.uid()
-      and (project_id is null or public.project_role(project_id) in ('owner','editor')));
+      and (project_id is null or public.project_role(project_id) in ('owner','manager','editor')));
 drop policy if exists tasks_update on public.tasks;
 create policy tasks_update on public.tasks for update to authenticated
   using ((project_id is null and owner = auth.uid())
-      or (project_id is not null and public.project_role(project_id) in ('owner','editor')))
+      or (project_id is not null and public.project_role(project_id) in ('owner','manager','editor')))
   with check ((project_id is null and owner = auth.uid())
-      or (project_id is not null and public.project_role(project_id) in ('owner','editor')));
+      or (project_id is not null and public.project_role(project_id) in ('owner','manager','editor')));
 drop policy if exists tasks_delete on public.tasks;
 create policy tasks_delete on public.tasks for delete to authenticated
   using ((project_id is null and owner = auth.uid())
-      or (project_id is not null and public.project_role(project_id) in ('owner','editor')));
+      or (project_id is not null and public.project_role(project_id) in ('owner','manager','editor')));
 
--- partages : gérés par le propriétaire du projet ; chacun voit les siens
+-- partages : gérés par le propriétaire du projet (ou le chef de projet) ; chacun voit les siens
 drop policy if exists members_read on public.members;
 create policy members_read on public.members for select to authenticated
-  using (public.project_role(project_id) = 'owner' or email = public.my_email());
+  using (public.project_role(project_id) in ('owner','manager') or email = public.my_email());
 drop policy if exists members_insert on public.members;
 create policy members_insert on public.members for insert to authenticated
-  with check (public.project_role(project_id) = 'owner');
+  with check (public.project_role(project_id) in ('owner','manager'));
 drop policy if exists members_update on public.members;
 create policy members_update on public.members for update to authenticated
-  using (public.project_role(project_id) = 'owner')
-  with check (public.project_role(project_id) = 'owner');
+  using (public.project_role(project_id) in ('owner','manager'))
+  with check (public.project_role(project_id) in ('owner','manager'));
 drop policy if exists members_delete on public.members;
 create policy members_delete on public.members for delete to authenticated
-  using (public.project_role(project_id) = 'owner');
+  using (public.project_role(project_id) in ('owner','manager'));
 
 -- ---------- photos des tâches ----------
 -- rôle de la personne connectée sur une tâche : 'owner', 'editor', 'viewer' ou rien
@@ -245,11 +258,11 @@ create policy avancee_photos_read on storage.objects for select to authenticated
      and (owner_id = auth.uid()::text or public.task_role(public.photo_task(name)) is not null));
 drop policy if exists avancee_photos_insert on storage.objects;
 create policy avancee_photos_insert on storage.objects for insert to authenticated
-  with check (bucket_id in ('photos','fichiers') and public.task_role(public.photo_task(name)) in ('owner','editor'));
+  with check (bucket_id in ('photos','fichiers') and public.task_role(public.photo_task(name)) in ('owner','manager','editor'));
 drop policy if exists avancee_photos_delete on storage.objects;
 create policy avancee_photos_delete on storage.objects for delete to authenticated
   using (bucket_id in ('photos','fichiers')
-     and (owner_id = auth.uid()::text or public.task_role(public.photo_task(name)) in ('owner','editor')));
+     and (owner_id = auth.uid()::text or public.task_role(public.photo_task(name)) in ('owner','manager','editor')));
 
 -- formules : chacun voit la sienne ; seuls les admins voient et modifient tout
 drop policy if exists premium_read on public.premium;

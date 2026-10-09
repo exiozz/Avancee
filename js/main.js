@@ -281,7 +281,7 @@ root.addEventListener('click',function(ev){
   /* --- projet courant --- */
   var e=curE();
   if(e){
-    if(act==='share'&&e.own){
+    if(act==='share'&&(e.own||e.mgr)){
       S.det=true;LS.set('det',true);S.focus='m-email';render();
       var shEl=document.getElementById('share');if(shEl&&shEl.scrollIntoView)shEl.scrollIntoView({block:'center'});
       return;

@@ -11,7 +11,21 @@ var WB={sel:null,drag:null,live:null,views:LS.get('wbv',{}),saveT:0};
 
 function wbData(p){
   var w=p&&p.wb||{};
-  return {n:(w.n||[]).map(function(x){return Object.assign({},x);}),l:(w.l||[]).map(function(x){return Object.assign({},x);})};
+  var d={n:(w.n||[]).map(function(x){return Object.assign({},x);}),l:(w.l||[]).map(function(x){return Object.assign({},x);}),h:(w.h||[]).slice()};
+  if(!p||!p.id)return d;
+  /* les cartes à faire qui ne sont pas encore posées apparaissent d'office, rangées par colonne sous ce qui existe déjà.
+     Elles sont enregistrées à la première modification du tableau ; une carte retirée à la main (d.h) ne revient pas. */
+  var used={}, hid={}, top=0, col={}, n=0, cols=colsOf(p), count={};
+  d.n.forEach(function(x){if(x.task)used[x.task]=1;top=Math.max(top,(Number(x.y)||0)+200);});
+  d.h.forEach(function(id){hid[id]=1;});
+  cols.forEach(function(c){if(!c.done)col[c.id]=n++;});
+  S.tasks.filter(function(t){return t.projectId===p.id&&!used[t.id]&&!hid[t.id];}).sort(cmpPos).forEach(function(t){
+    var cid=t.columnId||t.status; if(!cols.some(function(c){return c.id===cid;}))cid=cols[0].id;
+    if(col[cid]==null)return;   /* carte terminée : on ne l'impose pas */
+    var k=count[cid]||0; count[cid]=k+1;
+    d.n.push({id:'a'+t.id,x:col[cid]*(WB_W+56),y:top+k*168,c:p.hue||0,task:t.id});
+  });
+  return d;
 }
 function wbView(pid){
   var v=WB.views[pid];
@@ -21,7 +35,7 @@ function wbView(pid){
 function wbKeepView(){clearTimeout(WB.saveT);WB.saveT=setTimeout(function(){LS.set('wbv',WB.views);},400);}
 /* l'écriture est appliquée à l'écran tout de suite (avant le prochain rendu), puis suivie par l'indicateur d'enregistrement */
 function wbRun(pr){return run(function(){return pr;});}
-function wbSave(pid,wb){return wbRun(pdoc(pid).update({wb:{n:wb.n,l:wb.l}}));}
+function wbSave(pid,wb){return wbRun(pdoc(pid).update({wb:{n:wb.n,l:wb.l,h:wb.h||[]}}));}
 function wbPos(n){
   var l=WB.live;
   return l&&l.id===n.id?{x:l.x,y:l.y}:{x:Number(n.x)||0,y:Number(n.y)||0};
@@ -93,7 +107,7 @@ function vWb(e){
     }else if(sell)h+='<span class="wb-sep"></span><button class="btn sm" data-act="wb-del">'+ic('trash')+'Supprimer le lien</button>';
   }
   h+='</div><div class="wb-zoom"><button class="ib sm" data-act="wb-zoom" data-id="-1" aria-label="Dézoomer">−</button><button class="wb-pct" data-act="wb-zoom" data-id="0" title="Recentrer" aria-label="Recentrer"><span id="wb-pct">'+Math.round(v.z*100)+' %</span></button><button class="ib sm" data-act="wb-zoom" data-id="1" aria-label="Zoomer">+</button></div>';
-  if(!wb.n.length)h+='<div class="wb-empty"><h3>Un tableau blanc pour y voir clair</h3><p>'+(ed?'Double-clique dans le vide pour poser un bloc. Tire depuis le point à droite d’un bloc pour le relier à un autre. Pose aussi tes cartes : un lien entre deux cartes indique laquelle doit être finie d’abord.':'Ce projet n’a pas encore de tableau blanc.')+'</p></div>';
+  if(!wb.n.length)h+='<div class="wb-empty"><h3>Un tableau blanc pour y voir clair</h3><p>'+(ed?'Double-clique dans le vide pour poser un bloc. Tire depuis le point à droite d’un bloc pour le relier à un autre. Tes cartes à faire s’affichent ici toutes seules : un lien entre deux cartes indique laquelle doit être finie d’abord.':'Ce projet n’a pas encore de tableau blanc.')+'</p></div>';
   else if(ed)h+='<p class="wb-tip hide-s">Double-clic : nouveau bloc · Glisser le fond : se déplacer · Molette : zoom · Suppr : effacer la sélection</p>';
   return h+'</div></div>';
 }
@@ -157,6 +171,7 @@ function wbAddNote(e,at){
 function wbAddTaskNode(e,taskId,focus){
   var wb=wbData(e.p), s=wbSpot(wb), n={id:'n'+rnd(),x:s.x,y:s.y,c:e.p.hue||0,task:taskId};
   wb.n.push(n);WB.sel={k:'n',id:n.id};
+  wb.h=(wb.h||[]).filter(function(x){return x!==taskId;});
   if(focus)S.focus='wbk-'+n.id;
   return wbSave(e.p.id,wb);
 }
@@ -168,7 +183,11 @@ function wbNewTask(e,title,then){
 function wbRemoveSel(e){
   var s=WB.sel; if(!s)return false;
   var wb=wbData(e.p), before=wbData(e.p);
-  if(s.k==='n'){wb.n=wb.n.filter(function(n){return n.id!==s.id;});wb.l=wb.l.filter(function(l){return l.a!==s.id&&l.b!==s.id;});}
+  if(s.k==='n'){
+    var gone=wb.n.find(function(n){return n.id===s.id;});
+    if(gone&&gone.task&&wb.h.indexOf(gone.task)<0)wb.h.push(gone.task);
+    wb.n=wb.n.filter(function(n){return n.id!==s.id;});wb.l=wb.l.filter(function(l){return l.a!==s.id&&l.b!==s.id;});
+  }
   else wb.l=wb.l.filter(function(l){return l.id!==s.id;});
   WB.sel=null;
   wbSave(e.p.id,wb);
@@ -394,6 +413,7 @@ function reportHtml(by){
 function extraClick(act,id,b){
   if(moreClick(act,id,b))return true;
   if(mailClick(act,id))return true;
+  if(skinClick(act,id))return true;
   if(act.indexOf('wb-')===0){
     var e=curE(); if(!e)return true;
     if(act==='wb-zoom'){
