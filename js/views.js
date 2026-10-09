@@ -496,7 +496,7 @@ function vProject(e,by){
   h+='<div class="sumrow">'+chip(PST[st],PSTC[st])+'<span class="sum-prog">'+bar(e.pct,hue(p))+'<b>'+e.pct+' %</b><span class="cnt">'+e.done+'/'+e.total+'</span></span>'
     +(p.deadline?'<span class="bd due'+(late?' late':'')+'">'+ic('clock')+fmtDate(p.deadline)+'</span>':'')
     +(own?(mbs.length?'<span class="bd shared">'+ic('users')+'Partagé · '+mbs.length+'</span>':'<span class="bd">'+ic('lock')+'Privé</span>'):'<span class="bd shared">'+ic('users')+(e.rw?'Tu es éditeur':'Tu es lecteur')+'</span>')+(cl?'<span class="bd who">'+esc(cl.name)+'</span>':'')
-    +(own?'<button class="btn sm" data-act="share">'+ic('users')+'Partager</button><button class="btn sm" data-act="det" aria-expanded="'+(open?'true':'false')+'">'+ic('settings')+(open?'Masquer':'Détails')+'</button>':'')+'</div>';
+    +(own?'<button class="btn sm" data-act="report" title="Préparer un message d’avancement pour ton client">'+ic('msg')+'Point client</button><button class="btn sm" data-act="share">'+ic('users')+'Partager</button><button class="btn sm" data-act="det" aria-expanded="'+(open?'true':'false')+'">'+ic('settings')+(open?'Masquer':'Détails')+'</button>':'')+'</div>';
   if(own&&open){
     var dv={}; MODES.forEach(function(x){dv[x[0]]=x[1];});
     h+='<div class="details"><div class="props">'
@@ -514,13 +514,14 @@ function vProject(e,by){
       +prop('Montant (€)','<input class="pv" type="number" min="0" step="1" inputmode="decimal" id="pa-'+id+'" value="'+(m.amount!=null&&m.amount!==''?esc(m.amount):'')+'" data-draft data-change="pamount" data-id="'+id+'" placeholder="0">','pa-'+id)
       +prop('Encaissé (€)','<input class="pv" type="number" min="0" step="1" inputmode="decimal" id="pp-'+id+'" value="'+(m.paid!=null&&m.paid!==''?esc(m.paid):'')+'" data-draft data-change="ppaid" data-id="'+id+'" placeholder="0">','pp-'+id)
       +prop('Reste','<span class="val">'+eur(amount-paid)+'</span>')
+      +timeProps(e,m)
       +'</div><label class="sr" for="pno-'+id+'">Notes privées</label><textarea class="area sm" id="pno-'+id+'" data-draft data-change="pnotes" data-id="'+id+'" placeholder="Notes privées : tarif, conditions, contacts, tout ce qui ne se partage pas.">'+esc(m.pnotes||'')+'</textarea></section>';
     if(S.confirm==='p:'+p.id)h+='<div class="row-btns"><span class="cnt">Supprimer ce projet et ses '+pl(e.total,'carte','cartes')+' ?</span><button class="btn danger" data-act="del-project" data-id="'+id+'">Supprimer</button><button class="btn" data-act="cancel">Annuler</button></div>';
     else h+='<div class="row-btns"><button class="btn quiet sm" data-act="del-project" data-id="'+id+'">'+ic('trash')+'Supprimer le projet</button></div>';
     h+='</div>';
   }else if(!ed&&p.start){h+='<p class="hint">Début : '+fmtDate(p.start)+'</p>';}
-  h+='</div><div class="toolbar"><div class="tabs" role="group" aria-label="Affichage">'+MODES.map(function(x){return '<button data-act="mode" data-id="'+x[0]+'" aria-pressed="'+(mode===x[0])+'">'+ic(x[2])+x[1]+'</button>';}).join('')+'</div>'+(mode!=='doc'&&mode!=='cal'?filterBar(e):'')+'</div>';
-  var body=mode==='list'?vList(e,by):mode==='table'?vTable(e):mode==='cal'?calBlock(e.tasks.filter(pass),by,p.id):mode==='doc'?vDoc(e):vBoard(e);
+  h+='</div><div class="toolbar"><div class="tabs" role="group" aria-label="Affichage">'+MODES.map(function(x){return '<button data-act="mode" data-id="'+x[0]+'" aria-pressed="'+(mode===x[0])+'">'+ic(x[2])+x[1]+'</button>';}).join('')+'</div>'+(mode!=='doc'&&mode!=='cal'&&mode!=='wb'?filterBar(e):'')+'</div>';
+  var body=mode==='list'?vList(e,by):mode==='table'?vTable(e):mode==='cal'?calBlock(e.tasks.filter(pass),by,p.id):mode==='doc'?vDoc(e):mode==='wb'?vWb(e):vBoard(e);
   return h+body;
 }
 

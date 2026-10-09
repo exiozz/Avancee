@@ -17,7 +17,7 @@ var CSTC={lead:3,active:2,pause:-1,done:0};
 var PRIO={0:'Aucune',1:'Basse',2:'Moyenne',3:'Haute'};
 var COLORS=['Bleu','Rose','Vert','Orange','Violet','Cyan'];
 var DAYS=['lun.','mar.','mer.','jeu.','ven.','sam.','dim.'];
-var MODES=[['board','Kanban','board'],['list','Liste','list'],['table','Table','table'],['cal','Calendrier','calendar'],['doc','Notes','note']];
+var MODES=[['board','Kanban','board'],['list','Liste','list'],['table','Table','table'],['cal','Calendrier','calendar'],['doc','Notes','note'],['wb','Tableau blanc','nodes']];
 var EMOJIS=['📌','🚀','💡','🎯','📅','📝','🛠️','🎨','📦','💼','🧪','📚','🏠','💬','🔥','⭐','✅','🌱','🎮','💣','📈','🧩','🔧','🧠'];
 var ACCENTS={
   cobalt:{n:'Cobalt',l:'#2F5BEA',d:'#7C9BFF'},

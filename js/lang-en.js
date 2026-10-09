@@ -298,3 +298,28 @@ I18N.add('en',{
   [/^Icône (.+)$/,'Icon $1'],
   [/^(\d{1,2} [A-Za-zéû]{3,9}\.?)$/,'$1']
 ]);
+
+/* --- tableau blanc, chrono, point client --- */
+I18N.add('en',{
+'Tableau blanc':'Whiteboard','Vue Tableau blanc':'Whiteboard view','Bloc':'Block','Carte':'Card','Relier ce bloc à un autre':'Link this block to another','Tire vers un autre bloc pour les relier':'Drag to another block to link them',
+'Carte supprimée':'Card deleted','Titre de la carte':'Card title','Titre du bloc':'Block title','Texte du bloc':'Block text','Titre':'Title','Écris une idée, une étape, une question…':'Write an idea, a step, a question…',
+'En attente de « {0} »':'Waiting for “{0}”','En attente de « {0} » et {1} de plus':'Waiting for “{0}” and {1} more','Ouvrir la carte':'Open card','Poser une carte…':'Place a card…','−15 min':'−15 min','+15 min':'+15 min','Poser une carte existante':'Place an existing card',
+'Sans titre':'Untitled','Couleur du bloc':'Block colour','Transformer ce bloc en carte du Kanban':'Turn this block into a Kanban card','En faire une carte':'Make it a card','Retirer le bloc':'Remove block','Supprimer le lien':'Delete link',
+'Dézoomer':'Zoom out','Zoomer':'Zoom in','Recentrer':'Fit to view','Un tableau blanc pour y voir clair':'A whiteboard to see things clearly',
+'Double-clique dans le vide pour poser un bloc. Tire depuis le point à droite d’un bloc pour le relier à un autre. Pose aussi tes cartes : un lien entre deux cartes indique laquelle doit être finie d’abord.':'Double-click an empty spot to add a block. Drag from the dot on the right of a block to link it to another. Place your cards too: a link between two cards shows which one has to be finished first.',
+'Ce projet n’a pas encore de tableau blanc.':'This project has no whiteboard yet.',
+'Double-clic : nouveau bloc · Glisser le fond : se déplacer · Molette : zoom · Suppr : effacer la sélection':'Double-click: new block · Drag the background: move around · Wheel: zoom · Del: delete selection',
+'Bloc retiré du tableau blanc.':'Block removed from the whiteboard.','Lien supprimé.':'Link deleted.','Nouvelle carte':'New card','Carte créée dans « {q} ».':'Card created in “{q}”.',
+'Temps passé':'Time spent','Visible par toi seul':'Only visible to you','Arrêter':'Stop','Démarrer':'Start','Retirer 15 minutes':'Remove 15 minutes','Ajouter 15 minutes':'Add 15 minutes','Taux horaire réel':'Actual hourly rate',
+'Arrêter le chrono':'Stop the timer','Chrono resté ouvert longtemps : compté 12 h au maximum. Ajuste si besoin.':'The timer was left running for a long time: counted 12 h at most. Adjust if needed.',
+'Point client':'Client update','Préparer un message d’avancement pour ton client':'Prepare a progress message for your client','Message':'Message',
+'Dernier point envoyé {0}. Ce message reprend ce qui a bougé depuis.':'Last update sent {0}. This message covers what has moved since.',
+'Un message écrit à partir de tes cartes. Relis-le, ajuste-le, puis envoie-le.':'A message written from your cards. Read it over, adjust it, then send it.',
+'Ouvrir dans ma messagerie':'Open in my mail app','Ajoute l’e-mail du client dans sa fiche pour l’envoyer en un clic.':'Add the client’s email to their record to send it in one click.','Copier':'Copy',
+'Point copié. Colle-le dans ton e-mail ou ta messagerie.':'Update copied. Paste it into your email or chat.','Copie impossible : sélectionne le texte et copie-le à la main.':'Could not copy: select the text and copy it by hand.',
+'Point d’avancement : {0}':'Progress update: {0}','Bonjour {0},':'Hello {0},','Bonjour,':'Hello,',
+'Voici où en est « {0} » : {1} % terminé ({2} sur {3}).':'Here is where “{0}” stands: {1}% done ({2} of {3}).','Échéance prévue : {0}.':'Planned deadline: {0}.',
+'Terminé depuis le dernier point :':'Done since the last update:','Terminé ces deux dernières semaines :':'Done over the last two weeks:','En cours :':'In progress:','Prochaines étapes :':'Next steps:',
+'À noter : {0} points ont pris du retard, je m’en occupe en priorité.':'Please note: {0} items are running late, I am dealing with them first.','À noter : un point a pris du retard, je m’en occupe en priorité.':'Please note: one item is running late, I am dealing with it first.',
+'Rien de nouveau à signaler pour le moment.':'Nothing new to report for now.','N’hésite pas si tu as des questions.':'Let me know if you have any questions.','Bonne journée,':'Have a good day,'
+});

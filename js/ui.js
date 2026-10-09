@@ -50,6 +50,9 @@ var ICONS={
   bell:'<path d="M5.200 13.800V9.300a4.800 4.800 0 0 1 9.600 0v4.500l1.400 1.700H3.800z"/><path d="M8.300 17.200a1.900 1.900 0 0 0 3.400 0"/>',
   clip:'<path d="M15.500 9.300l-5.900 5.900a3.600 3.600 0 0 1-5.100-5.100l6.200-6.200a2.400 2.400 0 0 1 3.400 3.400l-6 6a1.200 1.200 0 0 1-1.700-1.700l5.500-5.500"/>',
   file:'<path d="M5.500 2.800h6l3.500 3.500v10.400a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V3.300a.5.5 0 0 1 .5-.5z"/><path d="M11.500 2.800v3.500H15"/>',
+  nodes:'<rect x="2.5" y="3.5" width="6" height="4.5" rx="1.2"/><rect x="11.5" y="12" width="6" height="4.5" rx="1.2"/><path d="M8.5 5.8h2.2a2 2 0 0 1 2 2v4.200"/>',
+  play:'<path d="M6.5 4.300v11.400l9-5.700z" fill="currentColor"/>',
+  stop:'<rect x="5.500" y="5.500" width="9" height="9" rx="1.600" fill="currentColor"/>',
   user:'<circle cx="10" cy="7" r="3.200"/><path d="M4 17c0-3.300 2.700-5.200 6-5.200s6 1.900 6 5.200"/>'
 };
 function ic(n,cls){return '<svg class="ic'+(cls?' '+cls:'')+'" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICONS[n]||'')+'</svg>';}
