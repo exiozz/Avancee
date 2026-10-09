@@ -1,5 +1,5 @@
-/* Avancée — notifications de bureau.
-   Elles partent du navigateur tant qu'Avancée est ouverte quelque part (onglet en arrière-plan, fenêtre réduite, appli installée) :
+/* Onward — notifications de bureau.
+   Elles partent du navigateur tant qu'Onward est ouverte quelque part (onglet en arrière-plan, fenêtre réduite, appli installée) :
      - un rappel par jour des tâches à faire aujourd'hui et en retard ;
      - l'activité des autres personnes sur les projets partagés (carte créée, déplacée, commentée…) ;
      - un projet qu'on vient de partager avec toi.
@@ -57,7 +57,7 @@ function notifEnable(){
     if(p==='granted'){
       NOTIF.prefs.on=true;notifSave();
       toast('Notifications activées sur cet appareil.');
-      notify(T('Avancée'),T('Les notifications sont activées. Tu seras prévenu ici.'),{tag:'avancee-test'});
+      notify(T('Onward'),T('Les notifications sont activées. Tu seras prévenu ici.'),{tag:'avancee-test'});
     }else if(p==='denied')toast('Notifications bloquées par le navigateur.',{bad:true});
     render();
   },function(){render();});
@@ -118,7 +118,7 @@ function notifActivity(ev){
   var focused=pageFocused();
   if(ev.length>3){
     var msg=unmark(tf('{0} changements sur tes projets partagés',ev.length));
-    if(focused)toast(nt(msg)); else notify(T('Avancée'),msg,{view:'home',tag:'avancee-act'});
+    if(focused)toast(nt(msg)); else notify(T('Onward'),msg,{view:'home',tag:'avancee-act'});
     return;
   }
   ev.forEach(function(x){
@@ -140,14 +140,14 @@ function notifStart(){
 function notifCard(){
   var perm=notifPerm(), on=notifActive(), h='<section class="panel scard" id="notif-card"><h2>'+ic('bell')+'Notifications de bureau</h2>';
   if(perm==='unsupported'){
-    h+='<p class="hint">Ce navigateur ne sait pas afficher de notifications. Sur iPhone : ajoute d’abord Avancée à l’écran d’accueil (bouton Partager, puis « Sur l’écran d’accueil »), ouvre-la depuis l’icône, puis reviens ici.</p>';
+    h+='<p class="hint">Ce navigateur ne sait pas afficher de notifications. Sur iPhone : ajoute d’abord Onward à l’écran d’accueil (bouton Partager, puis « Sur l’écran d’accueil »), ouvre-la depuis l’icône, puis reviens ici.</p>';
   }else if(perm==='denied'){
     h+='<p class="hint">Les notifications sont bloquées pour ce site. Pour les autoriser : clique sur le cadenas à gauche de l’adresse du site, mets « Notifications » sur « Autoriser », puis recharge la page.</p>';
   }else if(!on){
     h+='<p class="hint">Reçois un petit message sur ton écran pour les tâches du jour et quand quelqu’un avance sur un projet partagé.</p><div class="row-btns"><button class="btn primary" data-act="notif-on">'+ic('bell')+'Activer les notifications</button></div>';
   }else{
     h+='<div class="chips" role="group" aria-label="Quelles notifications"><button class="fchip" data-act="notif-pref" data-id="due" aria-pressed="'+!!NOTIF.prefs.due+'">Rappel des tâches du jour</button><button class="fchip" data-act="notif-pref" data-id="act" aria-pressed="'+!!NOTIF.prefs.act+'">Activité sur les projets partagés</button></div>'
-      +'<p class="hint">Elles arrivent tant qu’Avancée est ouverte sur cet appareil, même dans un onglet en arrière-plan ou une fenêtre réduite. Quand tu regardes déjà l’appli, un petit message s’affiche en bas à la place.</p>'
+      +'<p class="hint">Elles arrivent tant qu’Onward est ouverte sur cet appareil, même dans un onglet en arrière-plan ou une fenêtre réduite. Quand tu regardes déjà l’appli, un petit message s’affiche en bas à la place.</p>'
       +'<div class="row-btns"><button class="btn" data-act="notif-test">Envoyer un test</button><button class="btn quiet" data-act="notif-off">Désactiver</button></div>';
   }
   return h+'</section>';
@@ -158,7 +158,7 @@ function notifClick(act,id){
   if(act==='notif-off'){NOTIF.prefs.on=false;notifSave();toast('Notifications désactivées sur cet appareil.');render();return true;}
   if(act==='notif-pref'){NOTIF.prefs[id]=!NOTIF.prefs[id];notifSave();render();return true;}
   if(act==='notif-test'){
-    var ok=notify(T('Avancée'),T('Voici à quoi ressemble une notification.'),{view:'home',tag:'avancee-test'});
+    var ok=notify(T('Onward'),T('Voici à quoi ressemble une notification.'),{view:'home',tag:'avancee-test'});
     toast(ok?'Notification envoyée. Si rien n’apparaît, vérifie le mode « Ne pas déranger » de ton ordinateur.':'Impossible d’afficher la notification sur ce navigateur.',ok?null:{bad:true});
     return true;
   }

@@ -1,4 +1,4 @@
-/* Avancée — petits composants : icônes, pastilles, cartes, lignes de tâche. */
+/* Onward — petits composants : icônes, pastilles, cartes, lignes de tâche. */
 'use strict';
 
 var ICONS={

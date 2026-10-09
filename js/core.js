@@ -1,4 +1,4 @@
-/* Avancée — socle : constantes, état, utilitaires, données, écritures.
+/* Onward — socle : constantes, état, utilitaires, données, écritures.
    Les fichiers se chargent dans l'ordre core → ui → views → overlays → main et partagent ces fonctions globales. */
 'use strict';
 
@@ -456,10 +456,10 @@ function setPrivate(e,priv){
   }).then(release,release);
 }
 function exportData(){
-  var data={app:'Avancée',exportedAt:new Date().toISOString(),spaces:S.spaces,projects:S.projects.map(clean_keep),tasks:S.tasks.map(clean_keep),clients:S.clients,meta:S.raw.m,settings:S.cfg};
+  var data={app:'Onward',exportedAt:new Date().toISOString(),spaces:S.spaces,projects:S.projects.map(clean_keep),tasks:S.tasks.map(clean_keep),clients:S.clients,meta:S.raw.m,settings:S.cfg};
   try{
     var url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
-    var a=document.createElement('a');a.href=url;a.download='avancee-'+todayStr()+'.json';document.body.appendChild(a);a.click();
+    var a=document.createElement('a');a.href=url;a.download='onward-'+todayStr()+'.json';document.body.appendChild(a);a.click();
     setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},500);
     toast('Export téléchargé.');
   }catch(_){toast('Export impossible pour le moment.',{bad:true});}

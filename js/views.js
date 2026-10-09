@@ -1,4 +1,4 @@
-/* Avancée — écrans : menu latéral, barre du haut, barre du bas, pages. */
+/* Onward — écrans : menu latéral, barre du haut, barre du bas, pages. */
 'use strict';
 
 /* ---------- navigation ---------- */
@@ -25,7 +25,7 @@ function projRow(p,by){
   return '<button class="nav ch'+(S.view===p.id?' on':'')+'" data-act="view" data-id="'+esc(p.id)+'" title="'+esc(p.name)+'"><span class="picon">'+picon(p)+'</span><span class="lbl nm grow">'+esc(p.name)+'</span>'+(isShared(p)?ic('users','mut lbl'):'')+'<span class="cnt lbl">'+e.done+'/'+e.total+'</span></button>';
 }
 function renderSide(by,ready){
-  var ed=S.canEdit, h='<div class="side-in"><div class="ws">'+LOGO+'<span class="ws-name lbl grow">Avancée</span><button class="ib lbl" data-act="sb" data-id="rail" aria-label="Réduire le menu" title="Réduire le menu (Ctrl B)">'+ic('sidebar')+'</button></div>';
+  var ed=S.canEdit, h='<div class="side-in"><div class="ws">'+LOGO+'<span class="ws-name lbl grow">Onward</span><button class="ib lbl" data-act="sb" data-id="rail" aria-label="Réduire le menu" title="Réduire le menu (Ctrl B)">'+ic('sidebar')+'</button></div>';
   h+='<button class="nav srch" data-act="pal" title="Rechercher">'+ic('search')+'<span class="lbl grow">Rechercher</span><span class="lbl">'+kbd('Ctrl K')+'</span></button>';
   if(!ready){document.getElementById('side').innerHTML=tr(h+'<div class="sk sk-l w80"></div><div class="sk sk-l w60"></div><div class="sk sk-l w80"></div></div>');return;}
   h+='<nav class="navs" aria-label="Navigation">';
@@ -181,7 +181,7 @@ function vHome(by){
   if(ed&&!S.cfg.onboarded){
     var hasP=S.projects.some(function(p){return !p.demo;}), hasT=S.tasks.some(function(t){var p=projById(t.projectId);return !p||!p.demo;});
     function step(ok,label,cta){return '<li class="ob-s'+(ok?' ok':'')+'"><span class="chk sm'+(ok?' on':'')+'">'+CHECK+'</span><span class="grow">'+label+'</span>'+(ok?'':cta)+'</li>';}
-    h+='<section class="onb"><div><h2>Bienvenue dans Avancée</h2><p>Trois étapes pour être chez toi.</p></div><ul>'
+    h+='<section class="onb"><div><h2>Bienvenue dans Onward</h2><p>Trois étapes pour être chez toi.</p></div><ul>'
       +step(!!name,'Dis-moi ton prénom','<span class="ob-in"><label class="sr" for="ob-name">Ton prénom</label><input class="in sm" id="ob-name" data-draft data-change="cfgname" placeholder="Ton prénom" autocomplete="off"></span>')
       +step(hasP,'Crée ton premier projet','<button class="btn sm" data-act="new-project">Créer</button>')
       +step(hasT,'Ajoute une première tâche','<button class="btn sm" data-act="qa">Ajouter</button>')
@@ -566,7 +566,7 @@ function renderGate(){
   document.body.classList.add('gated');
   if(S.auth==='boot'){g.innerHTML='<div class="gate"><div class="gate-card boot">'+LOGO+'<div class="sk sk-l w60"></div><div class="sk sk-l w40"></div></div></div>';g._h=null;return;}
   var langs='<span class="seg sm gate-lang" role="group" aria-label="Langue">'+Object.keys(I18N.langs).map(function(k){return '<button data-act="lang" data-id="'+k+'" aria-pressed="'+(LANG===k)+'" title="'+nt(I18N.langs[k])+'">'+nt(k.toUpperCase())+'</button>';}).join('')+'</span>';
-  var h='<div class="gate"><div class="gate-card"><div class="gate-top">'+LOGO+langs+'</div><h1>Avancée</h1><p class="lead">L’espace de travail simple pour organiser tes projets, tes clients et ton travail.</p>';
+  var h='<div class="gate"><div class="gate-card"><div class="gate-top">'+LOGO+langs+'</div><h1>Onward</h1><p class="lead">L’espace de travail simple pour organiser tes projets, tes clients et ton travail.</p>';
   if(S.auth==='setup'){
     h+='<div class="note warn"><p><strong>Le site n’est pas encore relié à sa base de données.</strong> Ouvre le fichier <code>config.js</code> et colle l’adresse de ton projet Supabase et sa clé « publishable », puis remets le site en ligne. Le guide <code>LISEZ-MOI.md</code> détaille chaque étape.</p></div>';
   }else if(S.auth==='reset'){

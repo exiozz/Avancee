@@ -1,4 +1,4 @@
-/* Avancée — surcouches : panneau de tâche, palette de commandes, ajout rapide, feuilles mobiles, menu contextuel. */
+/* Onward — surcouches : panneau de tâche, palette de commandes, ajout rapide, feuilles mobiles, menu contextuel. */
 'use strict';
 
 /* ---------- panneau de tâche ---------- */

@@ -1,4 +1,4 @@
-/* Avancée — langues.
+/* Onward — langues.
    Le français est la langue d'écriture du code. Une autre langue = un dictionnaire « texte français → traduction »
    (voir js/lang-en.js). La traduction se fait juste avant l'affichage :
      - tr(html)  traduit les textes d'un morceau d'interface, sans jamais toucher au contenu saisi par les gens ;

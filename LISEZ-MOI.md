@@ -1,4 +1,4 @@
-# Avancée — mettre le site en ligne
+# Onward — mettre le site en ligne
 
 Ce dossier est le site complet. Il n'y a rien à compiler : ce sont des fichiers à déposer chez un hébergeur.
 Il lui faut une base de données et un système de connexion : on utilise **Supabase** (gratuit pour démarrer).
@@ -121,7 +121,7 @@ Dans une tâche, le bloc **Fichiers** (au-dessus des photos) permet de joindre j
 
 ## Notifications de bureau
 
-Dans **Réglages > Notifications de bureau**, active les notifications sur chaque appareil : rappel des tâches du jour (une fois par jour) et activité des autres sur les projets partagés. Elles arrivent tant qu'Avancée est ouverte sur l'appareil (même en arrière-plan). Sur iPhone, il faut d'abord ajouter Avancée à l'écran d'accueil.
+Dans **Réglages > Notifications de bureau**, active les notifications sur chaque appareil : rappel des tâches du jour (une fois par jour) et activité des autres sur les projets partagés. Elles arrivent tant qu'Onward est ouverte sur l'appareil (même en arrière-plan). Sur iPhone, il faut d'abord ajouter Onward à l'écran d'accueil.
 
 ## Formules (Gratuit, Premium, Pro)
 

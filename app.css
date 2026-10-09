@@ -1,4 +1,4 @@
-/* Avancée — styles des composants. Les couleurs viennent toutes des jetons définis dans la page. */
+/* Onward — styles des composants. Les couleurs viennent toutes des jetons définis dans la page. */
 *{box-sizing:border-box}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
 input,textarea,select{font:inherit;color:inherit}

@@ -1,4 +1,4 @@
-/* Avancée — service worker minimal : il sert uniquement à afficher les notifications et à rouvrir l'appli quand on clique dessus.
+/* Onward — service worker minimal : il sert uniquement à afficher les notifications et à rouvrir l'appli quand on clique dessus.
    Il ne met rien en cache : le site reste toujours à jour. */
 self.addEventListener('install', function () { self.skipWaiting(); });
 self.addEventListener('activate', function (e) { e.waitUntil(self.clients.claim()); });
